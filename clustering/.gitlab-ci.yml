@@ -9,5 +9,17 @@ stages:
   
 flake8:
   stage: Static Analysis
+  allow_failure: true
   script:
     - flake8 ./*.py
+    
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint ./*.py
+  
+mypy:
+  stage: Static Analysis
+  script:
+  - mypy ./*.py
