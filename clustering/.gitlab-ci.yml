@@ -11,3 +11,4 @@ flake8:
   stage: Static Analysis
   script:
     - flake8 ./*.py
+    - flake8 ./core_classroom_detection/*.py
