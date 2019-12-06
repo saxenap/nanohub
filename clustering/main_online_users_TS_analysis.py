@@ -35,7 +35,7 @@ def main_online_users_TS_analysis():
     inparams = parser.parse_args()       
 
     
-    # TODO summarize input options
+    # summarize input options
     if inparams.CI:
         # CI/Test runs
         # The only difference here should be CI/Test runs use sample, 
@@ -48,12 +48,23 @@ def main_online_users_TS_analysis():
         # Production runs
         logging.basicConfig(level=logging.INFO, format='%(message)s')
         pass
-        
+    
+    # display parameters but censor password
     display_inparams = inparams
     if 'SQL_password' in display_inparams:
-        display_inparams.SQL_password = ['*' for x in display_inparams.SQL_password]
+        display_inparams.SQL_password = ''.join(['*' for x in display_inparams.SQL_password])
         
     logging.info(pformat(vars(inparams)))
+    
+    #
+    # Preparations
+    #
+    
+    # create scratch directory if it does not exist
+    if not os.path.exists(inparams.scratch_dir):
+        logging.info('Creating new scratch directory: '+inparams.scratch_dir)
+        os.mkdir(inparams.scratch_dir)
+    
     
     #
     # Analysis: classroom detection

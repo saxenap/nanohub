@@ -6,7 +6,8 @@ before_script:
   
 stages:
   - Static Analysis
-  
+  - Test
+ 
 flake8:
   stage: Static Analysis
   allow_failure: true
@@ -23,3 +24,8 @@ mypy:
   stage: Static Analysis
   script:
   - mypy ./*.py
+
+full_test:
+  stage: Test
+  script:
+  - python main_online_users_TS_analysis.py --CI
