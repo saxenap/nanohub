@@ -23,7 +23,7 @@ pylint:
 mypy:
   stage: Static Analysis
   script:
-  - mypy ./*.py
+  - mypy ./*.py --ignore-missing-imports
 
 full_test:
   stage: Test
