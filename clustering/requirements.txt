@@ -7,3 +7,4 @@ pyarrow >= 0.15.1
 scikit-learn >= 0.21.3 
 geoip2 >= 2.9.0
 dask[dataframe] >= 2.8.0
+cloudpickle >= 1.2.2 

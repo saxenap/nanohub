@@ -42,6 +42,10 @@ def main_online_users_TS_analysis():
     parser.add_argument('--class_distance_threshold', help='classroom detection: maximum intra-cluster distance in km for geospatial clusters', 
                                             action='store', default=50)
 
+    # dask
+    parser.add_argument('--dask_scheduler', help='dask scheduler: "threads"/"processes"/"single-threaded"', 
+                                            action='store', default="single-threaded")
+                                            
     # internal options
     parser.add_argument('--CI', help='start GitLab CI pipeline', 
                                 action='store_true')
