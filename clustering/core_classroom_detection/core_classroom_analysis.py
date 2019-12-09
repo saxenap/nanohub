@@ -173,6 +173,8 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
     logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
 
     cluster_output = list()
+    cluster_input['cluster']=None
+    cluster_input['scanned_date']=datetime.datetime(1900,1,1)
     for this_date in [date_earliest + datetime.timedelta(days=n) for n in range(0, (date_latest-date_earliest).days+1)]:
 
         # for each date spanned by cluster_input
@@ -195,13 +197,10 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
                                                  distance_threshold = class_distance_threshold \
                                                 ).fit(this_date_cluster_input[['lon','lat']].values)
 
-            this_date_cluster_input['cluster'] = this_clustering.labels_
-            this_date_cluster_input['scanned_date'] = this_date
+            cluster_input.loc[this_date_cluster_input.index, 'cluster'] = this_clustering.labels_
+            cluster_input.loc[this_date_cluster_input.index, 'scanned_date'] = this_date
 
-            # append to clustering output
-            cluster_output.extend(this_date_cluster_input.values)
-
-    return pd.DataFrame(data = cluster_output, columns=(this_date_all_blocks.columns.values.tolist()+['cluster','scanned_date']))
+    return cluster_input
 
 
 
@@ -326,15 +325,16 @@ def core_classroom_analysis(inparams):
     logging.info(user_activity_blocks_df)
         
     # Geospatial clustering for each day, each tool    
-    cluster_output = geospatial_cluster(user_activity_blocks_df, inparams.class_size_min, inparams.class_distance_threshold)
+    geospatial_cluster(user_activity_blocks_df, inparams.class_size_min, inparams.class_distance_threshold)
 
     # remove duplicated: same user, same tool, appearing in the same cluster more than once
-    cluster_output_nodup = cluster_output.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
+    cluster_output_nodup = user_activity_blocks_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
     passed_cutoff = cluster_output_nodup[['scanned_date','cluster','tool','user']]
     passed_cutoff = passed_cutoff.groupby(['scanned_date','cluster','tool']).count()['user'] > inparams.class_size_min
     
-    cluster_output_candidate = cluster_output_nodup.join(passed_cutoff, on=['scanned_date', 'cluster', 'tool'], rsuffix='_r')
-    cluster_output_candidate = cluster_output_candidate[cluster_output_candidate.user_r]
+    cluster_output_candidate = cluster_output_nodup.join(passed_cutoff, on=['scanned_date', 'cluster', 'tool'], rsuffix='_meet_class_size_min')
+    cluster_output_candidate['user_meet_class_size_min'].fillna(False, inplace=True)
+    cluster_output_candidate = cluster_output_candidate[cluster_output_candidate.user_meet_class_size_min]
 
     logging.info('Geospatially clustered candidates for classrooms on each day:')
     logging.info('(cluster_output_candidate)')
