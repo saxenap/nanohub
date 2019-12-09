@@ -175,7 +175,7 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
     cluster_output = list()
     cluster_input['cluster']=None
     cluster_input['scanned_date']=datetime.datetime(1900,1,1)
-    for this_date in [date_earliest + datetime.timedelta(days=n) for n in range(0, (date_latest-date_earliest).days+1)]:
+    for this_date in [date_earliest + datetime.timedelta(days=n) for n in range(0, int((date_latest-date_earliest).days+1))]:
 
         # for each date spanned by cluster_input
         
