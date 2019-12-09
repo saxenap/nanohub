@@ -71,7 +71,7 @@ def prepare_data(inparams):
     pbar.register()
     geo_data = dd.from_pandas(toolrun_df['ip'], npartitions=200) \
               .map_partitions(lambda df: df.apply(get_geo_data)) \
-              .compute(scheduler='processes');
+              .compute(scheduler=inparams.dask_scheduler);
 
     lon_lat = np.stack(geo_data.values)
     toolrun_df['lon'] = lon_lat[:,0].astype(np.float)
@@ -307,7 +307,7 @@ def core_classroom_analysis(inparams):
     activity_tol = datetime.timedelta(days=inparams.class_activity_tol)
     ddata = dd.from_pandas(toolrun_df, npartitions=200) \
               .groupby('user').apply(form_activity_blocks, activity_tol = activity_tol) \
-              .compute()
+              .compute(scheduler=inparams.dask_scheduler)
     user_activity_blocks_df = ddata[(ddata.start>=data_probe_range[0]) &(ddata.end<=data_probe_range[1])] \
                                     .reset_index().drop(['level_1'], axis=1)
     
@@ -343,7 +343,7 @@ def core_classroom_analysis(inparams):
     # Aggregate clusters in neighboring days into one
     ddata = dd.from_pandas(cluster_output_candidate, npartitions=60) \
               .groupby('tool').apply(form_cluster_blocks) \
-              .compute()
+              .compute(scheduler=inparams.dask_scheduler)
     #'end', 'mean_lat', 'mean_lon', 'start', 'user_count', 'users_row_id'
     class_cluster_candidate = ddata.reset_index()
     logging.info('Class candidates formed for each user for all days')
