@@ -21,11 +21,27 @@ def main_online_users_TS_analysis():
                                          action='store', default='127.0.0.1')
     parser.add_argument('--SQL_port', help='SQL port', 
                                          action='store', default='3306')
+
+    # data
+    parser.add_argument('--geoip2_mmdb_filepath', help='full file path of mmdb file from GeoIP2', 
+                                         action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb'))
                                                                                                                        
     # directories
     parser.add_argument('--scratch_dir', help='location of scratch directory for temporary files', 
-                                         action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))
-                                    
+                                         action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp')) 
+    
+    # class room detection behavior
+    parser.add_argument('--class_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
+                                                action='store', default='latest')
+    parser.add_argument('--class_activity_tol', help='classroom detection: minimal days apart to declare two use of same tool as separate activity blocks', 
+                                                action='store', default=2)
+    parser.add_argument('--class_attention_span', help='classroom detection: the standard deviation of gaussian shaped attention window function', 
+                                                action='store', default=3)
+    parser.add_argument('--class_size_min', help='classroom detection: minimal number of users within a cluster to declare it as a valid class', 
+                                            action='store', default=5)
+    parser.add_argument('--class_distance_threshold', help='classroom detection: maximum intra-cluster distance in km for geospatial clusters', 
+                                            action='store', default=50)
+
     # internal options
     parser.add_argument('--CI', help='start GitLab CI pipeline', 
                                 action='store_true')
