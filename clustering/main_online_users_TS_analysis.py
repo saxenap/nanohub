@@ -64,6 +64,10 @@ def main_online_users_TS_analysis():
         
         logging.info('GitLab CI runs')
         
+        # setting the default time range for CI
+        inparams.class_probe_range='2018-1-1:2018-5-1'
+        logging.info('Setting analysis time range to CI default: '+inparams.class_probe_range)
+        
     else:
         # Production runs
         logging.basicConfig(level=logging.INFO, format='%(message)s')
