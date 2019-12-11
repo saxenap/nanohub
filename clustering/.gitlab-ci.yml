@@ -6,8 +6,26 @@ before_script:
   
 stages:
   - Static Analysis
-  
+  - Test
+ 
 flake8:
   stage: Static Analysis
+  allow_failure: true
   script:
     - flake8 ./*.py
+    
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint ./*.py
+  
+mypy:
+  stage: Static Analysis
+  script:
+  - mypy ./*.py --ignore-missing-imports
+
+full_test:
+  stage: Test
+  script:
+  - python main_online_users_TS_analysis.py --CI
