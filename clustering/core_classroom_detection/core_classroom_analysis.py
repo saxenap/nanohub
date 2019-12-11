@@ -15,6 +15,9 @@ import datetime
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import pairwise_distances
 
+import shelve
+import pickle
+
 import code
 
 def prepare_data(inparams):
@@ -244,7 +247,6 @@ def form_cluster_blocks(tool_clusters_df):
                     # match
                     this_candidate['last_update'] = this_date
                     this_candidate['users_row_id'] = this_candidate['users_row_id'].append(this_cluster_df.index)
-                    #display('appending '+str(len(this_cluster_df.index))+' rows')
                     
                     cluster_matched = True
                     break
@@ -350,13 +352,16 @@ def core_classroom_analysis(inparams):
     logging.info('(class_cluster_candidate)')
     logging.info(class_cluster_candidate)
 
-
-
-
-
-
-
-
-
+    # NOTEBOOK CHECKPOINT
+    if inparams.generate_notebook_checkpoints:
+        logging.info('Generating Jupyter Notebook checkpoint 1: Synchrony EDA')
+        
+        class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
+        user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))        
+        jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))        
+        toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
+                       
+        with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
+            pickle.dump([inparams],f)
 
 
