@@ -12,6 +12,10 @@ def main_online_users_TS_analysis():
 
     parser = argparse.ArgumentParser(description='Online user weblog time series analysis originally designed for nanoHUB.org')
     
+    # task options
+    parser.add_argument('--task', help='specific task', 
+                                  action='store', default='classroom_detection')
+                                             
     # SQL connection
     parser.add_argument('--SQL_username', help='SQL database username', 
                                          action='store', default='invalid SQL username')
@@ -51,8 +55,10 @@ def main_online_users_TS_analysis():
                                 action='store_true')
     parser.add_argument('--CI_dir', help='location of CI directory', 
                                     action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'CI'))
-               
-    inparams = parser.parse_args()       
+    parser.add_argument('--generate_notebook_checkpoints', help='shelve variables in order to connect with notebooks at various points', 
+                                    action='store_true')
+                                                   
+    inparams = parser.parse_args()
 
     
     # summarize input options
@@ -89,16 +95,20 @@ def main_online_users_TS_analysis():
         logging.info('Creating new scratch directory: '+inparams.scratch_dir)
         os.mkdir(inparams.scratch_dir)
     
-    
-    #
-    # Analysis: classroom detection
-    #
-                    
-    # prepare data
     gather_data(inparams)
+     
+    #
+    # Analysis:
+    #
     
-    # classroom detection
-    core_classroom_analysis(inparams)
+    if 'classroom_detection' in inparams.task:
+        # classroom detection
+        core_classroom_analysis(inparams)
+
+    if 'cost_cluster_analysis' in inparams.task:
+        # quick cost-function clustering analysis
+        core_cost_cluster_analysis(inparams)
+
                             
 if __name__ == '__main__':
     main_online_users_TS_analysis() 
