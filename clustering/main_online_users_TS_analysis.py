@@ -7,6 +7,7 @@ import logging
 
 from preprocessing.gather_data import gather_data
 from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
+from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis
 
 def main_online_users_TS_analysis():
 
@@ -45,6 +46,10 @@ def main_online_users_TS_analysis():
                                             action='store', default=5)
     parser.add_argument('--class_distance_threshold', help='classroom detection: maximum intra-cluster distance in km for geospatial clusters', 
                                             action='store', default=50)
+
+    # quick cost-based cluster analysis
+    parser.add_argument('--cost_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
+                                                action='store', default='all')    
 
     # dask
     parser.add_argument('--dask_scheduler', help='dask scheduler: "threads"/"processes"/"single-threaded"', 
