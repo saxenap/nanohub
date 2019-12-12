@@ -93,7 +93,7 @@ class CommonToolUsagePair:
       timeDifferences.append((abs(d-currentDay), d))
     timeDifferences.sort()
 
-    daysWithUsage = getNumberOfDaysWithUsage(toolUsagePattern)
+    #daysWithUsage = getNumberOfDaysWithUsage(toolUsagePattern)
     #HERE remove this after making sure I can duplicate results from previous work
     daysWithUsage = numberOfDaysWithUsage
     #HERE end remove if
@@ -135,11 +135,18 @@ class CommonToolUsagePair:
     keys = sorted(keys)
     alreadyExaminedKeys = []
     daysRepresented = keys[len(keys) - 1] - keys[0] + 1
-    tup1DaysWithUsage = getNumberOfDaysWithUsage(self.tup1)
-    tup2DaysWithUsage = getNumberOfDaysWithUsage(self.tup2)
+    #tup1DaysWithUsage = getNumberOfDaysWithUsage(self.tup1)
+    #tup2DaysWithUsage = getNumberOfDaysWithUsage(self.tup2)
     # HERE get rid of the following two lines after verifying we can product the same results
     tup1DaysWithUsage = self.tup1NumberOfDaysWithUsage
     tup2DaysWithUsage = self.tup2NumberOfDaysWithUsage
+    
+    # TODO
+    #if getNumberOfDaysWithUsage(self.tup1) != self.tup1NumberOfDaysWithUsage:
+    #  print('WRONG 1: '+ str(getNumberOfDaysWithUsage(self.tup1)) + ', ' + str(self.tup1NumberOfDaysWithUsage))
+    #if getNumberOfDaysWithUsage(self.tup2) != self.tup2NumberOfDaysWithUsage:
+    #  print('WRONG 2: '+ str(getNumberOfDaysWithUsage(self.tup2)) + ', ' + str(self.tup2NumberOfDaysWithUsage))    
+    
     # HERE end of get rid of
     cost = 0.0
         
@@ -210,6 +217,8 @@ class ToolUsagePattern:
     self.daySpanForPenalties = daySpanForPenalties;
     self.usages = dict() # usages[day #] = set{'pntoy', 'abc'}
     self.numberOfDaysWithUsage = 0 # total user activate days
+    self.allTools = set() # all the tools used by this user
+
   
   def addUsage(self, tool, day):
     toolsOnDay = self.usages.get(day)
@@ -220,6 +229,9 @@ class ToolUsagePattern:
       self.numberOfDaysWithUsage += 1
     else:
       toolsOnDay.add(tool);
+  
+    self.allTools.add(tool)
+
   
   def size(self):
     return len(self.usages)

@@ -62,7 +62,8 @@ def main_online_users_TS_analysis():
                                     action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'CI'))
     parser.add_argument('--generate_notebook_checkpoints', help='shelve variables in order to connect with notebooks at various points', 
                                     action='store_true')
-                                                   
+    parser.add_argument('--use_old_data', help='use feature data from previous run', 
+                                    action='store_true')                                                   
     inparams = parser.parse_args()
 
     
@@ -85,11 +86,13 @@ def main_online_users_TS_analysis():
         pass
     
     # display parameters but censor password
-    display_inparams = inparams
-    if 'SQL_password' in display_inparams:
-        display_inparams.SQL_password = ''.join(['*' for x in display_inparams.SQL_password])
-        
+    if 'SQL_password' in inparams:
+        temp_real_password = inparams.SQL_password   
+        inparams.SQL_password = ''.join(['*' for x in inparams.SQL_password])
+                 
     logging.info(pformat(vars(inparams)))
+    inparams.SQL_password = temp_real_password
+    del temp_real_password
     
     #
     # Preparations
@@ -100,8 +103,10 @@ def main_online_users_TS_analysis():
         logging.info('Creating new scratch directory: '+inparams.scratch_dir)
         os.mkdir(inparams.scratch_dir)
     
-    gather_data(inparams)
-     
+    if not inparams.use_old_data:
+        gather_data(inparams)
+    else:
+        logging.info('Option "--user_old_data" enabled. Using data from previous run ......')
     #
     # Analysis:
     #
