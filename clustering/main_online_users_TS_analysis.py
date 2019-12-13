@@ -32,9 +32,13 @@ def main_online_users_TS_analysis():
                                          action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb'))
                                                                                                                        
     # directories
+    parser.add_argument('--output_dir', help='location of output directory for output files', 
+                                         action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output')) 
     parser.add_argument('--scratch_dir', help='location of scratch directory for temporary files', 
                                          action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp')) 
-    
+    parser.add_argument('--name_prefix', help='prefix to all output files', 
+                                         action='store', default='users_analysis')
+                                                    
     # class room detection behavior
     parser.add_argument('--class_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
                                                 action='store', default='latest')
@@ -50,7 +54,13 @@ def main_online_users_TS_analysis():
     # quick cost-based cluster analysis
     parser.add_argument('--cost_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
                                                 action='store', default='all')    
-
+    parser.add_argument('--cost_size_min', help='classroom detection: minimal cluster size', 
+                                                action='store', default=4)
+    parser.add_argument('--cost_force_all_diff_lvl', help='classroom detection: forceAllDifferencesLevel', 
+                                                action='store', default=501)
+    parser.add_argument('--cost_tolerance', help='classroom detection: tolerance', 
+                                                action='store', default=57)
+                                                                                                                                                                                          
     # dask
     parser.add_argument('--dask_scheduler', help='dask scheduler: "threads"/"processes"/"single-threaded"', 
                                             action='store', default="single-threaded")
@@ -102,11 +112,17 @@ def main_online_users_TS_analysis():
     if not os.path.exists(inparams.scratch_dir):
         logging.info('Creating new scratch directory: '+inparams.scratch_dir)
         os.mkdir(inparams.scratch_dir)
-    
+        
+    # create output directory if it does not exist
+    if not os.path.exists(inparams.output_dir):
+        logging.info('Creating new output directory: '+inparams.output_dir)
+        os.mkdir(inparams.output_dir)
+            
     if not inparams.use_old_data:
         gather_data(inparams)
     else:
         logging.info('Option "--user_old_data" enabled. Using data from previous run ......')
+
     #
     # Analysis:
     #
@@ -118,6 +134,8 @@ def main_online_users_TS_analysis():
     if 'cost_cluster_analysis' in inparams.task:
         # quick cost-function clustering analysis
         core_cost_cluster_analysis(inparams)
+
+
 
                             
 if __name__ == '__main__':

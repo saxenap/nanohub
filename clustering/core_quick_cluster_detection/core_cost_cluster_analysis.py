@@ -6,10 +6,6 @@ import os
 from .class_CommonToolUsagePair import ToolUsagePattern, CommonToolUsagePair
 from .form_cluster import form_cluster_new
 from .merge_clusters import merge_clusters
-#from class_Satisfaction import 
-
-
-import geoip2.database
 
 from dask import dataframe as dd
 from dask.multiprocessing import get
@@ -20,14 +16,14 @@ pbar.register()
 import numpy as np
 import datetime
 
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import pairwise_distances
-
 import shelve
 import pickle
 
 import code
 import time
+
+
+
 
 def prepare_data(inparams):
     
@@ -81,11 +77,7 @@ def form_tool_usage_pattern(toolrun_user_df, first_day, days_span):
 
 
 
-def cross_compare_two_users(this_user_row, user_activity_df):
-    
-    forceAllDifferencesLevel = 501.0
-    filterGrowthRateCutoff = 1.15
-    filterAbsoluteCutoff = 100.0
+def cross_compare_two_users(this_user_row, user_activity_df, forceAllDifferencesLevel):
 
     start_time = time.time()
         
@@ -113,11 +105,6 @@ def cross_compare_two_users(this_user_row, user_activity_df):
         differences_list.append(\
 		                        (user_activity_df.loc[this_other_id].user, this_diff)\
 		                       )
-        
-
-    
-    #logging.info('Total time spend = '+str(time.time()-start_time)+' seconds')
-    #code.interact(local=locals())
                     		                       
     return differences_list
 
@@ -150,70 +137,52 @@ def core_cost_cluster_analysis(inparams):
     # Form user tool activity blocks
     #
 
-    ddata = dd.from_pandas(toolrun_df[(toolrun_df.date >= data_probe_range[0]) & (toolrun_df.date <= data_probe_range[1])], npartitions=200) \
+    toolrun_df_within_range = toolrun_df[(toolrun_df.date >= data_probe_range[0]) & (toolrun_df.date <= data_probe_range[1])]
+    
+    if toolrun_df_within_range.shape[0] == 0:
+        # no entry fall within the time range
+        logging.info('No user activity falls within the specific time range.')
+        return
+    
+    ddata = dd.from_pandas(toolrun_df_within_range, npartitions=200) \
               .groupby('user').apply(form_tool_usage_pattern, first_day = data_probe_range[0], days_span = int((data_probe_range[1]-data_probe_range[0]).days)) \
               .compute(scheduler=inparams.dask_scheduler)
 
-    user_activity_df = ddata.reset_index(name='ToolUsagePattern') # reset index and form DF
-                                    
+    user_activity_df = ddata.reset_index(name='ToolUsagePattern') # reset index and form DF                                    
 
     # cross-compare two users
-
-    #ddata = dd.from_pandas(user_activity_df.sample(frac=1), npartitions=200) \
-    #          .apply(cross_compare_two_users, user_activity_df = user_activity_df, axis=1) \
-    #          .compute(scheduler=inparams.dask_scheduler)
-              
-    #ddata.to_pickle('/home/wang159/nanoHUB/projects/online_users_ts_analysis/temp/cost_temp.pkl') 
-
-    # TODO: use Pickle for now
-    #user_activity_df.apply(cross_compare_two_users, user_activity_df = user_activity_df, axis=1)
-
-    ddata = pd.read_pickle('/home/wang159/nanoHUB/projects/online_users_ts_analysis/temp/cost_temp.pkl')
+    
+    ddata = dd.from_pandas(user_activity_df.sample(frac=1), npartitions=200) \
+              .apply(cross_compare_two_users, user_activity_df = user_activity_df, forceAllDifferencesLevel=inparams.cost_force_all_diff_lvl, axis=1) \
+              .compute(scheduler=inparams.dask_scheduler)
 
     #
     # Form clusters based on costs
     #
-    usages_dict = dict([(user_name, obj) for user_name, obj in zip(user_activity_df.user, user_activity_df.ToolUsagePattern)])
-
     
+    usages_dict = dict([(user_name, obj) for user_name, obj in zip(user_activity_df.user, user_activity_df.ToolUsagePattern)])    
     user_usage_df = pd.merge(ddata.rename('usages'), user_activity_df, left_index=True, right_index=True)
-    differences = dict([(user_name, usages) for user_name, usages in zip(user_usage_df.user, user_usage_df.usages)])
         
-
-    #clusters = form_cluster('this_cluster', 57, usages_dict, differences, \
-    #        '/home/wang159/nanoHUB/projects/online_users_ts_analysis/temp/extractedClusters57DT.csv', True)
-    clusters = form_cluster_new(57, user_usage_df, \
-            '/home/wang159/nanoHUB/projects/online_users_ts_analysis/temp/new_57DT.csv')         
-            
-            
-            
-            
-            
-            
-            
-            
-               
+    clusters = form_cluster_new(inparams, user_usage_df)         
+                      
     #
     # Merge similar clusters
     #
-    final_clusters = merge_clusters('this_cluster', 'no_geo_cache', 'no_user_to_geo', clusters, \
-            '/home/wang159/nanoHUB/projects/online_users_ts_analysis/temp/final_Clusters57DT.csv', True)    
-    code.interact(local=locals())
+    
+    final_clusters = merge_clusters(inparams, clusters.clusters.to_list())    
 
+    #
+    # Save the final super clusters
+    #
 
-    '''
-    usageDict = dict()
-    usageDict['user_A'] = ToolUsagePattern('user_A', latestDay - earliestDay + 1)
-    usageDict['user_A'].addUsage('tool_1', 1) ###
-    usageDict['user_B'] = ToolUsagePattern('user_B', latestDay - earliestDay + 1)
-    usageDict['user_B'].addUsage('tool_1', 2) ###
+    outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[1].strftime("%Y_%m_%d") + '.csv'
+    outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
+    logging.info('Saving output files to '+outfile_filepath)
 
-
-    pair = CommonToolUsagePair(usageDict['user_A'],usageDict['user_B'])
-    print('\n\nTotal final cost = '+str(pair.getDifference(False, forceAllDifferencesLevel)))
-    '''
-
-
+    with open(outfile_filepath, 'w') as f:
+        for this_row in final_clusters:
+            f.write(','.join([str(x) for x in this_row])+'\n')
+        
 
 
 
