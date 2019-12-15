@@ -173,11 +173,14 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
     """
     date_earliest = cluster_input.start.min()
     date_latest =  cluster_input.end.max()
-    logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
+    #logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
 
     cluster_output = list()
     cluster_input['cluster']=None
     cluster_input['scanned_date']=datetime.datetime(1900,1,1)
+
+    cluster_output_np = np.empty((0,len(cluster_input.columns)))
+
     for this_date in [date_earliest + datetime.timedelta(days=n) for n in range(0, int((date_latest-date_earliest).days+1))]:
 
         # for each date spanned by cluster_input
@@ -203,7 +206,10 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
             cluster_input.loc[this_date_cluster_input.index, 'cluster'] = this_clustering.labels_
             cluster_input.loc[this_date_cluster_input.index, 'scanned_date'] = this_date
 
-    return cluster_input
+            # add this tool run's scanned_date, tool, user into dict
+            cluster_output_np = np.append(cluster_output_np, cluster_input.loc[this_date_cluster_input.index].to_numpy(), axis=0)
+
+    return cluster_output_np
 
 
 
@@ -269,9 +275,14 @@ def form_cluster_blocks(tool_clusters_df):
     all_clusters_df['user_count'] = all_clusters_df.apply(lambda x: len(tool_clusters_df.loc[x.users_row_id].user.unique()), axis=1)
     
     # find the average coordinate
-    all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lat.mean(), axis=1)
-    all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lon.mean(), axis=1)
-    
+    try:
+        # avoid a DASK bug
+        all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lat.mean(), axis=1)
+        all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lon.mean(), axis=1)
+    except:
+        all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: None, axis=1)
+        all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: None, axis=1)
+        
     all_clusters_df['lat_lon'] = all_clusters_df.apply(lambda x: list(zip(tool_clusters_df.loc[x.users_row_id].lat.values, tool_clusters_df.loc[x.users_row_id].lon.values)), axis=1)
     
     return all_clusters_df
@@ -291,8 +302,9 @@ def core_classroom_analysis(inparams):
     # Limit analysis range to within limits
     
     if inparams.class_probe_range == 'latest':
-        # probes only the latest (today - 3 STD of Gaussian attention window function)
-        data_probe_range = [datetime.date.today()-datetime.timedelta(days=inparams.class_attention_span*3), datetime.date.today()]
+        # probes only the latest (today - 2 STD of Gaussian attention window function)
+        # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
+        data_probe_range = [datetime.date.today()-datetime.timedelta(days=inparams.class_attention_span*2), datetime.date.today()]
         
     else:
         # probes given time range
@@ -326,11 +338,19 @@ def core_classroom_analysis(inparams):
     logging.info('(user_activity_blocks_df)')
     logging.info(user_activity_blocks_df)
         
-    # Geospatial clustering for each day, each tool    
-    geospatial_cluster(user_activity_blocks_df, inparams.class_size_min, inparams.class_distance_threshold)
+    # Geospatial clustering for each day, each tool
+    ddata = dd.from_pandas(user_activity_blocks_df, npartitions=200) \
+            .groupby('tool')\
+            .apply(geospatial_cluster, \
+                   cluster_size_cutoff=inparams.class_size_min, \
+                   class_distance_threshold=inparams.class_distance_threshold) \
+            .compute(scheduler=inparams.dask_scheduler)
+
+    detected_clusters_df = pd.DataFrame(np.vstack(ddata.to_numpy()), columns=(user_activity_blocks_df.columns.to_list()+['cluster', 'scanned_date']))
 
     # remove duplicated: same user, same tool, appearing in the same cluster more than once
-    cluster_output_nodup = user_activity_blocks_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
+    cluster_output_nodup = detected_clusters_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
+
     passed_cutoff = cluster_output_nodup[['scanned_date','cluster','tool','user']]
     passed_cutoff = passed_cutoff.groupby(['scanned_date','cluster','tool']).count()['user'] > inparams.class_size_min
     
@@ -343,6 +363,7 @@ def core_classroom_analysis(inparams):
     logging.info(cluster_output_candidate)
 
     # Aggregate clusters in neighboring days into one
+    code.interact(local=locals())
     ddata = dd.from_pandas(cluster_output_candidate, npartitions=60) \
               .groupby('tool').apply(form_cluster_blocks) \
               .compute(scheduler=inparams.dask_scheduler)
@@ -358,8 +379,10 @@ def core_classroom_analysis(inparams):
         
         class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
         user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))        
+        detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))        
         jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))        
         toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
+        cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
                        
         with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
             pickle.dump([inparams],f)
