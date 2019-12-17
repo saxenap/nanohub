@@ -50,7 +50,11 @@ def main_online_users_TS_analysis():
                                             action='store', default=5)
     parser.add_argument('--class_distance_threshold', help='classroom detection: maximum intra-cluster distance in km for geospatial clusters', 
                                             action='store', default=50)
-
+    parser.add_argument('--class_merge_time_threshold', help='classroom detection: when merging similar clusters, maximum time range allowed for merging', 
+                                            action='store', default=120)
+    parser.add_argument('--class_merge_distance_threshold', help='classroom detection: when merging similat cluster, maximum intra-cluster distance in km for geospatial clusters', 
+                                            action='store', default=5)
+                                            
     # quick cost-based cluster analysis
     parser.add_argument('--cost_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
                                                 action='store', default='all')    
