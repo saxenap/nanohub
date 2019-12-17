@@ -3,6 +3,8 @@ import logging
 import pandas as pd
 import os
 
+from .combine_clusters import combine_clusters, haversine_metric, haversine_affinity
+
 import geoip2.database
 
 from dask import dataframe as dd
@@ -13,7 +15,6 @@ import numpy as np
 import datetime
 
 from sklearn.cluster import AgglomerativeClustering, DBSCAN
-from sklearn.metrics import pairwise_distances
 
 import shelve
 import pickle
@@ -134,34 +135,6 @@ def form_activity_blocks(user_df, activity_tol):
     #activity_blocks['user'] = user_df.user.unique()
     
     return pd.DataFrame(activity_blocks, columns=['tool', 'start', 'end', 'ip'])
-
-
-
-
-# great circle distance
-def haversine_metric(x,y):
-    """
-    Calculate the great circle distance between two points 
-    on the earth (specified in decimal degrees)
-    """
-
-    # convert decimal degrees to radians 
-    # lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-    lon1 = np.radians(x[0])
-    lat1 = np.radians(x[1])
-    lon2 = np.radians(y[0])
-    lat2 = np.radians(y[1])
-
-    # haversine formula 
-    dlon = lon2 - lon1 
-    dlat = lat2 - lat1 
-    a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
-    c = 2 * np.arcsin(np.sqrt(a)) 
-    r = 6371 # Radius of earth in miles. Use 6371 for kilometers
-    return c * r
-
-def haversine_affinity(X):
-    return pairwise_distances(X, metric=haversine_metric)
 
 
 
@@ -513,12 +486,6 @@ def core_classroom_analysis(inparams):
     # add new column for DBSCAN results. Default to non-member (-1)
     cluster_output_candidate['DBSCAN'] = -1
     
-    '''
-    cluster_post_sychrony = cluster_output_candidate.groupby('tool') \
-                                    .apply(intra_cluster_synchrony_pregroup, \
-                                           toolrun_df=toolrun_df)
-    '''
-    
     cluster_post_sychrony = dd.from_pandas(cluster_output_candidate, npartitions=30) \
                                     .groupby('tool') \
                                     .apply(intra_cluster_synchrony_pregroup, \
@@ -528,15 +495,27 @@ def core_classroom_analysis(inparams):
                                     
     # drop 'tool' index which is duplicate of the 'tool' column
     cluster_post_sychrony = cluster_post_sychrony.reset_index(drop=True)
-    
-    
-    #
-    # Combine clusters into super-clusters
-    #
 
     # NOTEBOOK CHECKPOINT
     if inparams.generate_notebook_checkpoints:
         logging.info('Generating Jupyter Notebook checkpoint 2: Post-Synchrony EDA')
         
-        cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))        
+        cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))       
+    
+    #
+    # Combine clusters into super-clusters
+    #
+
+    intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df = combine_clusters(inparams, cluster_post_sychrony)
+
+    # NOTEBOOK CHECKPOINT
+    if inparams.generate_notebook_checkpoints:
+        logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
+        
+        intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))    
+        students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
+        class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
+        classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
+
+
 
