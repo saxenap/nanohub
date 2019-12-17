@@ -260,17 +260,6 @@ def form_cluster_blocks(tool_clusters_df):
     
     return all_clusters_df
 
-
-
-
-def intra_cluster_synchrony(this_cluster, toolrun_df):
-    '''
-    Reject any candidate within the cluster that is out-of-sync with others.
-    '''
-    
-    
-    return
-    
     
     
 
