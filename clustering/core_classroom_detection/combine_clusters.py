@@ -241,10 +241,11 @@ def combine_clusters(inparams, cluster_post_sychrony):
     similarity_tuples_hstack = np.hstack(similarity_tuples)
 
     similarity_matrix = coo_matrix( \
-                             (similarity_tuples_hstack[0,:], \
+                             (similarity_tuples_hstack[0,:].astype(np.float32), \
                              (similarity_tuples_hstack[1,:].astype(int), \
                               similarity_tuples_hstack[2,:].astype(int)) \
                              )).toarray()
+    # for some reason, float16 does not work (https://github.com/scipy/scipy/issues/7408)
 
     # clustering using DBSCAN with distance matrix
     cluster_result = DBSCAN(eps=5, min_samples=1, metric='precomputed').fit_predict(1/(similarity_matrix+0.0001))
