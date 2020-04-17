@@ -159,7 +159,7 @@ def intra_tool_cluster_annex(one_tool_clusters):
                     merged_tool_clusters.loc[max_score_index].user_set.union(row.user_set)
                     
                 merged_tool_clusters.at[max_score_index, 'ip_set'] = \
-                    merged_tool_clusters.loc[max_score_index].user_set.union(row.ip_set)
+                    merged_tool_clusters.loc[max_score_index].ip_set.union(row.ip_set)
                 
             else:
                 # append
