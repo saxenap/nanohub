@@ -3,6 +3,8 @@ import logging
 import pandas as pd
 import os
 
+from .combine_clusters import combine_clusters, haversine_metric, haversine_affinity
+
 import geoip2.database
 
 from dask import dataframe as dd
@@ -12,8 +14,7 @@ from dask.diagnostics import ProgressBar
 import numpy as np
 import datetime
 
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import pairwise_distances
+from sklearn.cluster import AgglomerativeClustering, DBSCAN
 
 import shelve
 import pickle
@@ -138,34 +139,6 @@ def form_activity_blocks(user_df, activity_tol):
 
 
 
-# great circle distance
-def haversine_metric(x,y):
-    """
-    Calculate the great circle distance between two points 
-    on the earth (specified in decimal degrees)
-    """
-
-    # convert decimal degrees to radians 
-    # lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-    lon1 = np.radians(x[0])
-    lat1 = np.radians(x[1])
-    lon2 = np.radians(y[0])
-    lat2 = np.radians(y[1])
-
-    # haversine formula 
-    dlon = lon2 - lon1 
-    dlat = lat2 - lat1 
-    a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
-    c = 2 * np.arcsin(np.sqrt(a)) 
-    r = 6371 # Radius of earth in miles. Use 6371 for kilometers
-    return c * r
-
-def haversine_affinity(X):
-    return pairwise_distances(X, metric=haversine_metric)
-
-
-
-
 def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_threshold):
     """
     Given individual user's activity blocks for all users, all days, use geospatial clustering
@@ -173,11 +146,14 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
     """
     date_earliest = cluster_input.start.min()
     date_latest =  cluster_input.end.max()
-    logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
+    #logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
 
     cluster_output = list()
     cluster_input['cluster']=None
     cluster_input['scanned_date']=datetime.datetime(1900,1,1)
+
+    cluster_output_np = np.empty((0,len(cluster_input.columns)))
+
     for this_date in [date_earliest + datetime.timedelta(days=n) for n in range(0, int((date_latest-date_earliest).days+1))]:
 
         # for each date spanned by cluster_input
@@ -203,7 +179,10 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
             cluster_input.loc[this_date_cluster_input.index, 'cluster'] = this_clustering.labels_
             cluster_input.loc[this_date_cluster_input.index, 'scanned_date'] = this_date
 
-    return cluster_input
+            # add this tool run's scanned_date, tool, user into dict
+            cluster_output_np = np.append(cluster_output_np, cluster_input.loc[this_date_cluster_input.index].to_numpy(), axis=0)
+
+    return cluster_output_np
 
 
 
@@ -269,14 +248,124 @@ def form_cluster_blocks(tool_clusters_df):
     all_clusters_df['user_count'] = all_clusters_df.apply(lambda x: len(tool_clusters_df.loc[x.users_row_id].user.unique()), axis=1)
     
     # find the average coordinate
-    all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lat.mean(), axis=1)
-    all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lon.mean(), axis=1)
-    
+    try:
+        # avoid a DASK bug
+        all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lat.mean(), axis=1)
+        all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: tool_clusters_df.loc[x.users_row_id].lon.mean(), axis=1)
+    except:
+        all_clusters_df['mean_lat'] = all_clusters_df.apply(lambda x: None, axis=1)
+        all_clusters_df['mean_lon'] = all_clusters_df.apply(lambda x: None, axis=1)
+        
     all_clusters_df['lat_lon'] = all_clusters_df.apply(lambda x: list(zip(tool_clusters_df.loc[x.users_row_id].lat.values, tool_clusters_df.loc[x.users_row_id].lon.values)), axis=1)
     
     return all_clusters_df
 
+    
+    
 
+def get_toolrun_vector(this_user_toolrun, cluster_date, sigma, all_tool_names):
+    '''
+    Given the user's toolrun history, cluster's datetime, and all tools used by this cluster's users,
+    get the toolrun vector for this user
+    '''
+
+    # apply Guassian filter to toolrun
+    normal_df = this_user_toolrun.groupby('toolname').apply(lambda x: \
+                                                 np.exp(-1*(x.date-cluster_date).astype('timedelta64[D]').to_numpy()**2/sigma) \
+                                                 ) \
+                                           .apply(np.sum)    
+
+    # TEST: No Guassian filter
+    normal_df = this_user_toolrun.groupby('toolname').user.count()
+    
+    # form normalized vector
+    normal_df = normal_df.reindex(all_tool_names, fill_value=0)
+    v_length = np.linalg.norm(normal_df)
+    normal_df = normal_df/v_length if v_length > 0 else None
+
+    return normal_df
+    
+    
+
+
+def intra_cluster_synchrony_pregroup(this_cluster_group, toolrun_df):
+    '''
+    Buffer function between Dask and actual synchrony computation to have flexible control of parallelism
+    '''
+    
+    # get DBSCAN intra-cluster refinement
+    this_result = this_cluster_group.groupby(['scanned_date', 'cluster']).apply(intra_cluster_synchrony, toolrun_df=toolrun_df)
+        
+    # remove all -1 non-cluster members
+    if not this_result.empty:
+        this_result = this_result[this_result.DBSCAN > -1]
+    
+    # remove all sub-groups (cluster, DBSCAN) that are smaller than minimal size requirement
+    
+    return this_result
+
+
+
+
+def intra_cluster_synchrony(this_cluster, toolrun_df):
+    '''
+    Reject any candidate within the cluster that is out-of-sync with others.
+    '''
+    # find the 2 sdev dates on left and right side tails of Gaussian
+    cluster_date = this_cluster.name[0]
+    #display('----- cluster_date:', cluster_date)
+    #display('----- cluster_tool:', this_cluster.name[1])
+    sigma = 10 # days
+
+    start_datetime = cluster_date - datetime.timedelta(days=sigma)
+    end_datetime = cluster_date + datetime.timedelta(days=sigma)
+
+    # get each user's timeline behavior
+    toolrun_within_range_df = toolrun_df[ \
+                                          (toolrun_df.date >= start_datetime) & \
+                                          (toolrun_df.date <= end_datetime)\
+                                         ]
+
+    this_user_set = this_cluster.user.unique()
+
+    is_user_within_cluster = toolrun_within_range_df.apply(lambda x: x.user in this_user_set, axis=1)
+    if not is_user_within_cluster.empty:
+        this_cluster_users_toolrun = toolrun_within_range_df[is_user_within_cluster] \
+                                    .sort_values(by=['user','date'])
+    else:
+        return
+    
+    this_cluster_all_tools = this_cluster_users_toolrun.toolname.unique()    
+
+    # for each user, calculate its sychrony
+    tool_vector = this_cluster_users_toolrun.groupby('user').apply(get_toolrun_vector, \
+                                                     cluster_date=cluster_date, sigma=sigma, \
+                                                     all_tool_names=this_cluster_all_tools)
+
+    # remove all-zero rows
+    '''
+    display('----- this_cluster_users_toolrun')
+    display(this_cluster_users_toolrun)
+    display('----- tool_vector')
+    display(tool_vector)
+    display('----- tool_vector_2')
+    '''
+    tool_vector = tool_vector[~tool_vector[tool_vector.columns[0]].isna()]
+
+    # clustering
+    cluster = DBSCAN(min_samples=2, eps=0.6)
+    cluster_result = cluster.fit_predict(tool_vector.to_numpy())
+
+    tool_vector['_group'] = cluster_result
+    #display(tool_vector.sort_index(axis=1))
+    
+    
+    this_cluster['DBSCAN'] = cluster_result
+    
+    return this_cluster
+    
+    
+        
 
 def core_classroom_analysis(inparams):
 
@@ -291,8 +380,9 @@ def core_classroom_analysis(inparams):
     # Limit analysis range to within limits
     
     if inparams.class_probe_range == 'latest':
-        # probes only the latest (today - 3 STD of Gaussian attention window function)
-        data_probe_range = [datetime.date.today()-datetime.timedelta(days=inparams.class_attention_span*3), datetime.date.today()]
+        # probes only the latest (today - 2 STD of Gaussian attention window function)
+        # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
+        data_probe_range = [datetime.date.today()-datetime.timedelta(days=inparams.class_attention_span*2), datetime.date.today()]
         
     else:
         # probes given time range
@@ -326,11 +416,19 @@ def core_classroom_analysis(inparams):
     logging.info('(user_activity_blocks_df)')
     logging.info(user_activity_blocks_df)
         
-    # Geospatial clustering for each day, each tool    
-    geospatial_cluster(user_activity_blocks_df, inparams.class_size_min, inparams.class_distance_threshold)
+    # Geospatial clustering for each day, each tool
+    ddata = dd.from_pandas(user_activity_blocks_df, npartitions=200) \
+            .groupby('tool')\
+            .apply(geospatial_cluster, \
+                   cluster_size_cutoff=inparams.class_size_min, \
+                   class_distance_threshold=inparams.class_distance_threshold) \
+            .compute(scheduler=inparams.dask_scheduler)
+
+    detected_clusters_df = pd.DataFrame(np.vstack(ddata.to_numpy()), columns=(user_activity_blocks_df.columns.to_list()+['cluster', 'scanned_date']))
 
     # remove duplicated: same user, same tool, appearing in the same cluster more than once
-    cluster_output_nodup = user_activity_blocks_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
+    cluster_output_nodup = detected_clusters_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user','tool'])
+
     passed_cutoff = cluster_output_nodup[['scanned_date','cluster','tool','user']]
     passed_cutoff = passed_cutoff.groupby(['scanned_date','cluster','tool']).count()['user'] > inparams.class_size_min
     
@@ -343,6 +441,8 @@ def core_classroom_analysis(inparams):
     logging.info(cluster_output_candidate)
 
     # Aggregate clusters in neighboring days into one
+    '''
+    code.interact(local=locals())
     ddata = dd.from_pandas(cluster_output_candidate, npartitions=60) \
               .groupby('tool').apply(form_cluster_blocks) \
               .compute(scheduler=inparams.dask_scheduler)
@@ -351,17 +451,62 @@ def core_classroom_analysis(inparams):
     logging.info('Class candidates formed for each user for all days')
     logging.info('(class_cluster_candidate)')
     logging.info(class_cluster_candidate)
-
+    '''
+    
     # NOTEBOOK CHECKPOINT
     if inparams.generate_notebook_checkpoints:
         logging.info('Generating Jupyter Notebook checkpoint 1: Synchrony EDA')
         
-        class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
+        #class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
         user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))        
+        detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))        
         jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))        
         toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
+        cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
                        
         with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
             pickle.dump([inparams],f)
 
 
+    #
+    # Sychrony check for each cluster. Remove false positives and split cluster if multiple sub-clusters detected
+    #
+    
+    # add new column for DBSCAN results. Default to non-member (-1)
+    cluster_output_candidate['DBSCAN'] = -1
+    
+    cluster_post_sychrony = dd.from_pandas(cluster_output_candidate, npartitions=30) \
+                                    .groupby('tool') \
+                                    .apply(intra_cluster_synchrony_pregroup, \
+                                           toolrun_df=toolrun_df, \
+                                           meta = cluster_output_candidate) \
+                                    .compute(scheduler=inparams.dask_scheduler)
+                                    
+    # drop 'tool' index which is duplicate of the 'tool' column
+    cluster_post_sychrony = cluster_post_sychrony.reset_index(drop=True)
+
+    # NOTEBOOK CHECKPOINT
+    if inparams.generate_notebook_checkpoints:
+        logging.info('Generating Jupyter Notebook checkpoint 2: Post-Synchrony EDA')
+        
+        cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))       
+    
+    #
+    # Combine clusters into super-clusters
+    #
+
+    intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df = combine_clusters(inparams, cluster_post_sychrony)
+
+    # NOTEBOOK CHECKPOINT
+    if inparams.generate_notebook_checkpoints:
+        logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
+        
+        intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))    
+        students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
+        class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
+        classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
+
+
+    #
+    # Postprocess
+    #
