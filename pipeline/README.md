@@ -40,20 +40,20 @@ The overall integration involves the calculation and transfer of various data pi
 Each individual task is a Jupiter notebook and can be run independently from each other. The following tasks are available:
 |Notebook name|Description|
 |-------------------------------------------|-------------------------------------------------------------|
-|task_citations.ipynb| |
-|task_citations_map_contacts.ipynb| |
-|task_citations_map_leads.ipynb| |
-|task_determine_contact_cluster_org.ipynb| |
-|task_issue_url.ipynb| |
-|task_organization.ipynb| |
-|task_orgs_map_contacts.ipynb| |
-|task_tool_basic_updates.ipynb| |
-|task_tools_map_authors.ipynb| |
-|task_tools_map_contacts.ipynb| |
-|task_tool_usage_clusters.ipynb| |
-|task_tool_usage_clusters_map_contacts.ipynb| |
-|task_tool_usage_clusters_map_tools.ipynb| |
-|task_user_basic_updates.ipynb| |
+|task_citations.ipynb|Update nanoHUB citations|
+|task_citations_map_contacts.ipynb|Associate citation -> authors who are existing users|
+|task_citations_map_leads.ipynb|Associate citation -> authors who are not nanoHUB users|
+|task_determine_contact_cluster_org.ipynb|Associate clusters -> organization|
+|task_issue_url.ipynb|Update URL issues|
+|task_organization.ipynb|Update organization|
+|task_orgs_map_contacts.ipynb|Determine most likely organization for each contact|
+|task_tool_basic_updates.ipynb|Update tool information|
+|task_tools_map_authors.ipynb|Associate tool -> author|
+|task_tools_map_contacts.ipynb|Associate tool -> tool users|
+|task_tool_usage_clusters.ipynb|Update tool usage clusters|
+|task_tool_usage_clusters_map_contacts.ipynb|Associate clusters -> users|
+|task_tool_usage_clusters_map_tools.ipynb|Associate clusters -> tools|
+|task_user_basic_updates.ipynb|Update user information|
 
 In addition, a utility for mass Salesforce record deletion is available:
 utility_delete_all_records.ipynb
