@@ -124,7 +124,7 @@ class DB2SalesforceAPI:
                                     "object" : self.object_id,
                                     "externalIdFieldName" : self.external_id,
                                     "contentType" : "CSV",
-                                    "operation" : "upsert"
+                                    "operation" : "upsert",
                             })    
         
         if not response.ok:
@@ -137,9 +137,9 @@ class DB2SalesforceAPI:
         
 
         job_id = response.json()['id']
-        
+        print('hello')
         # Save dataframe into CSV. Using Salesforce Bulk 2.0 API, CSV file should not exceed 150 MB
-        bulk_csv = bytes(df_sf.to_csv(index=False), 'utf-8').decode('utf-8','ignore').encode("utf-8")
+        bulk_csv = bytes(df_sf.to_csv(index=False,line_terminator='\n'), 'utf-8').decode('utf-8','ignore').encode("utf-8")
         
         # Put CSV content to bulk job
         # json={"body" : './temp_bulk.csv'}
