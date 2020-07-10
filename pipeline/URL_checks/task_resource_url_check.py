@@ -156,9 +156,9 @@ if __name__ =='__main__':
 
   # SQL connection
   parser.add_argument('--SQL_username', help='SQL database username', 
-                                   action='store', default='invalid SQL username')
+                                   action='store', default='wang2506_ro')
   parser.add_argument('--SQL_password', help='SQL password', 
-                                   action='store', default='invalid SQL password')
+                                   action='store', default='fnVnwcCS7iT45EsA')
   parser.add_argument('--SQL_addr', help='SQL address', 
                                    action='store', default='127.0.0.1')
   parser.add_argument('--SQL_port', help='SQL port', 
