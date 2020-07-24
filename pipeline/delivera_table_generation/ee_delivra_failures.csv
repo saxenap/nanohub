@@ -1,0 +1,31 @@
+,RecipientID,MemberID,engagement,UserName,Domain,EmailAddr_,MailingStatus,SendTry,Full Name
+52,19265625013,1558002405,0.0,kspotter,ee.arizona.edu,kspotter@ee.arizona.edu,Permanent failure,1,kelly potter
+55,19265624991,1558002284,0.0,jzhu,ee.cmu.edu,jzhu@ee.cmu.edu,Permanent failure,1,jian-gang zhu
+56,19265625099,1558002286,0.0,piazza,ee.cmu.edu,piazza@ee.cmu.edu,Permanent failure,1,gianluca piazza
+57,19265625188,1558002289,0.0,tamal,ee.cmu.edu,tamal@ee.cmu.edu,Permanent failure,1,tamal mukherjee
+62,19265624816,1558002312,0.0,azadeh.ansari,ee.gatech.edu,azadeh.ansari@ee.gatech.edu,Permanent failure,1,azadeh ansari
+63,19265624859,1558002313,0.0,cressler,ee.gatech.edu,cressler@ee.gatech.edu,Permanent failure,1,john d cressler
+64,19265624868,1558002314,0.0,david.citrin,ee.gatech.edu,david.citrin@ee.gatech.edu,Permanent failure,1,david s citrin
+65,19265624900,1558002315,0.0,farrokh.ayazi,ee.gatech.edu,farrokh.ayazi@ee.gatech.edu,Permanent failure,1,farrokh ayazi
+66,19265624962,1558002316,0.0,jeff.davis,ee.gatech.edu,jeff.davis@ee.gatech.edu,Permanent failure,1,jeffrey a davis
+67,19265625154,1558002317,0.0,shimeng.yu,ee.gatech.edu,shimeng.yu@ee.gatech.edu,Permanent failure,1,shimeng yu
+69,19265625093,1558002388,0.0,paolin,ee.tamu.edu,paolin@ee.tamu.edu,Permanent failure,1,palash bharadwaj
+73,19265625017,1558002427,0.0,law,ee.ufl.edu,law@ee.ufl.edu,Expired,1,mark law
+74,19265624817,1558002462,0.0,banerjee,ee.utexas.edu,banerjee@ee.utexas.edu,Permanent failure,1,"banerjee, sanjay"
+75,19265624842,1558002463,0.0,chen,ee.utexas.edu,chen@ee.utexas.edu,Permanent failure,1,"chen, ray"
+76,19265624873,1558002464,0.0,deji,ee.utexas.edu,deji@ee.utexas.edu,Permanent failure,1,"akinwande, deji"
+77,19265624921,1558002465,0.0,hallock,ee.utexas.edu,hallock@ee.utexas.edu,Permanent failure,1,"hallock, gary"
+78,19265625142,1558002466,0.0,sbank,ee.utexas.edu,sbank@ee.utexas.edu,Permanent failure,1,"bank, seth"
+79,19265624885,1558002458,0.0,dunham,ee.uw.edu,dunham@ee.uw.edu,Permanent failure,1,scott t. dunham
+80,19265624996,1558002459,0.0,karl,ee.uw.edu,karl@ee.uw.edu,Permanent failure,1,karl f. böhringer
+81,19265625044,1558002460,0.0,mamishev,ee.uw.edu,mamishev@ee.uw.edu,Permanent failure,1,alex mamishev
+82,19265625219,1558002461,0.0,wilson,ee.uw.edu,wilson@ee.uw.edu,Permanent failure,1,denise m. wilson
+98,19265624807,1558002567,0.0,anson.daloisio,email.ucr.edu,anson.daloisio@email.ucr.edu,Permanent failure,1,anson d
+124,19265624990,1558002359,0.0,jzhaoee,gmail.com,jzhaoee@gmail.com,Permanent failure,1,jian zhao
+136,19265625235,1558002559,0.0,yonkerj,hollins.edu,yonkerj@hollins.edu,Permanent failure,1,justin david yonker
+152,19265625070,1558002712,0.0,mohammad.a.khan,jsums.edu,mohammad.a.khan@jsums.edu,Permanent failure,1,mohammad a
+173,19265624791,1558002326,0.0,ainserto,mit.edu,ainserto@mit.edu,Permanent failure,1,polina anikeeva
+222,19265624832,1558002574,0.0,bruno.u.barboza-1,ou.edu,bruno.u.barboza-1@ou.edu,Permanent failure,1,bruno uchoa
+287,19265625218,1558002701,0.0,william.thacker,slu.edu,william.thacker@slu.edu,Permanent failure,1,william d
+416,19265625056,1558002453,0.0,meng,usc.edu,meng@usc.edu,Permanent failure,1,ellis fan-chuin meng
+440,19265624927,1558002484,0.0,hemali.rathnayake,wku.edu,hemali.rathnayake@wku.edu,Permanent failure,1,hemali priyanka rathnayake

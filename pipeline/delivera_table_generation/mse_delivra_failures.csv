@@ -1,0 +1,9 @@
+,RecipientID,MemberID,engagement,UserName,Domain,EmailAddr_,MailingStatus,SendTry,Full Name
+136,19265624571,1557999714,0.0,pezhman.mardanpour,fui.edu,pezhman.mardanpour@fui.edu,Permanent failure,1,Pezhman
+190,19265624306,1557999771,0.0,gharris,msrce.howard.edu,gharris@msrce.howard.edu,Expired,1,Gary Harris
+415,19265624484,1558000001,0.0,maria.flytzani-stephanopoulos,tufts.edu,maria.flytzani-stephanopoulos@tufts.edu,Permanent failure,1,Maria Flytzani-Stephanopoulos
+596,19265624161,1558000188,0.0,bcalcagno,uprm.edu,bcalcagno@uprm.edu,Permanent failure,1,Barbara Calcagno
+600,19265624556,1558000192,0.0,oscar,ge.uprm.edu,oscar@ge.uprm.edu,Expired,1,Oscar J. Perales-Perez
+618,19265624352,1558000210,0.0,jafarpour,usc.edu,jafarpour@usc.edu,Permanent failure,1,Behnam Jafarpour
+632,19265624369,1558000224,0.0,jerry,usc.edu,jerry@usc.edu,Permanent failure,1,Jerry Lee
+641,19265624499,1558000233,0.0,mecklenburg,usc.edu,mecklenburg@usc.edu,Permanent failure,1,Matthew Mecklenburg
