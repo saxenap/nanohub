@@ -181,7 +181,6 @@ class DB2SalesforceAPI:
 
 
     def delete_data(self, df_sf):
-        # delete data on Salesforce
         # Bulk API
 
         # Issuing a job request
@@ -191,9 +190,11 @@ class DB2SalesforceAPI:
                                      'Accept': 'application/json'},
                             json={
                                     "object" : self.object_id,
+                                    "externalIdFieldName" : self.external_id, #not needed 
                                     "contentType" : "CSV",
-                                    "operation" : "delete"
-                            })    
+                                    "lineEnding" : "LF",
+                                    "operation" : "delete",
+                            })
         
         if not response.ok:
             # job request not successful
@@ -205,9 +206,10 @@ class DB2SalesforceAPI:
         
 
         job_id = response.json()['id']
-        
+        print('hello')
         # Save dataframe into CSV. Using Salesforce Bulk 2.0 API, CSV file should not exceed 150 MB
-        bulk_csv = bytes(df_sf.to_csv(index=False), 'utf-8').decode('utf-8','ignore').encode("utf-8")
+        
+        bulk_csv = bytes(df_sf.to_csv(index=False,line_terminator='\n',header=True), 'utf-8').decode('utf-8','ignore').encode("utf-8")
         
         # Put CSV content to bulk job
         # json={"body" : './temp_bulk.csv'}
