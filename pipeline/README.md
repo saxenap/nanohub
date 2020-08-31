@@ -44,16 +44,13 @@ Each individual task is a Jupiter notebook and can be run independently from eac
 |task_citations_map_contacts.ipynb|Associate citation -> authors who are existing users|
 |task_citations_map_leads.ipynb|Associate citation -> authors who are not nanoHUB users|
 |task_issue_url.ipynb|Update URL issues|
-
 |task_tool_basic_updates.ipynb|Update tool information|
 |task_tools_map_authors.ipynb|Associate tool -> author|
 |task_tools_map_contacts.ipynb|Associate tool -> tool users|
 |task_tool_usage_clusters.ipynb|Update tool usage clusters|
-
 |task_determine_contact_cluster_org.ipynb|Associate clusters -> organization|
 |task_organization.ipynb|Update organization| Let me update institution information - see organization object in sf
 |task_orgs_map_contacts.ipynb|Determine most likely organization for each contact|
-
 |task_tool_usage_clusters_map_contacts.ipynb|Associate clusters -> users|
 |task_tool_usage_clusters_map_tools.ipynb|Associate clusters -> tools|
 |task_user_basic_updates.ipynb|Update user information|
