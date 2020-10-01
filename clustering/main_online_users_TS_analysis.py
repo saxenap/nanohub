@@ -3,6 +3,7 @@ from pprint import pprint, pformat
 import code
 import os
 
+from datetime import date 
 import logging
 
 from preprocessing.gather_data import gather_data
@@ -19,9 +20,9 @@ def main_online_users_TS_analysis():
                                              
     # SQL connection
     parser.add_argument('--SQL_username', help='SQL database username', 
-                                         action='store', default='invalid SQL username')
+                                         action='store', default='wang2506_ro')
     parser.add_argument('--SQL_password', help='SQL password', 
-                                         action='store', default='invalid SQL password')
+                                         action='store', default='fnVnwcCS7iT45EsA')
     parser.add_argument('--SQL_addr', help='SQL address', 
                                          action='store', default='127.0.0.1')
     parser.add_argument('--SQL_port', help='SQL port', 
@@ -38,7 +39,7 @@ def main_online_users_TS_analysis():
                                          action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp')) 
     parser.add_argument('--name_prefix', help='prefix to all output files', 
                                          action='store', default='users_analysis')
-                                                    
+
     # class room detection behavior
     parser.add_argument('--class_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
                                                 action='store', default='latest')
@@ -79,7 +80,10 @@ def main_online_users_TS_analysis():
     parser.add_argument('--use_old_data', help='use feature data from previous run', 
                                     action='store_true')                                                   
     inparams = parser.parse_args()
-
+    
+    # redefine inparams for cronjob smoothness - since we use this setting anyway    
+    inparams.generate_notebook_checkpoints = True #so outputs are saved
+    
     
     # summarize input options
     if inparams.CI:
