@@ -42,7 +42,7 @@ def main_online_users_TS_analysis():
 
     # class room detection behavior
     parser.add_argument('--class_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
-                                                action='store', default='latest')
+                                                action='store', default='latest')#'2020-9-25:2020-10-13')
     parser.add_argument('--class_activity_tol', help='classroom detection: minimal days apart to declare two use of same tool as separate activity blocks', 
                                                 action='store', default=2)
     parser.add_argument('--class_attention_span', help='classroom detection: the standard deviation of gaussian shaped attention window function', 
@@ -103,6 +103,15 @@ def main_online_users_TS_analysis():
         logging.basicConfig(level=logging.INFO, format='%(message)s')
         pass
     
+    import datetime
+    now = datetime.datetime.now()
+    delta = datetime.timedelta(days=14)
+    prev = now-delta
+    start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
+    end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
+    inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
+    
+
     # display parameters but censor password
     if 'SQL_password' in inparams:
         temp_real_password = inparams.SQL_password   
