@@ -40,6 +40,13 @@ The overall integration involves the calculation and transfer of various data pi
 Each individual task is a Jupiter notebook and can be run independently from each other. The following tasks are available:
 |Notebook name|Description|
 |-------------------------------------------|-------------------------------------------------------------|
+|2 year scorecard-backup.ipynb|backup working version of the 2 year scorecard|
+|2_year_scorecard.ipynb|2 year scorecard calculation|
+|SF_filter_clusters.ipynb|The second post-processing filter that clumps clusters together|
+|commercial_domains.py|contains functions to rapidly determine whether a domain is commercial|
+|delete_noactive_users.ipynb|Delete noactive users|
+|delete_spam_users.ipynb|removes spam users from salesforce|
+|prototype_translate_contact_citations_org.ipynb|translates contact/citations|
 |task_citations.ipynb|Update nanoHUB citations|
 |task_citations_map_contacts.ipynb|Associate citation -> authors who are existing users|
 |task_citations_map_leads.ipynb|Associate citation -> authors who are not nanoHUB users|
