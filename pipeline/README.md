@@ -13,6 +13,9 @@ From nanoHUB DB2 side,
 - Airflow for DAG cron job management
 - Papermill for Jupyter notebook parameterization and deployment
 
+### Further contains scripts that generate tables for delivera + (deprecated) hubspot CRM data
+See their respective folders.
+
 ## Key things to consider before modifying integration
 #### DB2 environment and limitation
 DB2.nanohub.org has 4 cores and 18 GB memory. It mainly serves as a database backup and light-weight analytics platform. Be mindful about CPU and memory usage. When running code in Airflow, keep the resource allocation to single core.
