@@ -54,6 +54,10 @@ Each individual task is a Jupiter notebook and can be run independently from eac
 |task_tool_usage_clusters_map_contacts.ipynb|Associate clusters -> users|
 |task_tool_usage_clusters_map_tools.ipynb|Associate clusters -> tools|
 |task_user_basic_updates.ipynb|Update user information|
+|task_user_bio_scrape.ipynb|Scrapes NH user bios|
+|task_user_contribution_update.ipynb|Updates SF contribution scores|
+|task_user_contribution_updated.ipynb|Deprecated - to be deleted; use task_user_contribution_update.ipynb|
+|task_user_org_reclass.ipynb|Reclassify users and their organization| 
 
 In addition, a utility for mass Salesforce record deletion is available:
 utility_delete_all_records.ipynb
