@@ -1,3 +1,4 @@
+import multiprocessing
 from pprint import pprint
 import pandas as pd
 import numpy as np
@@ -105,8 +106,8 @@ def intra_tool_cluster_annex(one_tool_clusters):
     merged_tool_clusters = pd.DataFrame(columns=['start', 'end', 'mean_lon', 'mean_lat', 'user_set', 'ip_set'])
     
     # time range the cluster covered
-    start_date = one_tool_clusters.scanned_date.min()
-    end_date = one_tool_clusters.scanned_date.max()
+    start_date = one_tool_clusters[1].scanned_date.min()
+    end_date = one_tool_clusters[1].scanned_date.max()
     
     date_list = [start_date + datetime.timedelta(days=x) for x in range(0, (end_date-start_date).days)]
     
@@ -115,7 +116,7 @@ def intra_tool_cluster_annex(one_tool_clusters):
         # for each date
         
         # tool, date
-        this_date_clusters = one_tool_clusters[one_tool_clusters.scanned_date == this_date]
+        this_date_clusters = one_tool_clusters[1][one_tool_clusters[1].scanned_date == this_date]
         
         # tool, date, cluster, DBSCAN uniquely identifies a cluster
         
@@ -216,14 +217,13 @@ def combine_clusters(inparams, cluster_post_sychrony):
     #
     # First, annex clusters adjacent in time within the same tool group to form intra-tool clusters
     #
-    
-    intra_tool_cluster_df = dd.from_pandas(group_clusters, npartitions=30) \
-                          .groupby('tool') \
-                          .apply(intra_tool_cluster_annex, \
-                                 meta = pd.DataFrame(columns=['start', 'end', 'mean_lon', 'mean_lat', 'user_set', 'ip_set']) \
-                                ) \
-                          .compute(scheduler=inparams.dask_scheduler)
-                          
+
+    grouped = group_clusters.groupby('tool')
+    with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+        intra_tool_cluster_df = pool.map(intra_tool_cluster_annex, [(name, group) for name, group in grouped])
+    intra_tool_cluster_df = pd.concat(intra_tool_cluster_df)
+    intra_tool_cluster_df.index.name = 'tool'
+
     #                      
     # Second, annex clusters sharing same users within a time range to form final classes
     #

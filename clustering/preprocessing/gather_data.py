@@ -149,21 +149,3 @@ def gather_data(inparams):
 	    )
 	    
     save_data_from_db_to_df(inparams, 'nanohub', sql_table)  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
