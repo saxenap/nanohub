@@ -2,6 +2,7 @@ import argparse
 from pprint import pprint, pformat
 import code
 import os
+import time
 
 from datetime import date 
 import logging
@@ -103,13 +104,13 @@ def main_online_users_TS_analysis():
         logging.basicConfig(level=logging.INFO, format='%(message)s')
         pass
     
-    import datetime
-    now = datetime.datetime.now()
-    delta = datetime.timedelta(days=14)
-    prev = now-delta
-    start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
-    end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
-    inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
+    # import datetime
+    # now = datetime.datetime.now()
+    # delta = datetime.timedelta(days=14)
+    # prev = now-delta
+    # start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
+    # end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
+    # inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
     
 
     # display parameters but censor password
@@ -124,12 +125,12 @@ def main_online_users_TS_analysis():
     #
     # Preparations
     #
-    
+
     # create scratch directory if it does not exist
     if not os.path.exists(inparams.scratch_dir):
         logging.info('Creating new scratch directory: '+inparams.scratch_dir)
         os.mkdir(inparams.scratch_dir)
-        
+
     # create output directory if it does not exist
     if not os.path.exists(inparams.output_dir):
         logging.info('Creating new output directory: '+inparams.output_dir)
@@ -156,4 +157,7 @@ def main_online_users_TS_analysis():
 
                             
 if __name__ == '__main__':
-    main_online_users_TS_analysis() 
+    start = time.time()
+    main_online_users_TS_analysis()
+    end = time.time()
+    print("Time:", end - start)
