@@ -103,14 +103,15 @@ def main_online_users_TS_analysis():
         # Production runs
         logging.basicConfig(level=logging.INFO, format='%(message)s')
         pass
-    
-    # import datetime
-    # now = datetime.datetime.now()
-    # delta = datetime.timedelta(days=14)
-    # prev = now-delta
-    # start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
-    # end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
-    # inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
+
+    if inparams.class_probe_range == 'latest':
+        import datetime
+        now = datetime.datetime.now()
+        delta = datetime.timedelta(days=14)
+        prev = now-delta
+        start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
+        end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
+        inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
     
 
     # display parameters but censor password
