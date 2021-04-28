@@ -75,11 +75,20 @@ def prepare_data(inparams):
     # drop duplicate rows
     toolrun_df.drop_duplicates(inplace=True)
 
-    # pbar = ProgressBar()
+    # pbar = ProgressBar() # this is a feature from Dask (removed)
     # pbar.register()
 
+    # partial(): gives the function get_geo_data its first parameter,
+    # it allows us to fix a certain number of arguments of a function
+    # and generate a new function，get_geo_data_partial.
     get_geo_data_partial = partial(get_geo_data, inparams)
 
+    # made a pool and use map() to give a list of single parameters
+    # pool.map() accepts only a list of single parameters as input.
+    # Multiple parameters can be passed to pool by a list of parameter-lists,
+    # or by setting some parameters constant using partial.
+    # A prime example of this is the Pool object which offers a convenient means of parallelizing the execution
+    # of a function across multiple input values, distributing the input data across processes (data parallelism).
     with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
         geo_data = pool.map(get_geo_data_partial, toolrun_df['ip'])
 
@@ -164,7 +173,8 @@ def geospatial_cluster(cluster_size_cutoff, class_distance_threshold, cluster_in
 
         # for each date spanned by cluster_input[1]
 
-        this_date_all_blocks = cluster_input[1][(cluster_input[1].start <= this_date) & (cluster_input[1].end >= this_date)]
+        this_date_all_blocks = cluster_input[1][
+            (cluster_input[1].start <= this_date) & (cluster_input[1].end >= this_date)]
 
         this_date_all_tools = this_date_all_blocks.tool.unique()
 
@@ -300,7 +310,7 @@ def intra_cluster_synchrony_pregroup(toolrun_df, this_cluster_group):
 
     # get DBSCAN intra-cluster refinement
     this_result = this_cluster_group[1].groupby(['scanned_date', 'cluster']).apply(intra_cluster_synchrony,
-                                                                                toolrun_df=toolrun_df)
+                                                                                   toolrun_df=toolrun_df)
 
     # remove all -1 non-cluster members
     if not this_result.empty:
@@ -379,20 +389,8 @@ def core_classroom_analysis(inparams):
 
     # Limit analysis range to within limits
 
-    if inparams.class_probe_range == 'latest':
-        # probes only the latest (today - 2 STD of Gaussian attention window function)
-        # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
-        data_probe_range = [datetime.date.today() - datetime.timedelta(days=inparams.class_attention_span * 2),
-                            datetime.date.today()]
-
-    else:
-        # probes given time range
-        # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
-        datetime_range_list = inparams.class_probe_range.split(':')
-        data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in datetime_range_list]
-
     logging.info(
-        'Probing range: ' + data_probe_range[0].strftime('%Y-%m-%d') + ' - ' + data_probe_range[1].strftime('%Y-%m-%d'))
+        'Probing range: ' + inparams.class_probe_range[0] + ' - ' + inparams.class_probe_range[1])
 
     #
     # Form user tool activity blocks
@@ -411,7 +409,8 @@ def core_classroom_analysis(inparams):
     ddata = pd.concat(ddata)
     ddata.index.names = ['user', None]
 
-    user_activity_blocks_df = ddata[(ddata.start >= data_probe_range[0]) & (ddata.end <= data_probe_range[1])] \
+    user_activity_blocks_df = ddata[
+        (ddata.start >= inparams.data_probe_range[0]) & (ddata.end <= inparams.data_probe_range[1])] \
         .reset_index().drop(['level_1'], axis=1)
 
     #
@@ -491,7 +490,8 @@ def core_classroom_analysis(inparams):
     grouped = cluster_output_candidate.groupby('tool')
 
     with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-        cluster_post_sychrony = pool.map(intra_cluster_synchrony_pregroup_partial, [(name, group) for name, group in grouped])
+        cluster_post_sychrony = pool.map(intra_cluster_synchrony_pregroup_partial,
+                                         [(name, group) for name, group in grouped])
 
     cluster_post_sychrony = pd.concat(cluster_post_sychrony)
 
@@ -504,7 +504,7 @@ def core_classroom_analysis(inparams):
 
         cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))
 
-        #
+    #
     # Combine clusters into super-clusters
     #
 

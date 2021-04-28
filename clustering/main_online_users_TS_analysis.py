@@ -6,6 +6,7 @@ import time
 
 from datetime import date 
 import logging
+import datetime
 
 from preprocessing.gather_data import gather_data
 from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
@@ -105,13 +106,17 @@ def main_online_users_TS_analysis():
         pass
 
     if inparams.class_probe_range == 'latest':
-        import datetime
-        now = datetime.datetime.now()
-        delta = datetime.timedelta(days=14)
-        prev = now-delta
-        start_d = '{}-{}-{}'.format(str(prev.year),str(prev.month),str(prev.day))
-        end_d = '{}-{}-{}'.format(str(now.year),str(now.month),str(now.day))
-        inparams.class_probe_range=start_d+':'+end_d #'2018-1-1:2018-5-1'
+        # probes only the latest (today - 2 STD of Gaussian attention window function)
+        # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
+        inparams.data_probe_range = [datetime.date.today() - datetime.timedelta(days=inparams.class_attention_span * 2),
+                            datetime.date.today()]
+        inparams.class_probe_range = [x.strftime("%Y-%m-%d") for x in inparams.data_probe_range]
+
+    else:
+        # probes given time range
+        # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
+        inparams.class_probe_range = inparams.class_probe_range.split(':')
+        inparams.data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in inparams.class_probe_range]
     
 
     # display parameters but censor password

@@ -145,7 +145,7 @@ def geospatial_cluster(cluster_input, cluster_size_cutoff, class_distance_thresh
     to form clusters with certrain intra-cluster distance limit.
     """
     date_earliest = cluster_input.start.min()
-    date_latest =  cluster_input.end.max()
+    date_latest = cluster_input.end.max()
     #logging.info('Date range: '+str(date_earliest)+' - '+str(date_latest))
 
     cluster_output = list()
@@ -376,20 +376,8 @@ def core_classroom_analysis(inparams):
     
     (toolrun_df, toolstart_df, jos_users, jos_tool_version) = prepare_data(inparams)
 
-    # Limit analysis range to within limits
-    
-    if inparams.class_probe_range == 'latest':
-        # probes only the latest (today - 2 STD of Gaussian attention window function)
-        # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
-        data_probe_range = [datetime.date.today()-datetime.timedelta(days=inparams.class_attention_span*2), datetime.date.today()]
         
-    else:
-        # probes given time range
-        # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
-        datetime_range_list = inparams.class_probe_range.split(':')
-        data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in datetime_range_list] 
-        
-    logging.info('Probing range: '+data_probe_range[0].strftime('%Y-%m-%d')+' - '+data_probe_range[1].strftime('%Y-%m-%d')) 
+    logging.info('Probing range: '+inparams.class_probe_range[0]+' - '+inparams.class_probe_range[1])
        
     #
     # Form user tool activity blocks
@@ -398,8 +386,7 @@ def core_classroom_analysis(inparams):
     ddata = dd.from_pandas(toolrun_df, npartitions=200) \
               .groupby('user').apply(form_activity_blocks, activity_tol = activity_tol) \
               .compute(scheduler=inparams.dask_scheduler)
-    user_activity_blocks_df = ddata[(ddata.start>=data_probe_range[0]) &(ddata.end<=data_probe_range[1])] \
-                                    .reset_index().drop(['level_1'], axis=1)
+    user_activity_blocks_df = ddata.drop(['level_1'], axis=1)
     
     #
     # Geospatial clustering
