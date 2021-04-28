@@ -15,32 +15,38 @@ import sqlalchemy as db
 from sqlalchemy import *
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.ext.declarative import declarative_base
+
 Base = declarative_base()
 from sqlalchemy.orm import sessionmaker
+import time
 
 
-
-def save_data_from_db_to_df(inparams, db_name, sql_table):
-
+def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
     # transfer table data from SQL DB to dataframe
     if inparams.CI:
         # CI/Testing: find the correct Feather and move it to staging directory
-        expected_feather_filepath = os.path.join(inparams.CI_dir, 'data', 'cleaned_'+sql_table.name+'.feather')
-        
+        expected_feather_filepath = os.path.join(inparams.CI_dir, 'data', 'cleaned_' + sql_table.name + '.feather')
+
         logging.info('Loading data from CI samples: ' + expected_feather_filepath)
-        
+
         df = pd.read_feather(expected_feather_filepath)
-    
+
     else:
         # Production: connect with live DB
-        
-        db_engine = create_engine('mysql+pymysql://'+inparams.SQL_username+':'+inparams.SQL_password \
-                                             +'@'+inparams.SQL_addr+':'+inparams.SQL_port+'/'+db_name)  
+        start_time = time.time()
+        db_engine = create_engine('mysql+pymysql://' + inparams.SQL_username + ':' + inparams.SQL_password \
+                                  + '@' + inparams.SQL_addr + ':' + inparams.SQL_port + '/' + db_name)
         if not database_exists(db_engine.url):
-            logging.error('Database '+str(db_engine.url)+' does not exist! Please create it first.')
+            logging.error('Database ' + str(db_engine.url) + ' does not exist! Please create it first.')
+
+        sql_select = db.select([sql_table])
+        if date_range:
+            sql_select = sql_select.where(and_(
+                sql_table.c.datetime >= (inparams.class_probe_range[0] + ' 00:00:00'), sql_table.c.datetime <= (
+                            inparams.class_probe_range[1] + ' 23:59:59')))
 
         # load table into DF
-        df = pd.read_sql(db.select([sql_table]), db_engine)
+        df = pd.read_sql(sql_select, db_engine)
 
         # remove uncastable rows from df, so we can save them as Feathers
         # for example, datetime in form of "0000-00-00 00:00:00" cannot be recognized as datetime
@@ -50,34 +56,31 @@ def save_data_from_db_to_df(inparams, db_name, sql_table):
 
             this_column_python_type = this_column.type.python_type
 
-            # remove all rows should be of type datetime, but recorded as str
-            if this_column_python_type == datetime.datetime:
-                df = df.drop(df[df[this_column.name].apply(lambda x: type(x)==str)].index)
+        # remove all rows should be of type datetime, but recorded as str
+        if this_column_python_type == datetime.datetime:
+            df = df.drop(df[df[this_column.name].apply(lambda x: type(x) == str)].index)
+        end_time = time.time()
+        print("DB time:", end_time - start_time)
 
+        # save DF using Feather
+        df.reset_index(drop=True).to_feather(os.path.join(inparams.scratch_dir, sql_table.name + '.feather'))
 
-    # save DF using Feather
-    df.reset_index(drop=True).to_feather(os.path.join(inparams.scratch_dir, sql_table.name+'.feather'))
-
-    # display a small part of DF
-    logging.info(df)
+        # display a small part of DF
+        logging.info(df)
 
     return
 
 
-
-
 def gather_data(inparams):
-
     ### Save SQL tables into Feather
 
     # TABLE
     sql_table = db.Table('jos_tool_version', db.MetaData(),
-	    db.Column('toolname', db.String(120)),
-	    db.Column('instance', db.String(120)),
-	    )
-	    
-    save_data_from_db_to_df(inparams, 'nanohub', sql_table)  
+                         db.Column('toolname', db.String(120)),
+                         db.Column('instance', db.String(120)),
+                         )
 
+    save_data_from_db_to_df(inparams, 'nanohub', sql_table)
 
     # TABLE
     '''
@@ -108,15 +111,14 @@ def gather_data(inparams):
     '''
 
     sql_table = db.Table('toolstart', db.MetaData(),
-	    db.Column('datetime', db.DateTime),
-	    db.Column('user', db.String(120)),
-	    db.Column('tool', db.String(120)),
-	    db.Column('ip', db.String(120)),
-	    db.Column('protocol', db.String(120))
-	    )
-	    
-    save_data_from_db_to_df(inparams, 'nanohub_metrics', sql_table)  
+                         db.Column('datetime', db.DateTime),
+                         db.Column('user', db.String(120)),
+                         db.Column('tool', db.String(120)),
+                         db.Column('ip', db.String(120)),
+                         db.Column('protocol', db.String(120))
+                         )
 
+    save_data_from_db_to_df(inparams, 'nanohub_metrics', sql_table, date_range=True)
 
     # TABLE
     '''
@@ -141,11 +143,11 @@ def gather_data(inparams):
     '''
 
     sql_table = db.Table('jos_users', db.MetaData(),
-	    db.Column('id', db.Integer),
-	    db.Column('name', db.String(120)),
-	    db.Column('username', db.String(120)),
-	    db.Column('email', db.String(120)),
+                         db.Column('id', db.Integer),
+                         db.Column('name', db.String(120)),
+                         db.Column('username', db.String(120)),
+                         db.Column('email', db.String(120)),
 
-	    )
-	    
-    save_data_from_db_to_df(inparams, 'nanohub', sql_table)  
+                         )
+
+    save_data_from_db_to_df(inparams, 'nanohub', sql_table)
