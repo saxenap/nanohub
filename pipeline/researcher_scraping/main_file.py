@@ -76,7 +76,6 @@ sf_login_params = {
     "password":"sf2021shitOPmlIiFMLnrudgC6oSX0WV1T",   
 }
 
-
 db_1 = DB2SalesforceAPI(sf_login_params)
 
 query = 'Select ID, firstname, lastname, Email, nanoHUB_user_ID__c, \
@@ -165,9 +164,18 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     # 5. populate dataframe with the results
     ##
     
-    pg = ProxyGenerator()
-    pg.FreeProxies()
-    scholarly.use_proxy(pg)
+    proxy_flag = False 
+    
+    while proxy_flag == False:
+        time.sleep(5)
+        try:
+            pg = ProxyGenerator()
+            pg.FreeProxies()
+            scholarly.use_proxy(pg)
+            proxy_flag = True
+        except:
+            proxy_flag = False
+    
     
     def names_calc(in_df,dump_mid=False,exact=False):
         fullnames = []
@@ -203,6 +211,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
         time.sleep(np.random.randint(1,3)) # rng seconds of sleep
         if len(list_auth_gen) != 0:
             # iteratively perform name based levenshtein capping
+            counter = 0
             for test_case in list_auth_gen:
                 if levenshtein_distance(test_case['name'],val) <= 5: #less than or equal to 5 edits
                     if test_case['email_domain'] == email_domains[ind]:
@@ -219,15 +228,21 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                         gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
                         gs_ids.append(gs_url)
                         break
-            gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
-            gs_ids.append(gs_url)
+                
+                counter += 1
+                if counter >= 5:
+                    try:
+                        gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+                        gs_ids.append(gs_url)
+                    except:
+                        print('move on - no google scholar result')
         else:
             gs_ids.append('')
     
     temp_sample['Google_Scholar_ID_sf__c'] = gs_ids
     display(temp_sample.head(5))
 
-    time.wait(np.random.randint(2,10))
+    time.sleep(np.random.randint(2,10))
 
     # %% ORCID search
     
@@ -262,7 +277,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
                 
     temp_sample['ORCID_sf__c'] = ORCID_urls
-    time.wait(np.random.randint(2,10))
+    time.sleep(np.random.randint(2,10))
     
     # %% Research ID_sf
     ## Do the same thing as ORCID ID search
@@ -292,7 +307,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
                 
     temp_sample['Research_ID_sf__c'] = wos_researchers
-    time.wait(np.random.randint(2,10))
+    time.sleep(np.random.randint(2,10))
         
     # %% SCOPUS - can't find results, blanked out for now
     
@@ -323,7 +338,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
     
     temp_sample['ResearchGate_ID_sf__c'] = research_gate_ids
-    time.wait(np.random.randint(2,10))
+    time.sleep(np.random.randint(2,10))
     
     
     # %% type adjustment for NH user ids and then upload to SF
@@ -338,7 +353,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     
     db_temp.send_data(temp_sample)
     
-    time.wait(np.random.randint(2,10))
+    time.sleep(np.random.randint(2,10))
     db_temp.check_bulk_status()
 
 
@@ -361,7 +376,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     logging.debug('research gate ID: ' + ';'.join(temp_sample['ResearchGate_ID_sf__c']))    
     
     # wait for next batch instance
-    time.wait(np.random.randint(30,121))
+    time.sleep(np.random.randint(30,121))
     
     
 
