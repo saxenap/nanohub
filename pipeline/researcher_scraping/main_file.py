@@ -240,6 +240,11 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
         else:
             gs_ids.append('')
     
+    print(gs_ids)
+    print(len(gs_ids))
+    
+    print(fullnames)
+    print(len(fullnames))
     temp_sample['Google_Scholar_ID_sf__c'] = gs_ids
     display(temp_sample.head(5))
 
