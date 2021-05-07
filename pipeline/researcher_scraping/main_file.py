@@ -29,6 +29,18 @@ from googlesearch import search
 import re
 
 from pprint import pprint
+
+import logging
+import os
+
+cwd = os.getcwd()
+
+# %% logging dir make
+try:
+    os.mkdir(cwd+'/logging')
+except:
+    print("logging dir exists, you're good")
+
 # %% description
 
 ###
@@ -136,6 +148,7 @@ def batch(iterable, n=1):
 
 # split indexes into batches based on bs
 counter =  0
+batch_no = 0
 for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     instance = list(instance)
     temp_sample = c_sample2.iloc[instance,:]
@@ -206,6 +219,8 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                         gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
                         gs_ids.append(gs_url)
                         break
+            gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+            gs_ids.append(gs_url)
         else:
             gs_ids.append('')
     
@@ -327,6 +342,24 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     db_temp.check_bulk_status()
 
 
+    logging.basicConfig(filename=cwd+'/logging/batch_'+str(batch_no)+'.log', \
+        encoding='utf-8', level=logging.DEBUG)
+    logging.debug('Logging file header: \n')
+    
+    logging.debug('the people: '+';'.join(fullnames))
+
+    # gs logging
+    logging.debug('google scholar: ' + ';'.join(temp_sample['Google_Scholar_ID_sf__c']))
+
+    # orcid logging
+    logging.debug('ORCID: '+ ';'.join(temp_sample['ORCID_sf__c']))
+    
+    # research ID logging
+    logging.debug('research ID: ' + ';'.join(temp_sample['Research_ID_sf__c']))
+    
+    # research gate logging
+    logging.debug('research gate ID: ' + ';'.join(temp_sample['ResearchGate_ID_sf__c']))    
+    
     # wait for next batch instance
     time.wait(np.random.randint(30,121))
     
