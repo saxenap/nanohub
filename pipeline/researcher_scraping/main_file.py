@@ -205,6 +205,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     
     # search iteratively and store
     for ind,val in enumerate(fullnames):
+        print(gs_ids)
         author_gen = scholarly.search_author(val)
         list_auth_gen = list(author_gen)
         
