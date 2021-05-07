@@ -236,6 +236,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                         gs_ids.append(gs_url)
                     except:
                         print('move on - no google scholar result')
+                    break
         else:
             gs_ids.append('')
     
