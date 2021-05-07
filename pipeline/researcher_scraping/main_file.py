@@ -231,9 +231,9 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                         break
                 
                 counter += 1
-                if counter >= 5:
+                if counter == len(list_auth_gen):
                     try:
-                        gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+                        gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(list_auth_gen[0]['scholar_id'])
                         gs_ids.append(gs_url)
                     except:
                         print('move on - no google scholar result')
