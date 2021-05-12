@@ -352,45 +352,55 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     temp_sample['nanoHUB_user_ID__c'] = \
         temp_sample['nanoHUB_user_ID__c'].apply(lambda x: int(x))
     
+    # external_id = 'nanoHUB_user_ID__c'
+    # object_id = 'Contact'
     
-    external_id = 'nanoHUB_user_ID__c'
-    object_id = 'Contact'
+    # db_temp = DB2SalesforceAPI(sf_login_params)
     
-    db_temp = DB2SalesforceAPI(sf_login_params)
-    
-    db_temp.external_id = external_id
-    db_temp.object_id = object_id
+    # db_temp.external_id = external_id
+    # db_temp.object_id = object_id
     
     temp_sample = temp_sample.drop(columns=\
         ['FirstName','LastName','Domain__c','org_name','Active_duration__c','Email']) #
     
-    db_temp.send_data(temp_sample)
+    # db_temp.send_data(temp_sample)
     
-    time.sleep(np.random.randint(2,10))
-    db_temp.check_bulk_status()
+    # time.sleep(np.random.randint(2,10))
+    # db_temp.check_bulk_status()
 
     #db_temp.check_bulk_failed_results()
 
-    logging.basicConfig(filename=cwd+'/logging/batch_'+str(batch_no)+'.log', \
-        encoding='utf-8', level=logging.DEBUG)
-    logging.debug('Logging file header: \n')
+    # logging.basicConfig(filename=cwd+'/logging/batch_'+str(batch_no)+'.log', \
+    #     encoding='utf-8', level=logging.DEBUG)
+    # logging.debug('Logging file header: \n')
     
-    logging.debug('the people: '+';'.join(fullnames))
+    # logging.debug('the people: '+';'.join(fullnames))
 
-    # gs logging
-    logging.debug('google scholar: ' + ';'.join(temp_sample['Google_Scholar_ID_sf__c']))
+    # # gs logging
+    # logging.debug('google scholar: ' + ';'.join(temp_sample['Google_Scholar_ID_sf__c']))
 
-    # orcid logging
-    logging.debug('ORCID: '+ ';'.join(temp_sample['ORCID_sf__c']))
+    # # orcid logging
+    # logging.debug('ORCID: '+ ';'.join(temp_sample['ORCID_sf__c']))
     
-    # research ID logging
-    logging.debug('research ID: ' + ';'.join(temp_sample['Research_ID_sf__c']))
+    # # research ID logging
+    # logging.debug('research ID: ' + ';'.join(temp_sample['Research_ID_sf__c']))
     
-    # research gate logging
-    logging.debug('research gate ID: ' + ';'.join(temp_sample['ResearchGate_ID_sf__c']))    
+    # # research gate logging
+    # logging.debug('research gate ID: ' + ';'.join(temp_sample['ResearchGate_ID_sf__c']))    
+    
+    
+    # save this current batch results
+    try:
+        os.mkdir(cwd+'/scrape_results')
+    except:
+        print('directory exists - ignore this message')
+    
+    temp_sample.to_csv(cwd+'/scrape_results/batch_result_'+str(batch_no))
+    batch_no += 1
     
     # wait for next batch instance
     time.sleep(np.random.randint(30,121))
+
 
 
 
