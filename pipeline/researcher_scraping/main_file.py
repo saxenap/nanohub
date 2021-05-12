@@ -209,7 +209,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
         author_gen = scholarly.search_author(val)
         list_auth_gen = list(author_gen)
         
-        time.sleep(np.random.randint(1,3)) # rng seconds of sleep
+        time.sleep(np.random.randint(5,15)) # rng seconds of sleep
         if len(list_auth_gen) != 0:
             # iteratively perform name based levenshtein capping
             counter = 0
@@ -261,7 +261,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     ##
     
     ORCID_urls = []
-        
+    
     # populate ORCID urls
     for i in fullnames:
         temp_name = i.split(' ')
@@ -358,11 +358,18 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     
     db_temp = DB2SalesforceAPI(sf_login_params)
     
+    db_temp.external_id = external_id
+    db_temp.object_id = object_id
+    
+    temp_sample = temp_sample.drop(columns=\
+        ['FirstName','LastName','Domain__c','org_name','Active_duration__c','Email']) #
+    
     db_temp.send_data(temp_sample)
     
     time.sleep(np.random.randint(2,10))
     db_temp.check_bulk_status()
 
+    #db_temp.check_bulk_failed_results()
 
     logging.basicConfig(filename=cwd+'/logging/batch_'+str(batch_no)+'.log', \
         encoding='utf-8', level=logging.DEBUG)
@@ -384,9 +391,6 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     
     # wait for next batch instance
     time.sleep(np.random.randint(30,121))
-    
-    
-
 
 
 
