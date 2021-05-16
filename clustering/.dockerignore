@@ -1,1 +1,22 @@
-.git/
+**/*~
+**/*.log
+**/.DS_Store
+**/Thumbs.db
+
+## Ignore everything
+#**
+#
+## ... except for dependencies and source
+#!Pipfile
+#!Pipfile.lock
+#!requirements.txt
+#!site-packages/
+#
+#!*.py
+#
+#!CI/
+#!core_classroom_detection/
+#!core_quick_cluster_detection/
+#!preprocessing/
+#!temp/
+
