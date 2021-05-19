@@ -5,8 +5,11 @@ name = "pypi"
 
 [dev-packages]
 pytest = "*"
+sshtunnel = "*"
 
 [packages]
-DateTime = "*"
 pandas = "*"
 numpy = "*"
+pymysql = "*"
+pyarrow = "*"
+python-dotenv = "*"
