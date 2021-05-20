@@ -1,8 +1,9 @@
 from nanoHUB.dataaccess.sql import *
-from nanoHUB.dataaccess.common import *
+from nanoHUB.dataaccess.cache import *
+from nanoHUB.dataaccess.transformers import *
+from nanoHUB.dataaccess import logger
 import os
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
@@ -18,10 +19,18 @@ connection = CachedConnection(TunneledConnection(
     db_password = os.getenv('db_password')
 ))
 
-repository = SqlDataRepository(SqlDataFrameMapper(connection), ColumnInfoMapper(connection))
-
-params = QueryParams(
-    db_name='nanohub', table_name='jos_tool_version', col_names = ['*'], index_key='id'
+etl = ETL(
+    SqlDataFrameMapper(connection),
+    DataTransformers([DateTimeConvertor()]),
+    CachedDataLoader(ParquetFiles(), '.cache', logger())
 )
-for x in repository.read(params):
-    print(x.get_col_info())
+
+etl(QueryParams(
+    db_name='nanohub', table_name='jos_users', col_names = ['id', 'name', 'username', 'email'], index_key='id'
+))
+etl(QueryParams(
+    db_name='nanohub', table_name='jos_tool_version', col_names = ['*'], index_key='id'
+))
+etl(QueryParams(
+    db_name='nanohub_metrics', table_name='toolstart', col_names = ['*'], index_key='id'
+))

@@ -1,9 +1,11 @@
 import pymysql
 from dataclasses import dataclass
 from sshtunnel import SSHTunnelForwarder
-import pandas as pd
+import pandas 
 from pandas.core.frame import DataFrame
 from nanoHUB.dataaccess.common import QueryParams, DataframeObject
+from nanoHUB.dataaccess.cache import CachedDataLoader
+from nanoHUB.dataaccess.transformers import ITransformer
 
 '''
 Connections 
@@ -84,62 +86,52 @@ Sql to  DataFrame Mapping
 
 
 class SqlDataFrameMapper:
-    def __init__(self, connection: IConnection):
+    def __init__(self, connection: IConnection, chunk_size: int = 1000000):
         self.connection = connection
-
-    def map(self, params: QueryParams, chunk_size: int, offset: int) -> DataFrame:
-        connection = self.connection.get_connection()
-        sql = 'SELECT ' + ','.join(
-            params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' ORDER BY ' + params.index_key + ' LIMIT %d OFFSET %d'
-        sql = sql % (chunk_size, offset)
-        df = pd.read_sql_query(sql, connection, params.index_key)
-        return df
-
-
-'''
-Sql Table Information
-'''
-
-
-class ColumnInfoMapper:
-    def __init__(self, connection: IConnection):
-        self.connection = connection
+        self.chunk_size = chunk_size
 
     def map(self, params: QueryParams) -> DataFrame:
-        sql = 'SELECT COLUMN_NAME , DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = "' + params.db_name + '" AND TABLE_NAME = "' + params.table_name + '"'
-        return pd.read_sql_query(sql, self.connection.get_connection())
-
-
-class SqlDataRepository:
-    def __init__(self, data_mapper: SqlDataFrameMapper, col_info_mapper: ColumnInfoMapper):
-        self.data_mapper = data_mapper
-        self.col_info_mapper = col_info_mapper
-
-    def read(self, params: QueryParams, chunk_size: int = 1000000, offset: int = 0):
-        col_info_df = self.col_info_mapper.map(params)
-
+        connection = self.connection.get_connection()
+        offset = 0
         while True:
-            df = self.data_mapper.map(params, chunk_size, offset)
-            yield DataframeObject(df, col_info_df)
+            sql = 'SELECT ' + ','.join(
+                params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' ORDER BY ' + params.index_key + ' LIMIT %d OFFSET %d'
+            sql = sql % (self.chunk_size, offset)
+            df = pandas.read_sql_query(sql, connection, params.index_key)
+            yield df
 
-            offset += chunk_size
-            if len(df) < chunk_size:
+            offset += self.chunk_size
+            if len(df) < self.chunk_size:
                 break
 
+    def get_table_info(self, params: QueryParams) -> DataFrame:
+        sql = 'SELECT COLUMN_NAME , DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = "' + params.db_name + '" AND TABLE_NAME = "' + params.table_name + '"'
 
-class ITransformer:
-    def transform(self, df_object: DataframeObject) -> DataframeObject:
-        raise NotImplemented
+        if params.col_names[0] != '*':
+            sql = sql + ' AND (COLUMN_NAME = "' + '" OR COLUMN_NAME = "'.join(params.col_names) + '")'
+
+        return pandas.read_sql_query(sql, self.connection.get_connection())
+
+'''
+ETL
+'''
+
+class ETL:
+    def __init__(
+        self, data_mapper: SqlDataFrameMapper, transformer: ITransformer, loader: CachedDataLoader
+    ):
+        self.data_mapper = data_mapper
+        self.transformer = transformer
+        self.loader = loader
+
+    def __call__(self, params: QueryParams) -> DataFrame:
+
+        if not self.loader.exists(params):
+            table_info = self.data_mapper.get_table_info(params)
+            for partial_df in self.data_mapper.map(params):
+                partial_df = self.transformer.transform(partial_df, table_info)
+                self.loader.save(partial_df, params)
+
+        return self.loader.get(params)
 
 
-class DateTimeConvertor(ITransformer):
-    def transform(self, df_object: DataframeObject) -> DataframeObject:
-        data_df = df_object.get_data()
-
-        col_types_df = df_object.get_col_info()
-        df = col_types_df.loc[col_types_df['DATA_TYPE'] == 'datetime']
-
-        for index, row in df.iterrows():
-            data_df[row['COLUMN_NAME']] = pandas.to_datetime(data_df[row['COLUMN_NAME']],errors='coerce')
-
-        return DataframeObject(data_df, col_types_df)

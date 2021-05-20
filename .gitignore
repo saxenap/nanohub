@@ -1,2 +1,9 @@
+#IDE setup folders/files
 *.iml
 .idea/
+
+#App folders/files
+
+
+**/*.env
+

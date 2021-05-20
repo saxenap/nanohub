@@ -1,0 +1,34 @@
+#IDE setup folders/files etc
+**/*~
+**/.DS_Store
+**/Thumbs.db
+*.iml
+.idea/
+
+#General
+README.md
+**/git*
+
+#App folders/files
+**/*.log
+**/*.cache
+**/*.env
+
+
+## Ignore everything
+#**
+#
+## ... except for dependencies and source
+#!Pipfile
+#!Pipfile.lock
+#!requirements.txt
+#!site-packages/
+#
+#!*.py
+#
+#!CI/
+#!core_classroom_detection/
+#!core_quick_cluster_detection/
+#!preprocessing/
+#!temp/
+
