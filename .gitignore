@@ -4,4 +4,4 @@
 
 #App folders/files
 **/*.env
-**/*.parquet
+clustering/**/*.parquet

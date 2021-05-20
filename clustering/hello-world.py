@@ -217,9 +217,7 @@ df = column_types.loc[column_types['DATA_TYPE'] == 'datetime']
 for index, row in df.iterrows():
     values[row['COLUMN_NAME']] = pd.to_datetime(values[row['COLUMN_NAME']],errors='coerce')
 
-values.to_parquet('test.parquet')
 
-df = pd.read_parquet('test.parquet')
 print(df['unpublished'])
 
 params = QueryParams(
