@@ -1,6 +1,7 @@
 #IDE setup folders/files
 *.iml
 .idea/
+.ipynb_checkpoints
 
 #App folders/files
 **/.env

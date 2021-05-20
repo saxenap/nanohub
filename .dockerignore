@@ -4,6 +4,7 @@
 **/Thumbs.db
 *.iml
 .idea/
+.ipynb_checkpoints
 
 #General
 README.md
