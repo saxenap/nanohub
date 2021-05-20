@@ -4,13 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-pytest = "*"
-sshtunnel = "*"
-colorama = "*"
+pytest = "6.2"
 
 [packages]
-pandas = "*"
-numpy = "*"
-pymysql = "*"
-pyarrow = "*"
-python-dotenv = "*"
+pandas = "1.2"
+numpy = "1.20"
+pymysql = "1.0"
+pyarrow = "4.0"
+python-dotenv = "0.17"
+#Pipeline
+sqlalchemy = "1.4"
+jupyter = "1.0"
+papermill = "2.3"
+sshtunnel = "0.4"
