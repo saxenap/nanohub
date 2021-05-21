@@ -23,7 +23,7 @@ connection = CachedConnection(TunneledConnection(
 
 etl = ETL(
     SqlDataFrameMapper(connection),
-    DataTransformers([NullTransformer()]),
+    DataTransformers([DateTimeConvertor()]),
     CachedDataLoader(ParquetFiles(), '.cache', logger())
 )
 
