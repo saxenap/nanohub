@@ -3,8 +3,7 @@ name: Docker
 on:
   push:
     paths:
-      - ./nanohub/pipeline/**
-      - ./.github/workflows/pipel*
+      - 'nanohub/pipeline/**'
     # Publish `production` as Docker `latest` image.
     branches:
       - production
