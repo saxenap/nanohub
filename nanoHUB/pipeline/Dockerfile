@@ -7,4 +7,5 @@ RUN    pip install --upgrade pip --upgrade setuptools --upgrade wheel \
 
 #CMD jupyter-lab notebook --ip 0.0.0.0 --port 8888 --allow-root
 
-COPY . /home/jovyan/work
+
+COPY ./ /home/jovyan/work/
