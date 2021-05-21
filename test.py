@@ -19,16 +19,17 @@ connection = CachedConnection(TunneledConnection(
     db_password = os.getenv('db_password')
 ))
 
+# DateTimeConvertor()
+
 etl = ETL(
     SqlDataFrameMapper(connection),
-    DataTransformers([DateTimeConvertor()]),
+    DataTransformers([NullTransformer()]),
     CachedDataLoader(ParquetFiles(), '.cache', logger())
 )
 
 users = etl(QueryParams(
     db_name='nanohub', table_name='jos_users', col_names = ['id', 'name', 'username', 'email'], index_key='id'
 ))
-
 tool_versions = etl(QueryParams(
     db_name='nanohub', table_name='jos_tool_version', col_names = ['*'], index_key='id'
 ))

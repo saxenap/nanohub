@@ -14,6 +14,7 @@ RUN set -xe \
     && apt-get install -y python3-pip \
     && pip install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip install pipenv
+
 COPY Pipfile* .
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy --ignore-pipfile
 COPY . /app/
