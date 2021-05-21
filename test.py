@@ -25,12 +25,14 @@ etl = ETL(
     CachedDataLoader(ParquetFiles(), '.cache', logger())
 )
 
-etl(QueryParams(
+users = etl(QueryParams(
     db_name='nanohub', table_name='jos_users', col_names = ['id', 'name', 'username', 'email'], index_key='id'
 ))
-etl(QueryParams(
+
+tool_versions = etl(QueryParams(
     db_name='nanohub', table_name='jos_tool_version', col_names = ['*'], index_key='id'
 ))
-etl(QueryParams(
+toolstarts = etl(QueryParams(
     db_name='nanohub_metrics', table_name='toolstart', col_names = ['*'], index_key='id'
 ))
+print(toolstarts)

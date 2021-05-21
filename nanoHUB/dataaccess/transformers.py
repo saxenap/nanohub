@@ -1,4 +1,3 @@
-from nanoHUB.dataaccess.common import DataframeObject
 import pandas
 from pandas.core.frame import DataFrame
 
@@ -18,6 +17,11 @@ class DataTransformers(ITransformer):
         for transformer in self.transformers:
             data_df = transformer.transform(data_df, col_info_df)
 
+        return data_df
+
+
+class NullTransformer(ITransformer):
+    def transform(self, data_df: DataFrame, col_info_df: DataFrame) -> DataFrame:
         return data_df
 
 

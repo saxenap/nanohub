@@ -4,7 +4,6 @@ from nanoHUB.dataaccess.common import QueryParams
 from pandas.core.frame import DataFrame
 from pathlib import Path
 import pandas
-import glob
 
 
 class IFiles:
@@ -21,7 +20,9 @@ class IFiles:
 class CsvFiles(IFiles):
 
     def exists(self, dirpath: Path) -> bool:
-        return len(glob.glob("*.csv")) != 0
+        for file in dirpath.glob('*.csv'):
+            return True
+        return False
 
     def read_all(self, dirpath: Path) -> DataFrame:
         return pandas.concat(
@@ -33,10 +34,13 @@ class CsvFiles(IFiles):
         outfile = outfile + '.csv'
         df.to_csv(outdir / outfile)
 
+
 class ParquetFiles(IFiles):
 
     def exists(self, dirpath: Path) -> bool:
-        return len(glob.glob("*.parquet")) != 0
+        for file in dirpath.glob('*.parquet'):
+            return True
+        return False
 
     def read_all(self, dirpath: Path) -> DataFrame:
         return pandas.concat(
@@ -60,17 +64,18 @@ class CachedDataLoader:
         outdir = Path(self.path + '/' + params.db_name + '/' + params.table_name + '/')
         if outdir.is_dir():
             has_next = next(outdir.iterdir(), None)
-            if has_next is None:
-                return False
-            return self.files.exists(outdir)
+            if has_next is not None:
+                return self.files.exists(outdir)
+        self.logger.debug('Data for %s.%s not found in cache', (params.db_name, params.table_name))
+        return False
 
     def get(self, params: QueryParams) -> DataFrame:
         datadir = Path(self.path + '/' + params.db_name + '/' + params.table_name + '/')
 
+        self.logger.debug('Reading data for %s.%s from %s' % (params.db_name, params.table_name, datadir))
         df = self.files.read_all(datadir)
         df = df.sort_values(params.index_key)
         return df
-
 
     def save(self, df: DataFrame, params: QueryParams):
 

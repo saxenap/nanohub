@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sshtunnel import SSHTunnelForwarder
 import pandas 
 from pandas.core.frame import DataFrame
-from nanoHUB.dataaccess.common import QueryParams, DataframeObject
+from nanoHUB.dataaccess.common import QueryParams
 from nanoHUB.dataaccess.cache import CachedDataLoader
 from nanoHUB.dataaccess.transformers import ITransformer
 

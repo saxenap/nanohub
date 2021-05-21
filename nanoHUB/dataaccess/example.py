@@ -1,7 +1,7 @@
-from nanoHUB.dataaccess.sql import *
-from nanoHUB.dataaccess.cache import *
-from nanoHUB.dataaccess.transformers import *
-from nanoHUB.dataaccess import logger
+from sql import *
+from cache import *
+from transformers import *
+from . import logger
 import os
 from dotenv import load_dotenv
 
