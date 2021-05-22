@@ -2,9 +2,11 @@ name: Docker
 
 on:
   push:
+    paths:
+      - 'nanoHUB/pipeline/**'
     # Publish `production` as Docker `latest` image.
     branches:
-      - production
+      - dev-githubaction-pipeline
 
 #    # Publish `v1.2.3` tags as releases.
 #    tags:
