@@ -19,6 +19,9 @@ env:
   # TODO: Change variable to your image's name.
   IMAGE_NAME: pipeline
 
+defaults:
+  run:
+    working-directory: nanoHUB/pipeline
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
@@ -29,7 +32,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run tests
-        working-directory: ./nanoHUB/pipeline
         run: |
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
@@ -55,15 +57,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        working-directory: ./nanoHUB/pipeline
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Log into registry
-        working-directory: ./nanoHUB/pipeline
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Push image
-        working-directory: ./nanoHUB/pipeline
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
 
