@@ -6,7 +6,7 @@ on:
       - 'nanoHUB/pipeline/**'
     # Publish `production` as Docker `latest` image.
     branches:
-      - dev-githubaction-pipeline
+      - production
 
 #    # Publish `v1.2.3` tags as releases.
 #    tags:
