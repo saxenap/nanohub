@@ -1,0 +1,83 @@
+version: "3.3"
+services:
+  tasks:
+    container_name: tasks_container
+    build:
+      context: .
+      dockerfile: docker/tasks/Dockerfile
+      target: python-image
+    restart: always
+    volumes:
+      - ".:/app/"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "staging"
+    links:
+      - logstash:logstash
+    depends_on:
+      - logstash
+    command: tail -f /dev/null
+
+  cronjob_runner:
+    container_name: cronjob_runner_container
+    build:
+      context: .
+      dockerfile: ./docker/cronjobs/Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://127.0.0.1:12201
+        tag: "staging"
+    links:
+      - logstash:logstash
+    depends_on:
+      - logstash
+    environment:
+      - CRONTAB_FILEPATH=$crontab_path
+      - ENVVARS_FILEPATH=$envvars_file_path
+      - TZ=America/New_York
+
+  logstash: # logstash exposes a syslog endpoing to write logs to
+    image: logstash:7.12.0
+    container_name: logstash-container
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+    ports:
+      - "12201:12201/udp"
+    volumes:
+      - ./config/logstash.conf:/etc/logstash.conf
+    command: bash -c "
+        rm -f /usr/share/logstash/pipeline/logstash.conf &&
+        rm -f /usr/share/logstash/config/logstash.yml &&
+        rm -f /usr/share/logstash/config/logstash-sample.conf &&
+        bin/logstash-plugin install logstash-output-newrelic &&
+        bin/logstash-plugin install logstash-input-gelf &&
+        bin/logstash-plugin install logstash-input-syslog &&
+        bin/logstash-plugin install logstash-input-udp &&
+        bin/logstash-plugin install logstash-input-tcp &&
+        bin/logstash-plugin install logstash-codec-plain &&
+        bin/logstash-plugin install logstash-codec-json &&
+        bin/logstash-plugin install logstash-codec-json_lines &&
+        bin/logstash-plugin install logstash-codec-multiline &&
+        bin/logstash-plugin install logstash-codec-line &&
+        logstash -f /etc/logstash.conf
+      "
+
+#  logspout: # route container logs automatically to logstash
+#    image: bekt/logspout-logstash
+#    container_name: logspout-container
+#    restart: unless-stopped
+#    environment:
+#      ROUTE_URIS: udp://127.0.0.1:12201
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    links:
+#      - logstash
+#    depends_on:
+#      - logstash
