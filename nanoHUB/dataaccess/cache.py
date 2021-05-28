@@ -66,7 +66,7 @@ class CachedDataLoader:
             has_next = next(outdir.iterdir(), None)
             if has_next is not None:
                 return self.files.exists(outdir)
-        self.logger.debug('Data for %s.%s not found in cache', (params.db_name, params.table_name))
+        self.logger.debug('Data for %s.%s not found in cache' % (params.db_name, params.table_name))
         return False
 
     def get(self, params: QueryParams) -> DataFrame:

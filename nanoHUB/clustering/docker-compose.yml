@@ -1,25 +1,51 @@
 version: '3.3'
 services:
-  jupyter:
+  clustering:
+    container_name: clustering
     build: .
-    ports:
-      - "8888:8888"
-    links:
-      - postgres
     volumes:
-      - ".:/home/jovyan/work"
+      - ".:/app/"
     restart: always
+    user: user
+    labels:
+      ofelia.enabled: "true"
+    #      ofelia.job-exec.app.slack-webhook: "slack-webhook-url"
     environment:
-      JUPYTER_ENABLE_LAB: 1
-      NB_USER: jovyan
-      NB_GID: 1000
-      CHOWN_HOME: 'yes'
-      CHOWN_HOME_OPTS: '-R'
+      - TZ=America/New_York
+    command: tail -f /dev/null
 
-  postgres:
-    image: postgres
+  scheduler:
+    image: mcuadros/ofelia:latest
     restart: always
-    environment:
-      POSTGRES_USER: data
-      POSTGRES_PASSWORD: data
-      POSTGRES_DB: data
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scheduler/config.ini:/etc/ofelia/config.ini
+    depends_on:
+      - clustering
+#  elasticsearch:
+#    image: elasticsearch:7.12.1
+#    restart: on-failure
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    volumes:
+#      - "./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+#    depends_on:
+#      - clustering
+#  kibana:
+#    image: kibana:7.12.1
+#    ports:
+#      - 5601:5601
+#    depends_on:
+#      - elasticsearch
+#    external_links:
+#      - elasticsearch:elasticsearch
+#  logstash:
+#    image: logstash:7.12.1
+#    command: logstash -f /etc/logstash/conf.d/logstash.conf
+#    external_links:
+#      - elasticsearch:elasticsearch
+#    restart: on-failure
+#    volumes:
+#      - ./config/logstash.conf:/etc/logstash/conf.d/logstash.conf
+#      - ./.log:/tmp/logs

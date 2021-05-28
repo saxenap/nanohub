@@ -1,0 +1,6 @@
+* * * * * docker run -a STDOUT --rm --name cron-test-1 clustering_clustering python3 /home/user/app/hello-world.py
+* * * * * sleep 10; docker run -a STDOUT --rm --name cron-test-2 clustering_clustering python3 /home/user/app/hello-world.py
+* * * * * sleep 20; docker run -a STDOUT --rm --name cron-test-3 clustering_clustering python3 /home/user/app/hello-world.py
+* * * * * sleep 30; docker run -a STDOUT --rm --name cron-test-4 clustering_clustering python3 /home/user/app/hello-world.py
+* * * * * sleep 40; docker run -a STDOUT --rm --name cron-test-5 clustering_clustering python3 /home/user/app/hello-world.py
+* * * * * sleep 50; docker run -a STDOUT --rm --name cron-test-6 clustering_clustering python3 /home/user/app/hello-world.py
