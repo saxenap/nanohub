@@ -42,12 +42,10 @@ services:
       - ENVVARS_FILEPATH=$envvars_file_path
       - TZ=America/New_York
 
-  logstash: # logstash exposes a syslog endpoing to write logs to
+  logstash:
     image: logstash:7.12.0
     container_name: logstash-container
     restart: unless-stopped
-    logging:
-      driver: "json-file"
     ports:
       - "12201:12201/udp"
     volumes:
@@ -58,26 +56,5 @@ services:
         rm -f /usr/share/logstash/config/logstash-sample.conf &&
         bin/logstash-plugin install logstash-output-newrelic &&
         bin/logstash-plugin install logstash-input-gelf &&
-        bin/logstash-plugin install logstash-input-syslog &&
-        bin/logstash-plugin install logstash-input-udp &&
-        bin/logstash-plugin install logstash-input-tcp &&
-        bin/logstash-plugin install logstash-codec-plain &&
-        bin/logstash-plugin install logstash-codec-json &&
-        bin/logstash-plugin install logstash-codec-json_lines &&
-        bin/logstash-plugin install logstash-codec-multiline &&
-        bin/logstash-plugin install logstash-codec-line &&
         logstash -f /etc/logstash.conf
       "
-
-#  logspout: # route container logs automatically to logstash
-#    image: bekt/logspout-logstash
-#    container_name: logspout-container
-#    restart: unless-stopped
-#    environment:
-#      ROUTE_URIS: udp://127.0.0.1:12201
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    links:
-#      - logstash
-#    depends_on:
-#      - logstash

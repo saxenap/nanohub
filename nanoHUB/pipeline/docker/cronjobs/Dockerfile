@@ -10,6 +10,7 @@ RUN apk add --no-cache rsyslog rsyslog-tls rsyslog-mmnormalize rsyslog-mmjsonpar
                        ca-certificates && \
     mkdir /var/spool/rsyslog
 RUN wget -O - https://logdog.loggly.com/media/logs-01.loggly.com_sha12.crt >> /etc/ssl/certs/ca-certificates.crt
+RUN chmod 755 /etc/ssl/certs/ca-certificates.crt
 
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 COPY ./config/rsyslog.conf /etc/rsyslog.d/console.conf
