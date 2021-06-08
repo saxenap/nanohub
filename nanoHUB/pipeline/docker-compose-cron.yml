@@ -63,6 +63,7 @@ services:
         bin/logstash-plugin install logstash-output-newrelic &&
         bin/logstash-plugin install logstash-output-loggly &&
         bin/logstash-plugin install logstash-input-gelf &&
+        chown --recursive logstash /etc/logstash.conf &&
         logstash -f /etc/logstash.conf
       "
     environment:

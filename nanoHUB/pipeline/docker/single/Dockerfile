@@ -15,10 +15,8 @@ RUN apt-get update && \
 
 COPY ./docker/single/Makefile .
 
-ARG ENVVARS_FILEPATH
 COPY $ENVVARS_FILEPATH ./app/.envvars
 
-ARG CRONTAB_FILEPATH
 COPY $CRONTAB_FILEPATH ./app/crontab
 RUN /usr/bin/crontab ./app/crontab
 
