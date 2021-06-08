@@ -5,7 +5,9 @@ services:
     build:
       context: .
       dockerfile: docker/tasks/Dockerfile
-      target: python-image
+      args:
+        - CRONTAB_FILEPATH=$crontab_path
+        - ENVVARS_FILEPATH=$envvars_file_path
     restart: always
     volumes:
       - ".:/app/"
@@ -19,12 +21,17 @@ services:
     depends_on:
       - logstash
     command: tail -f /dev/null
+    environment:
+      - TZ=America/New_York
 
   cronjob_runner:
     container_name: cronjob_runner_container
     build:
       context: .
       dockerfile: ./docker/cronjobs/Dockerfile
+      args:
+        - CRONTAB_FILEPATH=$crontab_path
+        - ENVVARS_FILEPATH=$envvars_file_path
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
@@ -38,8 +45,6 @@ services:
     depends_on:
       - logstash
     environment:
-      - CRONTAB_FILEPATH=$crontab_path
-      - ENVVARS_FILEPATH=$envvars_file_path
       - TZ=America/New_York
 
   logstash:
@@ -53,8 +58,13 @@ services:
     command: bash -c "
         rm -f /usr/share/logstash/pipeline/logstash.conf &&
         rm -f /usr/share/logstash/config/logstash.yml &&
+        touch /usr/share/logstash/config/logstash.yml &&
         rm -f /usr/share/logstash/config/logstash-sample.conf &&
         bin/logstash-plugin install logstash-output-newrelic &&
+        bin/logstash-plugin install logstash-output-loggly &&
         bin/logstash-plugin install logstash-input-gelf &&
         logstash -f /etc/logstash.conf
       "
+    environment:
+      - NEWRELIC_LICENSE_KEY=$newrelic_license_key
+      - LOGGLY_LICENSE_KEY=$loggly_license_key

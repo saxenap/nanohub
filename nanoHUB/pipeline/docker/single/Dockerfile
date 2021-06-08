@@ -6,12 +6,22 @@ LABEL maintainer="PRAVEEN SAXENA"
 RUN apt-get update && \
     apt-get install -y make && \
     apt-get install -y git && \
+    apt-get install -y cron && \
+    apt-get install -y rsyslog && \
     pip install --upgrade pip --upgrade setuptools --upgrade wheel && \
     pip install papermill newrelic && \
     pip install ipykernel && \
     python3 -m ipykernel install --user
 
-COPY ./docker/tasks/Makefile .
-COPY ./docker/tasks/notebook_executor.py ./app/
+COPY ./docker/single/Makefile .
+
+ARG ENVVARS_FILEPATH
+COPY $ENVVARS_FILEPATH ./app/.envvars
+
+ARG CRONTAB_FILEPATH
+COPY $CRONTAB_FILEPATH ./app/crontab
+RUN /usr/bin/crontab ./app/crontab
+
 
 COPY . ./app/
+CMD rsyslogd -n & cron -f -l 0

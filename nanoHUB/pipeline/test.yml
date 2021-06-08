@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+  tasks:
+    container_name: test_container
+    build:
+      context: .
+      dockerfile: docker/single/Dockerfile
+      args:
+        - CRONTAB_FILEPATH=$crontab_path
+        - ENVVARS_FILEPATH=$envvars_file_path
+    restart: always
+    volumes:
+      - ".:/app/"
+    environment:
+      - TZ=America/New_York

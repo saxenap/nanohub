@@ -1,0 +1,4 @@
+* * * * * make -C /app execute-notebook name=demo > /dev/stdout
+* * * * * sleep 10; make -C /app execute-notebook name=demo > /dev/stdout
+* * * * * sleep 30; make -C /app  execute-notebook name=demo > /dev/stdout
+* * * * * sleep 50; make -C /app  execute-notebook name=demo > /dev/stdout

@@ -8,21 +8,23 @@ RUN apk update && \
 
 RUN apk add --no-cache rsyslog rsyslog-tls rsyslog-mmnormalize rsyslog-mmjsonparse \
                        ca-certificates && \
-    mkdir /var/spool/rsyslog
-RUN wget -O - https://logdog.loggly.com/media/logs-01.loggly.com_sha12.crt >> /etc/ssl/certs/ca-certificates.crt
-RUN chmod 755 /etc/ssl/certs/ca-certificates.crt
+    mkdir /var/spool/rsyslog && \
+    chmod -R 644 /var/spool/rsyslog
+
+RUN mkdir -pv /etc/rsyslog.d/keys/ca.d && \
+    wget -O /etc/rsyslog.d/keys/ca.d/logs-01.loggly.com_sha12.crt https://logdog.loggly.com/media/logs-01.loggly.com_sha12.crt
 
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 COPY ./config/rsyslog.conf /etc/rsyslog.d/console.conf
-COPY ./config/rsyslog/* /etc/rsyslog.d/
+#COPY ./config/rsyslog/* /etc/rsyslog.d/
 
 COPY ./docker/cronjobs/Makefile ./app/
 
 ARG ENVVARS_FILEPATH
-COPY ./docker/cronjobs/prod.env ./app/.envvars
+COPY $ENVVARS_FILEPATH ./app/.envvars
 
 ARG CRONTAB_FILEPATH
-COPY  ./dev.crontab ./app/crontab
+COPY $CRONTAB_FILEPATH ./app/crontab
 RUN /usr/bin/crontab ./app/crontab
 
 CMD /usr/sbin/rsyslogd -n & /usr/sbin/crond -f -l 0
