@@ -7,6 +7,9 @@ name = "pypi"
 pytest = "6.2"
 
 [packages]
+#need to define exact (pre) version for black
+#delete Pipenv.lock file and then run pipenv install again
+black = "==21.5b2"
 pandas = "1.2"
 numpy = "1.20"
 pymysql = "1.0"
@@ -15,5 +18,8 @@ python-dotenv = "0.17"
 #Pipeline
 #sqlalchemy = "1.4"
 #jupyter = "1.0"
-#papermill = "2.3"
+papermill = "2.3.3"
 sshtunnel = "0.4"
+dependency-injector = "4.32"
+pyyaml = "5.4"
+pydantic = "*"

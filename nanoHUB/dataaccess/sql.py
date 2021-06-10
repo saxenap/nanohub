@@ -11,7 +11,6 @@ from nanoHUB.dataaccess.transformers import ITransformer
 Connections 
 '''
 
-
 class IConnection:
     def get_connection(self):
         raise NotImplemented
