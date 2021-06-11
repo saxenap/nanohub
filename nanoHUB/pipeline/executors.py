@@ -1,4 +1,7 @@
-import papermill
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore")
+    import papermill
 import logging
 from pathlib import Path
 
