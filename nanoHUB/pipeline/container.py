@@ -76,15 +76,8 @@ class TasksContainer(containers.DeclarativeContainer):
 
     memory_profiling_executor = providers.Factory(
         MemoryProfilingDecorator,
-        executor=logging_executor,
+        executor=time_profiling_executor,
         logger=logger(__name__)
     )
 
     get_executor = memory_profiling_executor
-
-
-class Facade:
-    application: TasksContainer = TasksContainer()
-
-
-
