@@ -80,15 +80,15 @@ class RetryingExecutorDecorator(IExecutor):
 
     def __call__(self):
         for i in range(0, self.retries_max_count):
-            while True:
-                try:
-                    self.retries_current_count += 1
-                    self.logger.info("Executing task - number of tries left: %d." % (self.retries_max_count - self.retries_current_count))
-                    self.executor()
-                    return
-                except Exception as excep:
-                    self.logger.info("Task failed with exception %s." % excep)
-                    continue
+            try:
+                self.retries_current_count += 1
+                self.logger.info("Executing task - number of tries left: %d." % (self.retries_max_count - self.retries_current_count))
+                self.executor()
+                return
+            except Exception as excep:
+                self.logger.info("Task failed with exception %s." % excep)
+                continue
+
 
     def get_name(self) -> str:
         return 'RetryingExecutorDecorator (file: %s)'% __file__

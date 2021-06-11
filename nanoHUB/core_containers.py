@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 from .connection import DbConnectionParams, PyMysqlConnectionFactory, TunneledConnectionParams, TunneledConnectionFactory
 import logging, logging.config
-from nanoHUB.logger import logging_conf
-import os
+from nanoHUB.logger import logging_conf, logger
+
 
 
 class LoggingContainer(containers.DeclarativeContainer):
@@ -44,7 +44,8 @@ class DatabaseContainer(containers.DeclarativeContainer):
     tunneled_connection_factory = providers.Factory(
         TunneledConnectionFactory,
         db_connection_factory_inner,
-        tunneled_connection_params
+        tunneled_connection_params,
+        logger=logger(__name__)
     )
 
     db_connection_factory = providers.Selector(
