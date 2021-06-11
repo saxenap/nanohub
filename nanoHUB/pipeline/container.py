@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 from nanoHUB.logger import logger
 from nanoHUB.core_containers import LoggingContainer, DatabaseContainer
-from nanoHUB.pipeline.executors import JupyterExecutor, PythonFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator
+from nanoHUB.pipeline.executors import JupyterExecutor, PythonFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator, TimeProfilingDecorator, MemoryProfilingDecorator
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
-import os
+import datetime
 
 
 class TasksContainer(containers.DeclarativeContainer):
@@ -68,7 +68,19 @@ class TasksContainer(containers.DeclarativeContainer):
         logger=logger(__name__)
     )
 
-    get_executor = retrying_executor
+    time_profiling_executor = providers.Factory(
+        TimeProfilingDecorator,
+        executor=logging_executor,
+        logger=logger(__name__)
+    )
+
+    memory_profiling_executor = providers.Factory(
+        MemoryProfilingDecorator,
+        executor=logging_executor,
+        logger=logger(__name__)
+    )
+
+    get_executor = memory_profiling_executor
 
 
 class Facade:

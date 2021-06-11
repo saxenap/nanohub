@@ -40,6 +40,11 @@ class ExecutorSettings(BaseSettings):
     max_retries_on_failure: int = Field(env='executor_max_retries_on_failure')
 
 
+class SystemSettings(BaseSettings):
+
+    timezone: str = Field(env='system_timezone')
+
+
 class Settings(BaseSettings):
 
     database: DatabaseSettings = DatabaseSettings()
@@ -47,3 +52,4 @@ class Settings(BaseSettings):
     salesforce: SalesforceSettings = SalesforceSettings()
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
+    systemsettings: SystemSettings = SystemSettings()

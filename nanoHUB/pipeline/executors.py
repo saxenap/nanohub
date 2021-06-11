@@ -92,3 +92,31 @@ class RetryingExecutorDecorator(IExecutor):
 
     def get_name(self) -> str:
         return 'RetryingExecutorDecorator (file: %s)'% __file__
+
+
+import time
+
+class TimeProfilingDecorator(IExecutor):
+
+    def __init__(self, executor: IExecutor, logger: logging.Logger):
+        self.executor = executor
+        self.logger = logger
+
+    def __call__(self):
+        start_time = time.time()
+        self.executor()
+        stop_time = time.time() - start_time
+        self.logger.info("Time Taken - %ss" % stop_time)
+
+
+from memory_profiler import memory_usage
+
+class MemoryProfilingDecorator(IExecutor):
+
+    def __init__(self, executor: IExecutor, logger: logging.Logger):
+        self.executor = executor
+        self.logger = logger
+
+    def __call__(self):
+        mem_usage = memory_usage((self.executor), max_usage=True, include_children=True)
+        self.logger.info("Memory Used - %.2fMB" % mem_usage)
