@@ -41,9 +41,28 @@ class SalesforceSettings(BaseSettings):
     password: str = Field(env='salesforce_password')
 
 
+class PathSettings(BaseSettings):
+
+    class Config:
+        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
+        env_file_encoding = 'utf-8'
+
+    outfile_dir: str = Field(env='pipeline_outfile_dir')
+
+class ExecutorSettings(BaseSettings):
+
+    class Config:
+        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
+        env_file_encoding = 'utf-8'
+
+    max_retries_on_failure: int = Field(env='executor_max_retries_on_failure')
+
 class Settings(BaseSettings):
 
     database: DatabaseSettings = DatabaseSettings()
     sshtunnel: SshTunnel = SshTunnel()
     salesforce: SalesforceSettings = SalesforceSettings()
+    pathsettings: PathSettings = PathSettings()
+    executorsettings: ExecutorSettings = ExecutorSettings()
+
 
