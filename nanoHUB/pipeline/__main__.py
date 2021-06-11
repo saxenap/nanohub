@@ -12,20 +12,15 @@ arg1.add_argument("--file-path")
 arg1.add_argument('--log-level', '-log', default='INFO')
 
 
-def main() -> None:
+def main(args) -> None:
 
-    db_connection = container.database.db_connection_factory()
-    executor = container.get_executor()
-    executor()
-
+    application = Application.get_instance()
+    application.execute(vars(args)['file_path'])
     logger().info("Main called")
 
 
 if __name__ == '__main__':
 
     args = parser.parse_args()
-    container = Application.get_instance()
-    Application.set_filepath(vars(args)['file_path'])
     logger().setLevel(logging.getLevelName(vars(args)['log_level']))
-
-    main()
+    main(args)

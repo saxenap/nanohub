@@ -1,12 +1,9 @@
 from pydantic import BaseSettings, Field
-import pathlib
+from dotenv import load_dotenv
 
 
+load_dotenv()
 class DatabaseSettings(BaseSettings):
-
-    class Config:
-        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
-        env_file_encoding = 'utf-8'
 
     host: str = Field(env='db_host')
     user: str = Field(env='db_user')
@@ -14,10 +11,6 @@ class DatabaseSettings(BaseSettings):
 
 
 class SshTunnel(BaseSettings):
-
-    class Config:
-        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
-        env_file_encoding = 'utf-8'
 
     use_ssh_connection: str = Field(env='tunnel_use_ssh_connection')
     host: str = Field(env='tunnel_ssh_host')
@@ -30,10 +23,6 @@ class SshTunnel(BaseSettings):
 
 class SalesforceSettings(BaseSettings):
 
-    class Config:
-        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
-        env_file_encoding = 'utf-8'
-
     grant_type: str = Field(env='salesforce_grant_type')
     client_id: str = Field(env='salesforce_client_id')
     client_secret: str = Field(env='salesforce_client_secret')
@@ -43,19 +32,13 @@ class SalesforceSettings(BaseSettings):
 
 class PathSettings(BaseSettings):
 
-    class Config:
-        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
-        env_file_encoding = 'utf-8'
-
     outfile_dir: str = Field(env='pipeline_outfile_dir')
+
 
 class ExecutorSettings(BaseSettings):
 
-    class Config:
-        env_file = pathlib.Path(__file__).parent.absolute() / '.env'
-        env_file_encoding = 'utf-8'
-
     max_retries_on_failure: int = Field(env='executor_max_retries_on_failure')
+
 
 class Settings(BaseSettings):
 
@@ -64,5 +47,3 @@ class Settings(BaseSettings):
     salesforce: SalesforceSettings = SalesforceSettings()
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
-
-

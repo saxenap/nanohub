@@ -1,98 +1,39 @@
-from dependency_injector import containers, providers
+from nanoHUB.pipeline.container import TasksContainer
 from nanoHUB.settings import Settings
-from nanoHUB.logger import logger
-from nanoHUB.core_containers import LoggingContainer, DatabaseContainer
-from nanoHUB.pipeline.executors import JupyterExecutor, PythonFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator
+from nanoHUB.connection import IDbConnectionFactory
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
 import os, sys
 
 
-class Application(containers.DeclarativeContainer):
+class Application:
 
-    config = providers.Configuration()
+    def __init__(self, container: TasksContainer):
+        self.container = container
 
-    logging = providers.Container(
-        LoggingContainer,
-        config=config,
-    )
+    def new_db_engine(self, db_name: str) -> IDbConnectionFactory:
 
-    database = providers.Container(
-        DatabaseContainer,
-        config=config,
-    )
+        return self.container.database.db_connection_factory().get_connection_for(db_name)
 
-    sf_login_params = providers.Dict({
-        'grant_type': config.salesforce.grant_type,
-        'client_id': config.salesforce.client_id,
-        'client_secret': config.salesforce.client_secret,
-        'username': config.salesforce.username,
-        'password': config.salesforce.password,
-    })
+    def new_salesforce_engine(self) -> DB2SalesforceAPI:
 
-    salesforce = providers.Factory(
-        DB2SalesforceAPI,
-        sf_login_params=sf_login_params
-    )
+        return self.container.salesforce()
 
-    jupyter_executor = providers.Factory(
-        JupyterExecutor,
-        notebook_path=config.pipeline.executor_file_path,
-        outfile_path=config.pathsettings.outfile_dir,
-        logger=logger(__name__)
-    )
+    def execute(self, file_path: str):
 
-    python_executor = providers.Factory(
-        PythonFileExecutor,
-        file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
-    )
+        self.container.config.set('pipeline.executor_file_path', file_path)
+        self.container.config.set('pipeline.executor_type', os.path.splitext(file_path)[1].lstrip('.'))
+        executor = self.container.get_executor()
+        executor()
 
-    task_executor = providers.Selector(
-        config.pipeline.executor_type,
-        jupyter=jupyter_executor,
-        ipynb=jupyter_executor,
-        python=python_executor,
-        py=python_executor,
-    )
-
-    logging_executor = providers.Factory(
-        LoggingExecutorDecorator,
-        executor=task_executor,
-        file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
-    )
-
-    retrying_executor = providers.Factory(
-        RetryingExecutorDecorator,
-        executor=logging_executor,
-        retries_max_count=config.executorsettings.max_retries_on_failure,
-        logger=logger(__name__)
-    )
-
-    get_executor = retrying_executor
-
-    self_instance: 'Application' = None
-
-
-    def set_filepath(filepath: str):
-        self = Application.get_instance()
-        self.config.set('pipeline.executor_file_path', filepath)
-        self.config.set('pipeline.executor_type', os.path.splitext(filepath)[1].lstrip('.'))
-
+    default_instance: 'Application' = None
 
     @staticmethod
-    def get_instance():
-        if Application.self_instance is None:
-            self = Application()
-            self.config.from_pydantic(Settings())
-            self.wire(modules=[sys.modules[__name__]])
-            Application.self_instance = self
+    def get_instance() -> 'Application':
 
-        return Application.self_instance
+        if Application.default_instance is None:
+            container = TasksContainer()
+            container.config.from_pydantic(Settings())
+            container.wire(modules=[sys.modules[__name__]])
+            Application.default_instance = Application(container)
 
-
-class Facade:
-    application: Application = Application()
-
-
-
+        return Application.default_instance
