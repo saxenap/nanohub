@@ -4,12 +4,13 @@
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
 # C extensions
 *.so
-
+nanoHUB/pipeline/salesforce/__pycache__/DB2SalesforceAPI.cpython-39.pyc
 # Distribution / packaging
 .Python
 build/

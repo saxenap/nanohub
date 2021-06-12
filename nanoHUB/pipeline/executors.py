@@ -2,8 +2,10 @@ import warnings
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore")
     import papermill
+
 import logging
 from pathlib import Path
+import subprocess
 
 
 class IExecutor:
@@ -53,6 +55,28 @@ class PythonFileExecutor(IExecutor):
     def get_name(self) -> str:
         return 'PythonFileExecutor (file: %s)'% __file__
 
+
+class RFileExecutor(IExecutor):
+
+    def __init__(self, r_executable_path: str, file_path: str, outfile_path: str, logger: logging.Logger):
+        self.file_path = file_path
+        self.r_executable_path = r_executable_path
+        self.outfile_path = outfile_path
+        self.logger = logger
+
+    def __call__(self):
+        subprocess.call([self.r_executable_path, "--vanilla", self.file_path])
+
+    def get_name(self) -> str:
+        return 'RFileExecutor (file: %s)'% __file__
+
+'''
+##################################################################################################
+
+Decorating Executors
+
+##################################################################################################
+'''
 
 class LoggingExecutorDecorator(IExecutor):
 

@@ -1,9 +1,8 @@
 import logging
 
-from nanoHUB.settings import Settings
 from nanoHUB.logger import logger
 from nanoHUB.pipeline.application import Application
-import os, sys, argparse
+import argparse
 
 parser = argparse.ArgumentParser(description='Execute task.')
 subparsers = parser.add_subparsers()
@@ -16,7 +15,7 @@ def main(args) -> None:
 
     application = Application.get_instance()
     application.execute(vars(args)['file_path'])
-    logger().info("Main called")
+    logger(__name__).info("Main called")
 
 
 if __name__ == '__main__':

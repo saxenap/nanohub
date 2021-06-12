@@ -52,11 +52,13 @@ class TunneledConnectionParams:
 class TunneledConnectionFactory(IDbConnectionFactory):
 
     def __init__(self, db_factory: IDbConnectionFactory, params: TunneledConnectionParams, logger: logging.Logger):
+
         self.db_factory = db_factory
         self.params = params
         self.logger = logger
 
     def get_connection_for(self, db_name: str):
+
         tunnel = SSHTunnelForwarder(
             (
                 self.params.ssh_host, int(self.params.ssh_port)
@@ -82,7 +84,10 @@ Edge case testing needed
 1. https://github.com/paramiko/paramiko/issues/175#issuecomment-24125451
 2. https://stackoverflow.com/a/55796683
 '''
+
+
 class FastTransport(Transport):
+
     def __init__(self, sock):
         super(FastTransport, self).__init__(sock)
         self.window_size = 2147483647
