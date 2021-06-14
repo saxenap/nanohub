@@ -1,4 +1,7 @@
+import sys, os
+sys.path.append(os.path.dirname(__file__))
 import logging
+
 
 from nanoHUB.logger import logger
 from nanoHUB.pipeline.application import Application
@@ -21,5 +24,5 @@ def main(args) -> None:
 if __name__ == '__main__':
 
     args = parser.parse_args()
-    logger().setLevel(logging.getLevelName(vars(args)['log_level']))
+    logger().setLevel(logging.getLevelName(vars(args)['log_level'].upper()))
     main(args)

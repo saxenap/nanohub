@@ -6,6 +6,7 @@ from paramiko import Transport
 
 
 class IDbConnectionFactory:
+
     def get_connection_for(self, db_name: str):
         raise NotImplemented
 
@@ -15,6 +16,7 @@ class IDbConnectionFactory:
 
 @dataclass
 class DbConnectionParams:
+
     db_host: str
     db_username: str
     db_password: str
@@ -27,6 +29,7 @@ class PyMysqlConnectionFactory(IDbConnectionFactory):
         self.params = params
 
     def get_connection_for(self, db_name: str):
+
         return pymysql.connect(
             host=self.params.db_host,
             database=db_name,
@@ -41,6 +44,7 @@ class PyMysqlConnectionFactory(IDbConnectionFactory):
 
 @dataclass
 class TunneledConnectionParams:
+
     ssh_host: str
     ssh_username: str
     ssh_password: str
