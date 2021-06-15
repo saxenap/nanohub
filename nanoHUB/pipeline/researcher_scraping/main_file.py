@@ -209,7 +209,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
         author_gen = scholarly.search_author(val)
         list_auth_gen = list(author_gen)
         
-        time.sleep(np.random.randint(5,15)) # rng seconds of sleep
+        time.sleep(np.random.randint(5, 15)) # rng seconds of sleep
         if len(list_auth_gen) != 0:
             # iteratively perform name based levenshtein capping
             counter = 0
@@ -249,7 +249,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     temp_sample['Google_Scholar_ID_sf__c'] = gs_ids
     display(temp_sample.head(5))
 
-    time.sleep(np.random.randint(2,10))
+    time.sleep(np.random.randint(2, 10))
 
     # %% ORCID search
     
@@ -284,7 +284,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
                 
     temp_sample['ORCID_sf__c'] = ORCID_urls
-    time.sleep(np.random.randint(2,10))
+    time.sleep(np.random.randint(2, 10))
     
     # %% Research ID_sf
     ## Do the same thing as ORCID ID search
@@ -314,7 +314,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
                 
     temp_sample['Research_ID_sf__c'] = wos_researchers
-    time.sleep(np.random.randint(2,10))
+    time.sleep(np.random.randint(2, 10))
         
     # %% SCOPUS - can't find results, blanked out for now
     
@@ -345,7 +345,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
     
     temp_sample['ResearchGate_ID_sf__c'] = research_gate_ids
-    time.sleep(np.random.randint(2,10))
+    time.sleep(np.random.randint(2, 10))
     
     
     # %% type adjustment for NH user ids and then upload to SF
@@ -399,7 +399,7 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     batch_no += 1
     
     # wait for next batch instance
-    time.sleep(np.random.randint(30,121))
+    time.sleep(np.random.randint(30, 121))
 
 
 

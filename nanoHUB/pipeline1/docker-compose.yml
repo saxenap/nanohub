@@ -1,8 +1,0 @@
-version: "3.3"
-services:
-  cronjob_runner:
-    container_name: cronjob_runner
-    build: .
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always

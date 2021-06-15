@@ -16,11 +16,3 @@ services:
       NB_GID: 1000
       CHOWN_HOME: 'yes'
       CHOWN_HOME_OPTS: '-R'
-
-  postgres:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: data
-      POSTGRES_PASSWORD: data
-      POSTGRES_DB: data

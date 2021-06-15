@@ -5,6 +5,7 @@
 *.iml
 .idea/
 .ipynb_checkpoints
+**/__pycache__/
 
 #General
 README.md

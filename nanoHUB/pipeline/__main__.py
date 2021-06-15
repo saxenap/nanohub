@@ -1,0 +1,28 @@
+import sys, os
+sys.path.append(os.path.dirname(__file__))
+import logging
+
+
+from nanoHUB.logger import logger
+from nanoHUB.pipeline.application import Application
+import argparse
+
+parser = argparse.ArgumentParser(description='Execute task.')
+subparsers = parser.add_subparsers()
+arg1 = subparsers.add_parser('task')
+arg1.add_argument("--file-path")
+arg1.add_argument('--log-level', '-log', default='INFO')
+
+
+def main(args) -> None:
+
+    application = Application.get_instance()
+    application.execute(vars(args)['file_path'])
+    logger(__name__).info("Main called")
+
+
+if __name__ == '__main__':
+
+    args = parser.parse_args()
+    logger().setLevel(logging.getLevelName(vars(args)['log_level'].upper()))
+    main(args)
