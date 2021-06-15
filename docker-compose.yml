@@ -21,7 +21,7 @@ services:
         pip install --no-cache-dir pipenv &&
         cd work && pipenv lock -r > requirements.txt && pip install -r requirements.txt &&
         export PYTHONPATH="$PYTHONPATH:/home/jovyan/work" &&
-        jupyter notebook
+        jupyter lab
       "
 
 
