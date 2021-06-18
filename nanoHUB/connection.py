@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 import pymysql
-from sshtunnel import SSHTunnelForwarder
+from sshtunnel import create_logger , SSHTunnelForwarder
 from paramiko import Transport
 
 
@@ -63,6 +63,7 @@ class TunneledConnectionFactory(IDbConnectionFactory):
 
     def get_connection_for(self, db_name: str):
 
+        logger = create_logger(self.logger)
         tunnel = SSHTunnelForwarder(
             (
                 self.params.ssh_host, int(self.params.ssh_port)
@@ -71,9 +72,9 @@ class TunneledConnectionFactory(IDbConnectionFactory):
             ssh_username=self.params.ssh_username,
             remote_bind_address=(
                 self.params.remote_bind_address, int(self.params.remote_bind_port)
-            )
+            ),
+            logger=logger
         )
-        print('dsds')
         self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
         tunnel.start()
 
