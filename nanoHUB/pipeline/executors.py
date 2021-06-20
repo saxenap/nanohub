@@ -28,7 +28,9 @@ class JupyterExecutor(IExecutor):
         output_file_path = self.outfile_path + '/' + Path(self.notebook_path).name
         papermill.execute_notebook(
             self.notebook_path,
-            output_file_path
+            output_file_path,
+            log_output=True,
+            report_mode=True
         )
         self.logger.info('Saved output file - %s' % output_file_path)
 

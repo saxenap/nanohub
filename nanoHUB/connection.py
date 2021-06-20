@@ -63,7 +63,7 @@ class TunneledConnectionFactory(IDbConnectionFactory):
 
     def get_connection_for(self, db_name: str):
 
-        logger = create_logger(self.logger)
+        logger = create_logger(loglevel="INFO")
         tunnel = SSHTunnelForwarder(
             (
                 self.params.ssh_host, int(self.params.ssh_port)
@@ -77,7 +77,6 @@ class TunneledConnectionFactory(IDbConnectionFactory):
         )
         self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
         tunnel.start()
-
 
         self.db_factory.set_port(tunnel.local_bind_port)
         return self.db_factory.get_connection_for(db_name)

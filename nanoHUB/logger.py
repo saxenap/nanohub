@@ -64,10 +64,10 @@ logging_conf = dict(
         )
     ),
     loggers = dict(
-        nanoHUB = dict(
+        root = dict(
             level = logging.NOTSET,
             handlers = ['console'],
-            propagate = False
+            propagate = True
         )
     ),
     root = dict(
