@@ -3,21 +3,31 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[requires]
+python_version = "3.9"
+
 [dev-packages]
 pytest = "6.2"
 
 [packages]
 #need to define exact (pre) version for black
 #delete Pipenv.lock file and then run pipenv install again
-black = "==21.5b2"
+black = "==19.10b0"
 pandas = "1.2"
 numpy = "1.20"
 pymysql = "1.0"
 pyarrow = "4.0"
-python-dotenv = "0.17"
+python-dotenv = "*"
 papermill = "2.3.3"
 sshtunnel = "0.4"
-dependency-injector = "4.32"
+dependency-injector = "*"
 pyyaml = "5.4"
 pydantic = "*"
 memory-profiler = "0.58"
+ipykernel = "*"
+jupyter = "*"
+jupyterlab = "*"
+#Jupyter Extensions
+jupyterlab-git = "*"
+pipenv-setup = "*"
+typer = "*"

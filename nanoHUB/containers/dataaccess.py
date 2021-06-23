@@ -1,17 +1,7 @@
 from dependency_injector import containers, providers
-from .connection import DbConnectionParams, PyMysqlConnectionFactory, TunneledConnectionParams, TunneledConnectionFactory
-import logging, logging.config
-from nanoHUB.logger import logging_conf, logger
+from nanoHUB.dataaccess.connection import DbConnectionParams, PyMysqlConnectionFactory, TunneledConnectionParams, TunneledConnectionFactory
+from nanoHUB.logger import logger
 
-
-
-class LoggingContainer(containers.DeclarativeContainer):
-
-    config = providers.Configuration()
-
-    logging = providers.Resource(
-        logging.config.dictConfig(logging_conf)
-    )
 
 
 class DatabaseContainer(containers.DeclarativeContainer):

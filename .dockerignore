@@ -15,7 +15,16 @@ README.md
 **/*.log
 **/*.cache
 **/*.env
+**/*.github
+archive/
 
+
+Dockerfile
+docker-compose.yml
+.gitignore
+.dockerignore
+
+**/venv
 
 ## Ignore everything
 #**

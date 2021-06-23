@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 from nanoHUB.logger import logger
-from nanoHUB.core_containers import LoggingContainer, DatabaseContainer
-from nanoHUB.pipeline.executors import JupyterExecutor, PythonFileExecutor, RFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator, TimeProfilingDecorator, MemoryProfilingDecorator
+from nanoHUB.containers.logging import LoggingContainer
+from nanoHUB.containers.dataaccess import DatabaseContainer
+from nanoHUB.task.executors import JupyterExecutor, PythonFileExecutor, RFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator, TimeProfilingDecorator, MemoryProfilingDecorator
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
-import datetime
 
 
 class TasksContainer(containers.DeclarativeContainer):

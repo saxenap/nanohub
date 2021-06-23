@@ -1,6 +1,6 @@
-from nanoHUB.pipeline.container import TasksContainer
+from nanoHUB.containers.tasks import TasksContainer
 from nanoHUB.settings import Settings
-from nanoHUB.connection import IDbConnectionFactory
+from nanoHUB.dataaccess.connection import IDbConnectionFactory
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
 import os, sys
 
