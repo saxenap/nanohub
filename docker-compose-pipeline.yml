@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: scheduler-image
+      args:
+        NB_USER: "${NB_USER}"
+        APP_DIR_NAME: "${APP_DIR_NAME}"
+        HOME_DIR_NAME: "${HOME_DIR_NAME}"
+        CRONTAB_FILE: "${CRONTAB_FILE}"
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logs.papertrailapp.com:19303"
+        tag: "{{.Name}}/{{.ID}}"
+    env_file:
+      - ./nanoHUB/.env
+#    command: bash -c "sudo --preserve-env cron -f && tail -f /var/log/cron.log"
+    command: bash -c "sudo --preserve-env /usr/bin/supervisord && tail -f /var/log/cron.log"

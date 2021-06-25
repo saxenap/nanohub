@@ -47,6 +47,7 @@ COPY Pipfile* .
 RUN pipenv lock -r > requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
+COPY nanoHUB/.env ./nanoHUB/.env
 RUN pip3 install .
 USER root
 RUN chown -R --from=root ${NB_USER} ${APP_DIR}
@@ -67,57 +68,85 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=8888
 ENV JUPYTER_PORT=${JUPYTER_PORT}
-RUN pip3 install nodeenv && nodeenv -p
-RUN pip3 install jupyterlab_templates && \
-    pip3 install --upgrade jupyterthemes
-RUN pip3 install jupyter_contrib_nbextensions && \
-    jupyter contrib nbextension install --user && \
-    jupyter nbextension enable codefolding/main && \
-    jupyter nbextension enable table_beautifier/main && \
-    jupyter nbextension enable toc2/main && \
-    jupyter nbextension enable splitcell/main && \
-    jupyter nbextension enable varInspector/main && \
-    jupyter nbextension enable init_cell/main && \
-    jupyter nbextension enable tree-filter/main && \
-    jupyter nbextension enable jupyter_boilerplate/main && \
-    jupyter nbextension enable scroll_down/main && \
-    jupyter nbextension enable notify/main && \
-    jupyter nbextension enable skip-traceback/main && \
-    jupyter nbextension enable move_selected_cells/main && \
-    jupyter nbextension enable livemdpreview/main && \
-    jupyter nbextension enable highlighter/main && \
-    jupyter nbextension enable go_to_current_running_cell/main && \
-    jupyter nbextension enable execute_time/main && \
-    jupyter nbextension enable datestamper/main && \
-    jupyter nbextension enable addbefore/main && \
-    jupyter nbextension enable Hinterland/main && \
-    jupyter nbextension enable snippets/main
-RUN pip3 install qgrid && \
-    jupyter nbextension enable --py --sys-prefix qgrid
-RUN pip3 install RISE
-RUN pip3 install jupyterlab_executor
-RUN pip3 install jupyterlab-quickopen
-RUN pip3 install jupyterlab_sql && \
-    jupyter serverextension enable jupyterlab_sql --py --sys-prefix
-RUN pip3 install jupyterlab-system-monitor
-RUN pip3 install jupyterlab-topbar && \
-    jupyter labextension install jupyterlab-topbar-text
-RUN pip3 install lckr-jupyterlab-variableinspector
-#RUN jupyter labextension install jupyterlab_voyager
-RUN pip3 install 'jupyterlab>=3.0.0,<4.0.0a0' jupyterlab-lsp && \
-    pip3 install 'python-lsp-server[all]'
-RUN jupyter labextension install @krassowski/jupyterlab_go_to_definition
-RUN jupyter labextension install @jupyterlab/debugger
+#RUN pip3 install nodeenv && nodeenv -p
+#RUN pip3 install jupyterlab_templates && \
+#    pip3 install --upgrade jupyterthemes
+#RUN pip3 install jupyter_contrib_nbextensions && \
+#    jupyter contrib nbextension install --user && \
+#    jupyter nbextension enable codefolding/main && \
+#    jupyter nbextension enable table_beautifier/main && \
+#    jupyter nbextension enable toc2/main && \
+#    jupyter nbextension enable splitcell/main && \
+#    jupyter nbextension enable varInspector/main && \
+#    jupyter nbextension enable init_cell/main && \
+#    jupyter nbextension enable tree-filter/main && \
+#    jupyter nbextension enable jupyter_boilerplate/main && \
+#    jupyter nbextension enable scroll_down/main && \
+#    jupyter nbextension enable notify/main && \
+#    jupyter nbextension enable skip-traceback/main && \
+#    jupyter nbextension enable move_selected_cells/main && \
+#    jupyter nbextension enable livemdpreview/main && \
+#    jupyter nbextension enable highlighter/main && \
+#    jupyter nbextension enable go_to_current_running_cell/main && \
+#    jupyter nbextension enable execute_time/main && \
+#    jupyter nbextension enable datestamper/main && \
+#    jupyter nbextension enable addbefore/main && \
+#    jupyter nbextension enable Hinterland/main && \
+#    jupyter nbextension enable snippets/main
+#RUN pip3 install qgrid && \
+#    jupyter nbextension enable --py --sys-prefix qgrid
+#RUN pip3 install RISE
+#RUN pip3 install jupyterlab_executor
+#RUN pip3 install jupyterlab-quickopen
+#RUN pip3 install jupyterlab_sql && \
+#    jupyter serverextension enable jupyterlab_sql --py --sys-prefix
+#RUN pip3 install jupyterlab-system-monitor
+#RUN pip3 install jupyterlab-topbar && \
+#    jupyter labextension install jupyterlab-topbar-text
+#RUN pip3 install lckr-jupyterlab-variableinspector
+##RUN jupyter labextension install jupyterlab_voyager
+#RUN pip3 install 'jupyterlab>=3.0.0,<4.0.0a0' jupyterlab-lsp && \
+#    pip3 install 'python-lsp-server[all]'
+#RUN jupyter labextension install @krassowski/jupyterlab_go_to_definition
+#RUN jupyter labextension install @jupyterlab/debugger
 RUN jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-RUN jupyter lab build
+#RUN jupyter lab build
 EXPOSE ${JUPYTER_PORT}
 
 
 
 FROM jupyter-image AS dev-image
 USER ${NB_USER}
+WORKDIR ${APP_DIR}
+#CMD jupyter lab
+
+
+
+FROM code-base-image AS scheduler-image
+USER root
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    gcc \
+    make \
+    nano \
+    cron \
+    rsyslog \
+    supervisor
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
+COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
+RUN service rsyslog start
+RUN touch /var/log/cron.log
+RUN chown -R --from=root ${NB_USER} /var/log/cron.log
+ARG CRONTAB_FILE
+COPY ${CRONTAB_FILE} ${APP_DIR}/cron_tasks
+RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
+USER ${NB_USER}
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN chmod 0644 ${APP_DIR}/cron_tasks
+RUN crontab ${APP_DIR}/cron_tasks
+COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR ${APP_DIR}
 

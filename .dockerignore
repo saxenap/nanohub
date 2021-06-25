@@ -14,7 +14,7 @@ README.md
 #App folders/files
 **/*.log
 **/*.cache
-**/*.env
+#**/*.env
 **/*.github
 archive/
 

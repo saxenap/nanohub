@@ -1,27 +1,23 @@
-* * * * * make -C /app execute-notebook name=demo > /dev/stdout
-* * * * * sleep 10; make -C /app execute-notebook name=demo > /dev/stdout
-* * * * * sleep 30; make -C /app  execute-notebook name=demo > /dev/stdout
-* * * * * sleep 50; make -C /app  execute-notebook name=demo > /dev/stdout
-
-30 1 * * * papermill salesforce/task_citations.ipynb salesforce/task_citations.ipynb
-30 1 * * * papermill salesforce/task_citations_map_contacts.ipynb salesforce/task_citations_map_contacts.ipynb
-30 1 * * * papermill salesforce/task_citations_map_leads.ipynb salesforce/task_citations_map_leads.ipynb
-30 1 * * * papermill salesforce/task_determine_contact_cluster_org.ipynb salesforce/task_determine_contact_cluster_org.ipynb
-30 1 * * * papermill salesforce/task_issue_url.ipynb salesforce/task_issue_url.ipynb
-30 1 * * * papermill salesforce/task_organization.ipynb salesforce/task_organization.ipynb
-30 1 * * * papermill salesforce/task_orgs_map_contacts.ipynb salesforce/task_orgs_map_contacts.ipynb
-30 1 * * * papermill salesforce/task_tool_basic_updates.ipynb salesforce/task_tool_basic_updates.ipynb
-#30 1 * * * papermill salesforce/task_tool_usage_clusters.ipynb salesforce/task_tool_usage_clusters.ipynb
-#50 1 * * * papermill salesforce/task_tool_usage_clusters_map_contacts.ipynb salesforce/task_tool_usage_clusters_map_contacts.ipynb
-#50 1 * * * papermill salesforce/task_tool_usage_clusters_map_tools.ipynb salesforce/task_tool_usage_clusters_map_tools.ipynb
-30 1 * * * papermill salesforce/task_tools_map_authors.ipynb salesforce/task_tools_map_authors.ipynb
-30 1 * * * papermill salesforce/task_tools_map_contacts.ipynb salesforce/task_tools_map_contacts.ipynb
-30 1 * * * papermill salesforce/task_user_basic_updates.ipynb salesforce/task_user_basic_updates.ipynb
-30 2 * * * papermill salesforce/delete_spam_users.ipynb salesforce/delete_spam_users.ipynb
-30 3 * * * papermill salesforce/task_update_email_preferences.ipynb salesforce/task_update_email_preferences.ipynb
-30 3 * * * papermill salesforce/task_nh_survey_urls.ipynb salesforce/task_nh_survey_urls.ipynb
-30 3 * * * papermill salesforce/task_user_org_reclass.ipynb salesforce/task_user_org_reclass.ipynb
-30 3 * * * papermill salesforce/task_update_static_personalinfo.ipynb salesforce/task_update_static_personalinfo.ipynb
-30 4 * * * papermill salesforce/ db2users_remap_sf.ipynb salesforce/ db2users_remap_sf.ipynb
-30 4 * * * papermill salesforce/ task_nh_usage_survey.ipynb salesforce/ task_nh_usage_survey.ipynb
-30 0 28 * * papermill salesforce/task_user_contribution_update.ipynb salesforce/task_user_contribution_updated.ipynb
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/_task_test.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_citations.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_citations_map_contacts.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_citations_map_leads.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_determine_contact_cluster_org.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_issue_url.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_organization.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_orgs_map_contacts.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tool_basic_updates.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+#* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tool_usage_clusters.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+#* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tool_usage_clusters_map_contacts.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+#* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tool_usage_clusters_map_tools.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tools_map_authors.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_tools_map_contacts.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_user_basic_updates.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/delete_spam_users.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_update_email_preferences.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_nh_survey_urls.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_user_org_reclass.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_update_static_personalinfo.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/db2users_remap_sf.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_nh_usage_survey.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+* * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_user_contribution_update.ipynb --log-level=INFO >> /var/log/cron.log 2>&1

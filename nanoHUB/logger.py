@@ -58,21 +58,37 @@ logging_conf = dict(
     handlers = dict(
         console = dict(
             **{'class': 'logging.StreamHandler'},
-            level = logging.DEBUG,
+            level = logging.INFO,
             formatter = 'simple',
             stream = 'ext://sys.stdout'
+        ),
+        syslog = dict(
+            **{'class': 'logging.handlers.SysLogHandler'},
+            level = logging.INFO,
+            formatter = 'simple',
+            address = ('logs.papertrailapp.com', 19303)
         )
     ),
     loggers = dict(
         root = dict(
             level = logging.NOTSET,
-            handlers = ['console'],
+            handlers = ['console', 'syslog'],
+            propagate = True
+        ),
+        paramiko = dict(
+            level = logging.WARNING,
+            handlers = ['console', 'syslog'],
+            propagate = True
+        ),
+        sshtunnel = dict(
+            level = logging.WARNING,
+            handlers = ['console', 'syslog'],
             propagate = True
         )
     ),
     root = dict(
         level = logging.NOTSET,
-        handlers = ['console']
+        handlers = ['console', 'syslog']
     )
 )
 

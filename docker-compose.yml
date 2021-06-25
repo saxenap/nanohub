@@ -14,8 +14,6 @@ services:
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
-    stdin_open: true
-    tty: true
     volumes:
       - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
     env_file:
