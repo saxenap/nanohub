@@ -28,7 +28,8 @@ class JupyterExecutor(IExecutor):
     def __call__(self):
 
         if not os.path.isdir(self.outfile_path):
-            raise RuntimeError("Output file dir %s not found.", self.outfile_path)
+            Path(self.outfile_path).mkdir(parents=True, exist_ok=True)
+            raise RuntimeError("Output file dir %s not found." % self.outfile_path)
 
         output_file_path = self.outfile_path + '/' + Path(self.notebook_path).name
 
