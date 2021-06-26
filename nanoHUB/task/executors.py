@@ -6,6 +6,7 @@ with warnings.catch_warnings():
 import logging
 from pathlib import Path
 import subprocess
+import os
 
 
 class IExecutor:
@@ -25,7 +26,12 @@ class JupyterExecutor(IExecutor):
         self.logger = logger
 
     def __call__(self):
+
+        if not os.path.isdir(self.outfile_path):
+            raise RuntimeError("Output file dir %s not found.", self.outfile_path)
+
         output_file_path = self.outfile_path + '/' + Path(self.notebook_path).name
+
         papermill.execute_notebook(
             self.notebook_path,
             output_file_path,

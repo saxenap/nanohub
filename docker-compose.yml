@@ -6,11 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev-image
+      labels:
+        com.nanoHUB.description: "Development and Exploration service"
       args:
         NB_USER: "${NB_USER}"
         APP_DIR_NAME: "${APP_DIR_NAME}"
         HOME_DIR_NAME: "${HOME_DIR_NAME}"
         JUPYTER_PORT: "${JUPYTER_PORT}"
+        BUILD_WITH_JUPYTER: "${BUILD_WITH_JUPYTER}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
@@ -18,3 +21,4 @@ services:
       - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
     env_file:
       - ./nanoHUB/.env
+    command: [jupyter, lab]

@@ -44,6 +44,10 @@ class SystemSettings(BaseSettings):
 
     timezone: str = Field(env='system_timezone')
 
+class RemoteServicesSettings(BaseSettings):
+
+    papertrail_hostname: str = Field(env='papertrail_hostname')
+    papertrail_port: int = Field(env='papertrail_port')
 
 class Settings(BaseSettings):
 
@@ -53,3 +57,4 @@ class Settings(BaseSettings):
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
     systemsettings: SystemSettings = SystemSettings()
+    remoteservicessettings: RemoteServicesSettings = RemoteServicesSettings()

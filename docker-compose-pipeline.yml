@@ -15,7 +15,7 @@ services:
     logging:
       driver: syslog
       options:
-        syslog-address: "tcp://logs.papertrailapp.com:19303"
+        syslog-address: "${PAPERTRAIL_URL}"
         tag: "{{.Name}}/{{.ID}}"
     env_file:
       - ./nanoHUB/.env

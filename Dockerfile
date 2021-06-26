@@ -10,6 +10,8 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     wget curl git \
     sudo \
     python3-dev python3-venv python3-pip
+ARG BUILD_WITH_JUPYTER=1
+ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
 ARG NB_USER
 ARG NB_UID="1000"
 ARG NB_GID="100"
@@ -63,57 +65,68 @@ WORKDIR ${APP_DIR}
 
 
 
+#FROM base-image AS with-jupyter-0
+#USER ${NB_USER}
+#COPY --from=build-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+#COPY --from=build-image --chown=${NB_UID}:${NB_GID} ${APP_DIR} ${APP_DIR}
+#WORKDIR ${APP_DIR}
+
+
+
 FROM code-base-image AS jupyter-image
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=8888
 ENV JUPYTER_PORT=${JUPYTER_PORT}
-#RUN pip3 install nodeenv && nodeenv -p
-#RUN pip3 install jupyterlab_templates && \
-#    pip3 install --upgrade jupyterthemes
-#RUN pip3 install jupyter_contrib_nbextensions && \
-#    jupyter contrib nbextension install --user && \
-#    jupyter nbextension enable codefolding/main && \
-#    jupyter nbextension enable table_beautifier/main && \
-#    jupyter nbextension enable toc2/main && \
-#    jupyter nbextension enable splitcell/main && \
-#    jupyter nbextension enable varInspector/main && \
-#    jupyter nbextension enable init_cell/main && \
-#    jupyter nbextension enable tree-filter/main && \
-#    jupyter nbextension enable jupyter_boilerplate/main && \
-#    jupyter nbextension enable scroll_down/main && \
-#    jupyter nbextension enable notify/main && \
-#    jupyter nbextension enable skip-traceback/main && \
-#    jupyter nbextension enable move_selected_cells/main && \
-#    jupyter nbextension enable livemdpreview/main && \
-#    jupyter nbextension enable highlighter/main && \
-#    jupyter nbextension enable go_to_current_running_cell/main && \
-#    jupyter nbextension enable execute_time/main && \
-#    jupyter nbextension enable datestamper/main && \
-#    jupyter nbextension enable addbefore/main && \
-#    jupyter nbextension enable Hinterland/main && \
-#    jupyter nbextension enable snippets/main
-#RUN pip3 install qgrid && \
-#    jupyter nbextension enable --py --sys-prefix qgrid
-#RUN pip3 install RISE
-#RUN pip3 install jupyterlab_executor
-#RUN pip3 install jupyterlab-quickopen
-#RUN pip3 install jupyterlab_sql && \
-#    jupyter serverextension enable jupyterlab_sql --py --sys-prefix
-#RUN pip3 install jupyterlab-system-monitor
-#RUN pip3 install jupyterlab-topbar && \
-#    jupyter labextension install jupyterlab-topbar-text
-#RUN pip3 install lckr-jupyterlab-variableinspector
-##RUN jupyter labextension install jupyterlab_voyager
-#RUN pip3 install 'jupyterlab>=3.0.0,<4.0.0a0' jupyterlab-lsp && \
-#    pip3 install 'python-lsp-server[all]'
-#RUN jupyter labextension install @krassowski/jupyterlab_go_to_definition
-#RUN jupyter labextension install @jupyterlab/debugger
 RUN jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-#RUN jupyter lab build
+RUN if [ -z $BUILD_WITH_JUPYTER=1 ] ; then \
+    pip3 install nodeenv && nodeenv -p  && \
+    pip3 install jupyterlab_templates && \
+    pip3 install --upgrade jupyterthemes  && \
+    pip3 install jupyter_contrib_nbextensions && \
+    jupyter contrib nbextension install --user && \
+    jupyter nbextension enable codefolding/main && \
+    jupyter nbextension enable table_beautifier/main && \
+    jupyter nbextension enable toc2/main && \
+    jupyter nbextension enable splitcell/main && \
+    jupyter nbextension enable varInspector/main && \
+    jupyter nbextension enable init_cell/main && \
+    jupyter nbextension enable tree-filter/main && \
+    jupyter nbextension enable jupyter_boilerplate/main && \
+    jupyter nbextension enable scroll_down/main && \
+    jupyter nbextension enable notify/main && \
+    jupyter nbextension enable skip-traceback/main && \
+    jupyter nbextension enable move_selected_cells/main && \
+    jupyter nbextension enable livemdpreview/main && \
+    jupyter nbextension enable highlighter/main && \
+    jupyter nbextension enable go_to_current_running_cell/main && \
+    jupyter nbextension enable execute_time/main && \
+    jupyter nbextension enable datestamper/main && \
+    jupyter nbextension enable addbefore/main && \
+    jupyter nbextension enable Hinterland/main && \
+    jupyter nbextension enable snippets/main && \
+    pip3 install qgrid && \
+    jupyter nbextension enable --py --sys-prefix qgrid && \
+    pip3 install RISE && \
+    pip3 install jupyterlab_executor && \
+    pip3 install jupyterlab-quickopen && \
+    pip3 install jupyterlab_sql && \
+    jupyter serverextension enable jupyterlab_sql --py --sys-prefix && \
+    pip3 install jupyterlab-system-monitor && \
+    pip3 install jupyterlab-topbar && \
+    jupyter labextension install jupyterlab-topbar-text && \
+    pip3 install lckr-jupyterlab-variableinspector && \
+    #RUN jupyter labextension install jupyterlab_voyager && \
+    pip3 install 'jupyterlab>=3.0.0,<4.0.0a0' jupyterlab-lsp && \
+    pip3 install 'python-lsp-server[all]' && \
+    jupyter labextension install @krassowski/jupyterlab_go_to_definition && \
+    jupyter labextension install @jupyterlab/debugger && \
+    jupyter lab build; \
+    fi
+
 EXPOSE ${JUPYTER_PORT}
 
 

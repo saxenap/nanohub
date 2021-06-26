@@ -72,23 +72,35 @@ logging_conf = dict(
     loggers = dict(
         root = dict(
             level = logging.NOTSET,
-            handlers = ['console', 'syslog'],
+            handlers = [
+                'console',
+                'syslog'
+            ],
             propagate = True
         ),
         paramiko = dict(
             level = logging.WARNING,
-            handlers = ['console', 'syslog'],
+            handlers = [
+                'console',
+                'syslog'
+            ],
             propagate = True
         ),
         sshtunnel = dict(
             level = logging.WARNING,
-            handlers = ['console', 'syslog'],
+            handlers = [
+                'console',
+                'syslog'
+            ],
             propagate = True
         )
     ),
     root = dict(
         level = logging.NOTSET,
-        handlers = ['console', 'syslog']
+        handlers = [
+            'console',
+            'syslog'
+        ]
     )
 )
 
