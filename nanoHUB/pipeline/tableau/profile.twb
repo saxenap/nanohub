@@ -1,0 +1,1740 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20191.19.0321.1733                               -->
+<workbook original-version='18.1' source-build='2019.2.4 (20192.19.0917.1648)' source-platform='win' version='18.1' xml:base='https://tableauqa.itap.purdue.edu' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <AutoCreateAndUpdateDSDPhoneLayouts ignorable='true' predowngraded='true' />
+    <DashboardGridOverlay />
+    <SheetIdentifierTracking ignorable='true' predowngraded='true' />
+    <WindowsPersistSimpleIdentifiers />
+    <ZoneBackgroundTransparency />
+  </document-format-change-manifest>
+  <repository-location derived-from='https://tableauqa.itap.purdue.edu/workbooks/profile?rev=4.7' id='profile' path='/workbooks' revision='4.8' />
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='information_schema' inline='true' name='federated.17yx3be1k4uru718ybryn0s7ol1x' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='db2.nanohub.org' name='mysql.1pfdbiy1lz2htw15n3nhc1hkkw7g'>
+            <connection class='mysql' dbname='wang159_myrmekes' odbc-native-protocol='' one-time-sql='' port='3306' server='db2.nanohub.org' server-oauth='' source-charset='' username='wang159_ro' workgroup-auth-mode='prompt' />
+          </named-connection>
+        </named-connections>
+        <relation connection='mysql.1pfdbiy1lz2htw15n3nhc1hkkw7g' name='event_table' table='[event_table]' type='table' />
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>start_datetime</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[start_datetime]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>start_datetime</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>end_datetime</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[end_datetime]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>end_datetime</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timeline_domain</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[timeline_domain]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>timeline_domain</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timeline_label</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[timeline_label]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>timeline_label</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id_nanohub</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[id_nanohub]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>id_nanohub</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id_email</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[id_email]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>id_email</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id_hubspot</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[id_hubspot]</local-name>
+            <parent-name>[event_table]</parent-name>
+            <remote-alias>id_hubspot</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>200</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+      </column>
+      <column caption='Time' datatype='integer' name='[Calculation_2514345626538717185]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='DATEPART(&apos;second&apos;,[start_datetime])' />
+      </column>
+      <column caption='Start Date (Time Only)' datatype='datetime' name='[Calculation_2514345626604101634]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='maketime(datepart(&apos;hour&apos;,[start_datetime]), datepart(&apos;minute&apos;,[start_datetime]), datepart(&apos;second&apos;,[start_datetime]))' />
+      </column>
+      <column caption='Rank' datatype='integer' name='[Calculation_274438134868262920]' role='measure' type='ordinal'>
+        <calculation class='tableau' formula='INDEX()'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='Duration [second]' datatype='integer' name='[Duration [hour]] (copy)]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='DATEDIFF(&apos;second&apos;,[start_datetime],[end_datetime])' />
+      </column>
+      <column caption='Duration [second to hour]' datatype='real' name='[Duration [second]] (copy)]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='DATEDIFF(&apos;second&apos;,[start_datetime],[end_datetime])/3600' />
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='End Date (Time Only)' datatype='datetime' name='[Start Date (Time Only) (copy)]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='maketime(datepart(&apos;hour&apos;,[end_datetime]), datepart(&apos;minute&apos;,[end_datetime]), datepart(&apos;second&apos;,[end_datetime]))' />
+      </column>
+      <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+      <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+      <column caption='Id Hubspot' datatype='string' name='[id_hubspot]' role='dimension' type='nominal' />
+      <column caption='Id Nanohub' datatype='string' name='[id_nanohub]' role='dimension' type='nominal' />
+      <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+      <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+      <column caption='Item' datatype='string' name='[timeline_label]' role='dimension' type='nominal' />
+      <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.541885' measure-ordering='alphabetic' measure-percentage='0.458115' rowDisplayCount='1000' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:timeline_domain:nk]' type='palette'>
+            <map to='#499894'>
+              <bucket>&quot;feedback&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;about&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;support&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;collections&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;usage&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;newsletter&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;groups&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;contribute&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;whatsnew&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;simulation&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;answers&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;tags&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;resources&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;courses&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;wishlist&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;podcast&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;projects&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;search&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;store&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;home&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;events&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;blog&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;tools&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;publications&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;members&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;citations&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;topics&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+    </datasource>
+  </datasources>
+  <shared-views>
+    <shared-view name='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+      <datasources>
+        <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+      </datasources>
+      <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+        <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+        <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+      </datasource-dependencies>
+      <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]'>
+        <groupfilter function='member' level='[none:id_email:nk]' member='&quot;wang159@purdue.edu&quot;' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+        <target field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]' />
+      </filter>
+    </shared-view>
+  </shared-views>
+  <worksheets>
+    <worksheet name='Overall Time Progress'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Sum' name='[cum:sum:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative'>
+              <table-calc aggregation='Sum' ordering-field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:end_datetime:ok]' ordering-type='Field' type='CumTotal' />
+            </column-instance>
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[end_datetime]' derivation='Day-Trunc' name='[tdy:end_datetime:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[end_datetime]' derivation='Day-Trunc' name='[tdy:end_datetime:qk]' pivot='key' type='quantitative' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;courses&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;groups&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;projects&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;publications&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;resources&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;tools&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:end_datetime:qk]' scope='cols' value='Time' />
+            <format attr='title' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[cum:sum:Calculation_2514345626520567808:qk]' scope='rows' value='Total time (hour)' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cum:sum:Calculation_2514345626520567808:qk]</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:end_datetime:qk]</cols>
+      </table>
+      <simple-id uuid='{807BE8A5-E0CE-427F-B8DB-3375FFB2E15B}' />
+    </worksheet>
+    <worksheet name='Overall Time Spend'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Sum' name='[sum:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;courses&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;groups&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;projects&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;publications&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;resources&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;tools&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-color' value='#59a14f' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</cols>
+        <annotations>
+          <annotation class='point' id='1' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;about&quot;</value>
+                    <value>0.0038999999999999998</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='2' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;answers&quot;</value>
+                    <value>0.0086999999999999994</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='4' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;events&quot;</value>
+                    <value>0.0035999999999999999</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='6' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;home&quot;</value>
+                    <value>0.087499999999999994</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='7' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;login&quot;</value>
+                    <value>0.0</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='8' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;members&quot;</value>
+                    <value>0.13100000000000001</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='9' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;newsletter&quot;</value>
+                    <value>0.0070000000000000001</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='13' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;search&quot;</value>
+                    <value>0.021600000000000001</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='14' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;support&quot;</value>
+                    <value>0.1986</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='15' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;tags&quot;</value>
+                    <value>0.019900000000000001</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='17' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;usage&quot;</value>
+                    <value>0.0141</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='18' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;whatsnew&quot;</value>
+                    <value>0.0082000000000000007</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+          <annotation class='point' id='19' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;wiki&quot;</value>
+                    <value>0.0123</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='-19' y='-73' />
+          </annotation>
+          <annotation class='point' id='20' mark-position='1' pullback='12' text-width='180'>
+            <formatted-text>
+              <run fontcolor='#787878'>Æ </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+              <run>Æ&#10;</run>
+              <run fontcolor='#787878'>Total time (hours): </run>
+              <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]&gt;</run>
+            </formatted-text>
+            <point>
+              <visual-coordinate class='mark'>
+                <tuple-reference>
+                  <tuple-descriptor>
+                    <pane-descriptor>
+                      <x-fields />
+                      <y-fields />
+                    </pane-descriptor>
+                    <columns>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+                      <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]</field>
+                    </columns>
+                  </tuple-descriptor>
+                  <tuple>
+                    <value>&quot;wishlist&quot;</value>
+                    <value>0.0041999999999999997</value>
+                  </tuple>
+                </tuple-reference>
+              </visual-coordinate>
+            </point>
+            <body x='130' y='-20' />
+          </annotation>
+        </annotations>
+      </table>
+      <simple-id uuid='{55D3F7AD-EB1E-40C8-BC02-B2373FA81948}' />
+    </worksheet>
+    <worksheet name='Timeline Profile'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column caption='Start Date (Time Only)' datatype='datetime' name='[Calculation_2514345626604101634]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='maketime(datepart(&apos;hour&apos;,[start_datetime]), datepart(&apos;minute&apos;,[start_datetime]), datepart(&apos;second&apos;,[start_datetime]))' />
+            </column>
+            <column caption='Duration [second]' datatype='integer' name='[Duration [hour]] (copy)]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='DATEDIFF(&apos;second&apos;,[start_datetime],[end_datetime])' />
+            </column>
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Avg' name='[avg:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Duration [hour]] (copy)]' derivation='Avg' name='[avg:Duration [hour]] (copy):qk]' pivot='key' type='quantitative' />
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_2514345626604101634]' derivation='None' name='[none:Calculation_2514345626604101634:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_label]' derivation='None' name='[none:timeline_label:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[start_datetime]' derivation='Day-Trunc' name='[tdy:start_datetime:ok]' pivot='key' type='ordinal' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+            <column caption='Item' datatype='string' name='[timeline_label]' role='dimension' type='nominal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter from='&quot;about&quot;' function='range' level='[none:timeline_domain:nk]' to='&quot;home&quot;' />
+              <groupfilter from='&quot;members&quot;' function='range' level='[none:timeline_domain:nk]' to='&quot;wishlist&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <encoding attr='space' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:Calculation_2514345626604101634:qk]' field-type='quantitative' major-origin='#11:00:00#' major-spacing='1.0' major-units='hours' max='#1899-12-31 00:00:01#' min='#1899-12-29 23:59:59#' minor-origin='#11:59:59.500#' minor-spacing='10.0' minor-units='minutes' range-type='fixed' scope='cols' type='space' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='wrap' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='on' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='3' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='GanttBar' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+              <size column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[avg:Calculation_2514345626520567808:qk]' />
+              <text column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' />
+              <lod column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[avg:Duration [hour]] (copy):qk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_datetime:ok]&gt;</run>
+                <run>Æ&#10;</run>
+                <run fontcolor='#787878'>Duration:&#9;</run>
+                <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[avg:Duration [hour]] (copy):qk]&gt; seconds</run>
+                <run>Æ&#10;&#10;</run>
+                <run fontcolor='#787878'>Timeline Domain:&#9;</run>
+                <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]&gt;</run>
+                <run>Æ&#10;</run>
+                <run fontcolor='#787878'>timeline_label:&#9;</run>
+                <run bold='true'>&lt;[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]&gt;</run>
+                <run>Æ&#10;</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='cell'>
+                <format attr='text-align' value='center' />
+                <format attr='wrap' value='auto' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-show' value='true' />
+                <format attr='has-stroke' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_datetime:ok] / [federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk])</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:Calculation_2514345626604101634:qk]</cols>
+      </table>
+      <simple-id uuid='{0E60011C-0710-413B-AD0C-30CAF3472179}' />
+    </worksheet>
+    <worksheet name='Top 10 Tools by CPU Time'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column caption='Rank' datatype='integer' name='[Calculation_274438134868262920]' role='measure' type='ordinal'>
+              <calculation class='tableau' formula='INDEX()'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Duration [second to hour]' datatype='real' name='[Duration [second]] (copy)]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='DATEDIFF(&apos;second&apos;,[start_datetime],[end_datetime])/3600' />
+            </column>
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_label]' derivation='None' name='[none:timeline_label:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Sum' name='[sum:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Duration [second]] (copy)]' derivation='Sum' name='[sum:Duration [second]] (copy):qk]' pivot='key' type='quantitative' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+            <column caption='Item' datatype='string' name='[timeline_label]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_274438134868262920]' derivation='User' name='[usr:Calculation_274438134868262920:ok:5]' pivot='key' type='ordinal'>
+              <table-calc level-break='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' ordering-type='Field'>
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' />
+                <sort direction='DESC' using='[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]' />
+              </table-calc>
+            </column-instance>
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;simulation&quot;' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-manual-selection='true' user:ui-manual-selection-all-when-empty='false' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='1' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='2' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='3' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='4' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='5' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='6' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='7' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='8' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='9' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='10' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Duration [second]] (copy):qk]' scope='cols' value='CPU Time (hours)' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='width' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='584' />
+            <format attr='wrap' data-class='subtotal' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='on' />
+          </style-rule>
+          <style-rule element='field-labels-decoration'>
+            <format attr='wrap' value='on' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='2' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk] / ([federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5] / [federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]))</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Duration [second]] (copy):qk]</cols>
+        <table-calculations>
+          <partitionable-measures>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:ok]</column>
+          </partitionable-measures>
+        </table-calculations>
+      </table>
+      <simple-id uuid='{7CDFDA2F-ECC8-405F-9832-BE6210E25FEC}' />
+    </worksheet>
+    <worksheet name='Top 10 Tools by Visits'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column caption='Rank' datatype='integer' name='[Calculation_274438134868262920]' role='measure' type='ordinal'>
+              <calculation class='tableau' formula='INDEX()'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column-instance column='[timeline_label]' derivation='Count' name='[cnt:timeline_label:qk]' pivot='key' type='quantitative' />
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_label]' derivation='None' name='[none:timeline_label:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Sum' name='[sum:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+            <column caption='Item' datatype='string' name='[timeline_label]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_274438134868262920]' derivation='User' name='[usr:Calculation_274438134868262920:ok:5]' pivot='key' type='ordinal'>
+              <table-calc level-break='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' ordering-type='Field'>
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' />
+                <sort direction='DESC' using='[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]' />
+              </table-calc>
+            </column-instance>
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;simulation&quot;' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-manual-selection='true' user:ui-manual-selection-all-when-empty='false' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='1' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='2' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='3' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='4' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='5' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='6' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='7' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='8' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='9' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='10' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:qk]' scope='cols' value='Number of runs' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='width' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='584' />
+            <format attr='wrap' data-class='subtotal' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='on' />
+          </style-rule>
+          <style-rule element='field-labels-decoration'>
+            <format attr='wrap' value='on' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk] / ([federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5] / [federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]))</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:qk]</cols>
+        <table-calculations>
+          <partitionable-measures>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:ok]</column>
+          </partitionable-measures>
+        </table-calculations>
+      </table>
+      <simple-id uuid='{F0ED59FD-BC2C-4A0D-9E8C-3ECC507ED279}' />
+    </worksheet>
+    <worksheet name='Top 10 Visits'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+          </datasources>
+          <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+            <column caption='Duration [hour]' datatype='real' name='[Calculation_2514345626520567808]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='ABS([end_datetime]-[start_datetime])' />
+            </column>
+            <column caption='Rank' datatype='integer' name='[Calculation_274438134868262920]' role='measure' type='ordinal'>
+              <calculation class='tableau' formula='INDEX()'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column-instance column='[timeline_label]' derivation='Count' name='[cnt:timeline_label:qk]' pivot='key' type='quantitative' />
+            <column caption='End Datetime' datatype='datetime' name='[end_datetime]' role='dimension' type='ordinal' />
+            <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+            <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+            <column-instance column='[timeline_label]' derivation='None' name='[none:timeline_label:nk]' pivot='key' type='nominal' />
+            <column caption='Start Datetime' datatype='datetime' name='[start_datetime]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_2514345626520567808]' derivation='Sum' name='[sum:Calculation_2514345626520567808:qk]' pivot='key' type='quantitative' />
+            <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+            <column caption='Item' datatype='string' name='[timeline_label]' role='dimension' type='nominal' />
+            <column-instance column='[Calculation_274438134868262920]' derivation='User' name='[usr:Calculation_274438134868262920:ok:5]' pivot='key' type='ordinal'>
+              <table-calc level-break='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' ordering-type='Field'>
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+                <order field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' />
+                <sort direction='DESC' using='[federated.17yx3be1k4uru718ybryn0s7ol1x].[sum:Calculation_2514345626520567808:qk]' />
+              </table-calc>
+            </column-instance>
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;courses&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;groups&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;projects&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;publications&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;resources&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;search&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;store&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;support&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;tags&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;tools&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;topics&quot;' />
+              <groupfilter function='member' level='[none:timeline_domain:nk]' member='&quot;wishlist&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]'>
+            <groupfilter function='except' user:ui-domain='relevant' user:ui-enumeration='exclusive' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[none:timeline_label:nk]' />
+              <groupfilter function='union'>
+                <groupfilter function='member' level='[none:timeline_label:nk]' member='&quot;&quot;' />
+                <groupfilter function='member' level='[none:timeline_label:nk]' member='&quot;-&quot;' />
+              </groupfilter>
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='1' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='2' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='3' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='4' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='5' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='6' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='7' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='8' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='9' />
+              <groupfilter function='member' level='[usr:Calculation_274438134868262920:ok:5]' member='10' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</column>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:qk]' scope='cols' value='Number of visits' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='width' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='584' />
+            <format attr='wrap' data-class='subtotal' field='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]' value='on' />
+          </style-rule>
+          <style-rule element='field-labels-decoration'>
+            <format attr='wrap' value='on' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='false' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>([federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk] / ([federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5] / [federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]))</rows>
+        <cols>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:qk]</cols>
+        <table-calculations>
+          <partitionable-measures>
+            <column>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:ok]</column>
+          </partitionable-measures>
+        </table-calculations>
+      </table>
+      <simple-id uuid='{F7CCE761-510C-4145-8122-E3B7BE6D4353}' />
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='Profile Timeline'>
+      <repository-location id='ProfileTimeline' path='/workbooks/profile' revision='' />
+      <style />
+      <size maxheight='6000' maxwidth='1500' minheight='3000' minwidth='869' sizing-mode='range' />
+      <datasources>
+        <datasource caption='information_schema' name='federated.17yx3be1k4uru718ybryn0s7ol1x' />
+      </datasources>
+      <datasource-dependencies datasource='federated.17yx3be1k4uru718ybryn0s7ol1x'>
+        <column caption='Id Email' datatype='string' name='[id_email]' role='dimension' type='nominal' />
+        <column-instance column='[id_email]' derivation='None' name='[none:id_email:nk]' pivot='key' type='nominal' />
+        <column-instance column='[timeline_domain]' derivation='None' name='[none:timeline_domain:nk]' pivot='key' type='nominal' />
+        <column caption='Category' datatype='string' name='[timeline_domain]' role='dimension' type='nominal' />
+      </datasource-dependencies>
+      <zones>
+        <zone h='100000' id='4' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='25200' id='7' param='horz' type='layout-flow' w='98898' x='551' y='74533'>
+            <zone h='25200' id='5' type='layout-basic' w='98898' x='551' y='74533'>
+              <zone h='25200' id='37' param='vert' type='layout-flow' w='98898' x='551' y='74533'>
+                <zone fixed-size='91' h='3300' id='9' is-fixed='true' name='Timeline Profile' pane-specification-id='3' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' w='98898' x='551' y='74533'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                  </zone-style>
+                </zone>
+                <zone h='21900' id='3' name='Timeline Profile' w='98898' x='551' y='77833'>
+                  <layout-cache fixed-size-h='11899' type-h='fixed' type-w='fixed' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                  </zone-style>
+                </zone>
+              </zone>
+            </zone>
+          </zone>
+          <zone h='7800' id='18' name='Overall Time Spend' w='98898' x='551' y='2767'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone h='18366' id='27' param='vert' type='layout-flow' w='98898' x='551' y='10567'>
+            <zone h='16632' id='28' name='Overall Time Progress' w='98898' x='551' y='10567'>
+              <layout-cache minheight='198' minwidth='163' type-h='scalable' type-w='scalable' />
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='4' />
+              </zone-style>
+            </zone>
+            <zone h='1734' id='74' mode='checkdropdown' name='Overall Time Progress' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='filter' values='database' w='98898' x='551' y='27199'>
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='4' />
+              </zone-style>
+            </zone>
+          </zone>
+          <zone h='45600' id='31' param='vert' type='layout-flow' w='98898' x='551' y='28933'>
+            <zone fixed-size='686' h='23134' id='32' is-fixed='true' name='Top 10 Visits' w='98898' x='551' y='28933'>
+              <layout-cache type-h='fixed' type-w='fixed' />
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='4' />
+              </zone-style>
+            </zone>
+            <zone fixed-size='329' h='11234' id='92' is-fixed='true' name='Top 10 Tools by Visits' w='98898' x='551' y='52067'>
+              <layout-cache type-h='fixed' type-w='fixed' />
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='4' />
+              </zone-style>
+            </zone>
+            <zone h='10900' id='93' name='Top 10 Tools by CPU Time' w='98898' x='551' y='63301'>
+              <layout-cache fixed-size-h='319' type-h='fixed' type-w='fixed' />
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='4' />
+              </zone-style>
+            </zone>
+          </zone>
+          <zone fixed-size='39' h='2500' id='8' is-fixed='true' mode='dropdown' name='Timeline Profile' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]' type='filter' w='98898' x='551' y='267'>
+            <zone-style>
+              <format attr='border-color' value='#000000' />
+              <format attr='border-style' value='none' />
+              <format attr='border-width' value='0' />
+              <format attr='margin' value='4' />
+            </zone-style>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+      </zones>
+      <devicelayouts>
+        <devicelayout auto-generated='true' name='Phone'>
+          <size maxheight='1950' minheight='1950' sizing-mode='vscroll' />
+          <zones>
+            <zone h='100000' id='148' type='layout-basic' w='100000' x='0' y='0'>
+              <zone h='99466' id='149' param='vert' type='layout-flow' w='98898' x='551' y='267'>
+                <zone fixed-size='280' h='7800' id='18' is-fixed='true' name='Overall Time Spend' w='98898' x='551' y='2767'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone h='1734' id='74' mode='checkdropdown' name='Overall Time Progress' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='filter' values='database' w='98898' x='551' y='27199'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='16632' id='28' is-fixed='true' name='Overall Time Progress' w='98898' x='551' y='10567'>
+                  <layout-cache minheight='198' minwidth='163' type-h='scalable' type-w='scalable' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='23134' id='32' is-fixed='true' name='Top 10 Visits' w='98898' x='551' y='28933'>
+                  <layout-cache type-h='fixed' type-w='fixed' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='11234' id='92' is-fixed='true' name='Top 10 Tools by Visits' w='98898' x='551' y='52067'>
+                  <layout-cache type-h='fixed' type-w='fixed' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='10900' id='93' is-fixed='true' name='Top 10 Tools by CPU Time' w='98898' x='551' y='63301'>
+                  <layout-cache fixed-size-h='319' type-h='fixed' type-w='fixed' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='39' h='2500' id='8' mode='dropdown' name='Timeline Profile' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]' type='filter' w='98898' x='551' y='267'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='21900' id='3' is-fixed='true' name='Timeline Profile' w='98898' x='551' y='77833'>
+                  <layout-cache fixed-size-h='11899' type-h='fixed' type-w='fixed' />
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='91' h='3300' id='9' name='Timeline Profile' pane-specification-id='3' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' w='98898' x='551' y='74533'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+              </zone>
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='8' />
+              </zone-style>
+            </zone>
+          </zones>
+        </devicelayout>
+      </devicelayouts>
+      <simple-id uuid='{4D4BCC39-4EE7-4353-ACAA-A6A53FF80759}' />
+    </dashboard>
+  </dashboards>
+  <windows source-height='30'>
+    <window class='worksheet' name='Timeline Profile'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card mode='dropdown' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]' type='filter' />
+          </strip>
+          <strip size='2147483647'>
+            <card pane-specification-id='3' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:Calculation_2514345626538717185:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:type:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_date:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_date:qk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[yr:Calculation_2514345626604101634:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[yr:start_date:ok]</field>
+          </color-one-way>
+        </highlight>
+        <floating-toolbar-visibility value='1' />
+      </viewpoint>
+      <simple-id uuid='{8B592B5D-3DFB-4482-9AD1-5CB6DC68813A}' />
+    </window>
+    <window class='worksheet' name='Overall Time Spend'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card mode='checkdropdown' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='filter' />
+            <card mode='dropdown' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:id_email:nk]' type='filter' />
+            <card pane-specification-id='0' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:Calculation_2514345626538717185:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:type:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_date:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[tdy:start_date:qk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[yr:Calculation_2514345626604101634:ok]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[yr:start_date:ok]</field>
+          </color-one-way>
+        </highlight>
+        <floating-toolbar-visibility value='1' />
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+      <simple-id uuid='{F20F3DC2-EC96-49DF-9EF2-DBFD78C76A6B}' />
+    </window>
+    <window class='worksheet' name='Overall Time Progress'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='filter' />
+            <card pane-specification-id='1' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[yr:end_datetime:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{B4C771D6-A647-475D-82ED-076A7B24CF43}' />
+    </window>
+    <window class='worksheet' name='Top 10 Visits'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='0' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{AEB6BD23-EDC8-43DC-AE29-FD82567FAD1E}' />
+    </window>
+    <window class='worksheet' name='Top 10 Tools by Visits'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='0' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <selection-collection>
+          <node-selection select-tuples='false'>
+            <oriented-node-reference orientation='horizontal'>
+              <node-reference>
+                <axis>[federated.17yx3be1k4uru718ybryn0s7ol1x].[cnt:timeline_label:qk]</axis>
+              </node-reference>
+              <page-reference />
+            </oriented-node-reference>
+          </node-selection>
+        </selection-collection>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{9A5389F2-C3CA-43E2-A97D-CBD96C2FD9D2}' />
+    </window>
+    <window class='worksheet' name='Top 10 Tools by CPU Time'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='2' param='[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_label:nk]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok:5]</field>
+            <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[usr:Calculation_274438134868262920:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{566BC02D-77BF-4C99-B915-6F69A858AFC9}' />
+    </window>
+    <window class='dashboard' maximized='true' name='Profile Timeline'>
+      <viewpoints>
+        <viewpoint name='Overall Time Progress'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Overall Time Spend'>
+          <zoom type='entire-view' />
+          <floating-toolbar-visibility value='1' />
+        </viewpoint>
+        <viewpoint name='Timeline Profile'>
+          <highlight>
+            <color-one-way>
+              <field>[federated.17yx3be1k4uru718ybryn0s7ol1x].[none:timeline_domain:nk]</field>
+            </color-one-way>
+          </highlight>
+          <floating-toolbar-visibility value='1' />
+        </viewpoint>
+        <viewpoint name='Top 10 Tools by CPU Time' />
+        <viewpoint name='Top 10 Tools by Visits' />
+        <viewpoint name='Top 10 Visits' />
+      </viewpoints>
+      <active id='3' />
+      <grid grid-overlay-mode='on' />
+      <simple-id uuid='{646E96B1-2025-4A63-9848-974662C9D2BF}' />
+    </window>
+  </windows>
+</workbook>
