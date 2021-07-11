@@ -1,0 +1,25 @@
+# Please rename this file from .env.dev to .env and fill in the missing
+# credentials.
+tunnel_use_ssh_connection=true
+tunnel_ssh_host=db2.nanohub.org
+tunnel_ssh_username=wang2506
+tunnel_ssh_password=Ch5b272020
+tunnel_ssh_port=22
+tunnel_remote_bind_address=127.0.0.1
+tunnel_remote_bind_port=3306
+
+db_host=127.0.0.1
+db_user=wang2506_ro
+db_password=fnVnwcCS7iT45EsA
+
+salesforce_grant_type="password"
+salesforce_client_id="3MVG95jctIhbyCppj0SNJ75IsZ1y8UPGZtSNF4j8FNVXz.De8Lu4jHm3rjRosAtsHy6qjHx3i4S_QbQzvBePG"
+salesforce_client_secret="D1623C6D3607D4FC8004B92C761DFB6C1F70CCD129C5501E357028DFA00F5764"
+salesforce_username="wang2506@purdue.edu"
+salesforce_password="npass2021HDfJLhBGDx11xWCKlEbHQKhF"
+
+pipeline_outfile_dir="./nanoHUB/pipeline/out"
+executor_max_retries_on_failure=3
+
+system_timezone='US/Eastern'
+r_executablw="/usr/bin/RSync"
