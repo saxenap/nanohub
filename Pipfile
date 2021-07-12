@@ -10,12 +10,12 @@ python_version = "3.9"
 pytest = "6.2"
 
 [packages]
-#need to define exact (pre) version for black
-#delete Pipenv.lock file and then run pipenv install again
+# need to define exact (pre) version for black
+# delete Pipenv.lock file and then run pipenv install again
 black = "==19.10b0"
 typer = "*"
-pandas = "1.2"
-numpy = "1.20"
+pandas = "*"
+numpy = "*"
 pymysql = "1.0"
 pyarrow = "4.0"
 python-dotenv = "*"
@@ -34,5 +34,13 @@ jupyterlab = "*"
 #pyinstaller = "*"
 #notifiers = "*"
 #XlsxWriter = "1.4.3"
-matplotlib = "3.4.2"
-seaborn = "0.11.1"
+matplotlib = "*"
+# Installing seaborn can give errors, such as:
+# 1. To build Scipy from sources, BLAS & LAPACK libraries need to be installed.
+# 2. numpy.distutils.system_info.NotFoundError: No BLAS/LAPACK libraries found. Note: Accelerate is no longer supported.
+# This happens because pipenv is trying to build numpy and scipy from source.
+# Solution - export SYSTEM_VERSION_COMPAT=1
+seaborn = "*"
+plotly = "*"
+chart-studio = "*"
+sklearn = "*"
