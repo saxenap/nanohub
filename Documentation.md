@@ -42,7 +42,12 @@
 3. Run the code to see the dataset 
 
 
+# Potential Errors
 
+## Docker
+1. `docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', ConnectionRefusedError(61, 'Connection refused'))`
+    
+    * This could mean your Docker engine (and Docker Desktop, if applicable) is turned off. 
 
 
 
