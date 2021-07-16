@@ -1,0 +1,2 @@
+dev_flag = False
+prod_flag = True
