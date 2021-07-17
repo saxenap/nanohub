@@ -5,6 +5,8 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
+ENV TZ=America/Indiana/Indianapolis
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     gcc \
     wget curl git \
@@ -74,6 +76,17 @@ WORKDIR ${APP_DIR}
 
 
 FROM code-base-image AS jupyter-image
+USER root
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+RUN apt-get install -y --no-install-recommends \
+    texlive-xetex \
+    texlive-latex-base \
+    texlive-fonts-recommended \
+    texlive-latex-recommended \
+    texlive-plain-generic \
+    texlive-latex-extra \
+    pandoc
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=8888
@@ -81,7 +94,10 @@ ENV JUPYTER_PORT=${JUPYTER_PORT}
 RUN jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
+    sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
 RUN if [ -z $BUILD_WITH_JUPYTER=1 ] ; then \
     pip3 install nodeenv && nodeenv -p  && \
     pip3 install jupyterlab_templates && \
