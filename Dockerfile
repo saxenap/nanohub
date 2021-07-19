@@ -44,7 +44,7 @@ RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER root
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && pip3 install --user --no-cache-dir pipenv
+    && pip3 install --no-cache-dir pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile* ${APP_DIR}/
 RUN pipenv lock -r > requirements.txt
