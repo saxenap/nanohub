@@ -7,6 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 ENV TZ=America/Indiana/Indianapolis
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN sudo apt-get update -y && apt-get install -y --no-install-recommends \
+    sudo
 ARG BUILD_WITH_JUPYTER=1
 ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
 ARG NB_USER
@@ -26,11 +28,10 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN sudo apt-get update -y && apt-get install -y --no-install-recommends \
+RUN sudo apt-get install -y --no-install-recommends \
     build-essential \
     wget curl git \
     openssh-server \
-    sudo \
     nano vim \
     python3-dev python3-venv python3-pip
 
