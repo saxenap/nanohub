@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 ENV TZ=America/Indiana/Indianapolis
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN sudo apt-get update -y && apt-get install -y --no-install-recommends \
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
     sudo
 ARG BUILD_WITH_JUPYTER=1
 ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
