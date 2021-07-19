@@ -20,7 +20,6 @@ ENV NB_USER_DIR="/${HOME_DIR_NAME}/${NB_USER}"
 ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
 RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" sudo && \
-    usermod -aG sudo ${NB_USER} && \
     echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
     chown -R --from=root ${NB_USER} ${NB_USER_DIR}
