@@ -30,7 +30,8 @@ RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
     usermod -aG sudo ${NB_USER} && \
     echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
-    chown -R --from=root ${NB_USER} ${NB_USER_DIR}
+    chown -R --from=root ${NB_USER} ${NB_USER_DIR} && \
+    chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
@@ -39,6 +40,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 
 FROM base-image AS build-image
+RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
@@ -52,7 +54,6 @@ COPY . .
 COPY nanoHUB/.env ./nanoHUB/.env
 RUN pip3 install .
 USER root
-RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 
 
