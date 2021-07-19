@@ -19,8 +19,7 @@ ARG HOME_DIR_NAME
 ENV NB_USER_DIR="/${HOME_DIR_NAME}/${NB_USER}"
 ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
-RUN adduser --disabled-password --home  ${NB_USER_DIR} --uid "${NB_UID}" --group sudo ${NB_USER} && \
-    echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
+RUN adduser --home  ${NB_USER_DIR} --uid "${NB_UID}" --group sudo ${NB_USER} && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
     chown -R --from=root ${NB_USER} ${NB_USER_DIR}
 USER ${NB_USER}
