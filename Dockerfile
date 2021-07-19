@@ -37,12 +37,11 @@ RUN sudo apt-get install -y --no-install-recommends \
     python3-dev python3-venv python3-pip
 
 
-
 FROM base-image AS build-image
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && sudo pip3 install --no-cache-dir pipenv
+    && sudo -H pip install -U pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 RUN pipenv lock -r > requirements.txt
