@@ -41,7 +41,7 @@ ENV PATH="$NB_USER_DIR/.local/bin:$VIRTUAL_ENV/bin:$PATH"
 
 FROM base-image AS build-image
 RUN chown -R --from=root ${NB_USER} ${APP_DIR}
-USER ${NB_USER}
+USER root
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip3 install  --no-cache-dir pipenv
@@ -53,7 +53,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 COPY nanoHUB/.env ./nanoHUB/.env
 RUN pip3 install .
-USER root
 USER ${NB_USER}
 
 
