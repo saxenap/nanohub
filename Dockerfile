@@ -30,8 +30,8 @@ RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
     usermod -aG sudo ${NB_USER} && \
     echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
-    chown -R --from=root ${NB_USER} ${NB_USER_DIR} && \
-    chown -R --from=root ${NB_USER} ${APP_DIR}
+    chown -R --from=root ${NB_USER} ${NB_USER_DIR}
+RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
