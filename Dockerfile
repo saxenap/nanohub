@@ -40,11 +40,11 @@ ENV PATH="$NB_USER_DIR/.local/bin:$VIRTUAL_ENV/bin:$PATH"
 
 
 FROM base-image AS build-image
-RUN chown -R --from=root ${NB_USER} ${APP_DIR}
+RUN chown -R --from=root ${NB_USER}/.local/bin ${APP_DIR}
 USER root
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && pip3 install --no-cache-dir pipenv
+    && pip3 install --target=${NB_USER_DIR} --no-cache-dir pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile* ${APP_DIR}/
 RUN pipenv lock -r > requirements.txt
