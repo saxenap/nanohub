@@ -32,25 +32,27 @@ RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
     chown -R --from=root ${NB_USER} ${NB_USER_DIR}
 USER ${NB_USER}
-RUN mkdir ${APP_DIR}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
-ENV PATH="$NB_USER_DIR/.local/bin:$VIRTUAL_ENV/bin:$PATH"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 
 
 FROM base-image AS build-image
 USER root
-WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && sudo -H -u ${NB_USER} pip3 install --no-cache-dir pipenv
+    && pip3 install --no-cache-dir pipenv
+USER ${NB_USER}
+WORKDIR ${APP_DIR}
 RUN python3 -m venv ${VIRTUAL_ENV}
-COPY Pipfile* ${APP_DIR}/
+COPY Pipfile .
 RUN pipenv lock -r > requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 COPY nanoHUB/.env ./nanoHUB/.env
 RUN pip3 install .
+USER root
+RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 
 
