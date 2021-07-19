@@ -7,5 +7,5 @@
 This version is a copy-paste of the original jupyter file created by Karaman. 
 
 
-### Version 2
+### Version 2 - segmentation_karaman.ipynb
 This is the modified version of the version 1 by Praveen. This is in working condition.
