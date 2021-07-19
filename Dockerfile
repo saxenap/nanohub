@@ -39,7 +39,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 
 FROM base-image AS build-image
-USER root
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip3 install --no-cache-dir pipenv
 USER ${NB_USER}
