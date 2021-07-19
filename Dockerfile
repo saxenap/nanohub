@@ -8,7 +8,12 @@ ENV PYTHONFAULTHANDLER 1
 ENV TZ=America/Indiana/Indianapolis
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    sudo
+    build-essential \
+    wget curl git \
+    openssh-server \
+    sudo \
+    nano vim \
+    python3-dev python3-venv python3-pip
 ARG BUILD_WITH_JUPYTER=1
 ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
 ARG NB_USER
@@ -21,7 +26,8 @@ ARG HOME_DIR_NAME
 ENV NB_USER_DIR="/${HOME_DIR_NAME}/${NB_USER}"
 ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
-RUN useradd -l -m -s /bin/bash -N -G sudo -u "${NB_UID}" "${NB_USER}"  && \
+RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
+    usermod -aG sudo ${NB_USER} && \
     echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
     cp /root/.bashrc ${NB_USER_DIR}/ && \
     chown -R --from=root ${NB_USER} ${NB_USER_DIR}
@@ -29,21 +35,17 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN sudo apt-get install -y --no-install-recommends \
-    build-essential \
-    wget curl git \
-    openssh-server \
-    nano vim \
-    python3-dev python3-venv python3-pip
+
 
 
 FROM base-image AS build-image
+USER root
+RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
+    && pip3 install --no-cache-dir pipenv
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
-RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && sudo -H pip install -U pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
-COPY Pipfile .
+COPY Pipfile* .
 RUN pipenv lock -r > requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
