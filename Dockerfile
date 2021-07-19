@@ -42,16 +42,16 @@ FROM base-image AS build-image
 USER root
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip3 install --no-cache-dir pipenv
-RUN chown -R ${NB_USER} ${APP_DIR}
+RUN chown -R  --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 RUN python3 -m venv ${VIRTUAL_ENV}
-COPY Pipfile .
-RUN pipenv lock -r > requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
-COPY . .
-COPY nanoHUB/.env ./nanoHUB/.env
-RUN pip3 install .
+COPY Pipfile ${APP_DIR}/
+RUN pipenv lock -r > ${APP_DIR}/requirements.txt
+RUN pip3 install --no-cache-dir -r ${APP_DIR}/requirements.txt
+COPY . ${APP_DIR}/
+COPY nanoHUB/.env ${APP_DIR}//nanoHUB/.env
+RUN pip3 install ${APP_DIR}/
 USER root
 RUN chown -R --from=root ${NB_USER} ${APP_DIR}
 USER ${NB_USER}
