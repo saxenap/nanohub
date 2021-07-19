@@ -47,7 +47,7 @@ RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip3 install  --no-cache-dir pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
-COPY Pipfile.lock .
+#COPY Pipfile.lock .
 RUN pipenv lock -r > requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
