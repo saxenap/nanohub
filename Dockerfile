@@ -43,7 +43,7 @@ FROM base-image AS build-image
 USER root
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && -H -u ${NB_USER} pip3 install --no-cache-dir pipenv
+    && sudo -H -u ${NB_USER} pip3 install --no-cache-dir pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile* ${APP_DIR}/
 RUN pipenv lock -r > requirements.txt
