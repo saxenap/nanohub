@@ -41,10 +41,10 @@ ENV PATH="$NB_USER_DIR/.local/bin:$VIRTUAL_ENV/bin:$PATH"
 
 FROM base-image AS build-image
 RUN chown -R --from=root ${NB_USER} ${APP_DIR}
-USER root
+USER ${NB_USER}
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && pip3 install  --no-cache-dir pipenv
+    && pip3 install --user --no-cache-dir pipenv
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 #COPY Pipfile.lock .
