@@ -1,11 +1,10 @@
 #IDE setup folders/files etc
 **/*~
-**/.DS_Store
+**/*.DS_Store
 **/Thumbs.db
 *.iml
-.idea/
-.ipynb_checkpoints
 **/__pycache__/
+**/*.idea/
 
 #General
 README.md
@@ -17,6 +16,8 @@ README.md
 **/*.github
 archive/
 
+**/*.ipynb_checkpoints/
+**/*.virtual_documents/
 
 Dockerfile
 docker-compose.yml
