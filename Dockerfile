@@ -26,7 +26,7 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
+RUN sudo apt-get update -y && apt-get install -y --no-install-recommends \
     build-essential \
     wget curl git \
     openssh-server \
