@@ -8,9 +8,11 @@ ENV PYTHONFAULTHANDLER 1
 ENV TZ=America/Indiana/Indianapolis
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    gcc \
+    build-essential \
     wget curl git \
+    openssh-server \
     sudo \
+    nano vim \
     python3-dev python3-venv python3-pip
 ARG BUILD_WITH_JUPYTER=1
 ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
@@ -38,10 +40,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 FROM base-image AS build-image
 USER root
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    build-essential make \
-    openssh-server \
-    nano vim
 RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
     && pip3 install --no-cache-dir pipenv
 USER ${NB_USER}
@@ -96,6 +94,7 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
 RUN if [ -z $BUILD_WITH_JUPYTER=1 ] ; then \
@@ -134,6 +133,7 @@ RUN if [ -z $BUILD_WITH_JUPYTER=1 ] ; then \
     pip3 install jupyterlab-system-monitor && \
     pip3 install jupyterlab-topbar && \
     jupyter labextension install jupyterlab-topbar-text && \
+    jupyter labextension install @jupyterlab/toc && \
     pip3 install lckr-jupyterlab-variableinspector && \
     #RUN jupyter labextension install jupyterlab_voyager && \
     pip3 install 'jupyterlab>=3.0.0,<4.0.0a0' jupyterlab-lsp && \
@@ -159,7 +159,6 @@ USER root
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     gcc \
     make \
-    nano \
     cron \
     rsyslog \
     supervisor
