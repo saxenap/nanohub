@@ -35,22 +35,35 @@ class CsvFiles(IFiles):
         df.to_csv(outdir / outfile)
 
 
-class ParquetFiles(IFiles):
+class AbstractCompressableFiles(IFiles):
+    def __init__(self, compress: bool = True):
+        self.compress = compress
+
+
+class ParquetFiles(AbstractCompressableFiles):
+
+    def get_file_extension(self):
+        if self.compress is True:
+            return 'parquet.gzip'
+        return 'parquet'
 
     def exists(self, dirpath: Path) -> bool:
-        for file in dirpath.glob('*.parquet'):
+        for file in dirpath.glob('*.'+ self.get_file_extension()):
             return True
         return False
 
     def read_all(self, dirpath: Path) -> DataFrame:
         return pandas.concat(
             pandas.read_parquet(parquet_file)
-            for parquet_file in dirpath.glob('*.parquet')
+            for parquet_file in dirpath.glob('*.' + self.get_file_extension())
         )
 
     def save(self, df: DataFrame, outdir: Path, outfile: str):
-        outfile = outfile + '.parquet'
-        df.to_parquet(outdir / outfile)
+        outfile = outfile + '.' + self.get_file_extension()
+        if self.compress:
+            df.to_parquet(outdir / outfile, compression='gzip')
+        else:
+            df.to_parquet(outdir / outfile)
 
 
 class CachedDataLoader:
@@ -67,6 +80,7 @@ class CachedDataLoader:
             if has_next is not None:
                 return self.files.exists(outdir)
         self.logger.debug('Data for %s.%s not found in cache' % (params.db_name, params.table_name))
+        print('Data for %s.%s not found in cache' % (params.db_name, params.table_name))
         return False
 
     def get(self, params: QueryParams) -> DataFrame:
@@ -84,13 +98,16 @@ class CachedDataLoader:
         if not params.db_name in self.count:
             self.count[params.db_name] = {}
             self.logger.debug('Saving data for database %s' % params.db_name)
+            print('Saving data for database %s' % params.db_name)
 
         if not params.table_name in self.count[params.db_name]:
             self.count[params.db_name][params.table_name] = 0
             outdir.mkdir(parents=True, exist_ok=True)
+            print('Saving data for table %s.%s' % (params.db_name, params.table_name))
             self.logger.debug('Saving data for table %s.%s' % (params.db_name, params.table_name))
 
         self.count[params.db_name][params.table_name] += 1
         outfile = str(self.count[params.db_name][params.table_name])
         self.logger.debug('Saving data in %s/%s with %d rows of data' % (outdir, outfile, len(df.index)))
+        print('Saving data in %s/%s with %d rows of data' % (outdir, outfile, len(df.index)))
         self.files.save(df, outdir, outfile)

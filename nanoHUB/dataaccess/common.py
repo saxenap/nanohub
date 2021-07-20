@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pandas.core.frame import DataFrame
 
 
@@ -6,8 +6,8 @@ from pandas.core.frame import DataFrame
 class QueryParams:
     db_name: str
     table_name: str
-    col_names: []
-    index_key: str
+    col_names: [] = field(default_factory=lambda: ['*'])
+    index_key: str = ''
     condition: str = ''
 
 
