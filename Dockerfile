@@ -117,7 +117,7 @@ RUN nodeenv -p  && \
     jupyter labextension install --no-build jupyterlab-topbar-text && \
     jupyter labextension install --no-build @jupyterlab/toc && \
     jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
-    jupyter labextension install --no-build @jupyterlab/debugger
+    jupyter labextension install --no-build @jupyterlab/debugger && \
     jupyter lab build --dev-build=False;
 EXPOSE ${JUPYTER_PORT}
 
