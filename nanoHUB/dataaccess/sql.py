@@ -94,7 +94,7 @@ class SqlDataFrameMapper:
         offset = 0
         while True:
             sql = 'SELECT ' + ','.join(
-                params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' ORDER BY ' + params.index_key + ' LIMIT %d OFFSET %d'
+                params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' LIMIT %d OFFSET %d'
             sql = sql % (self.chunk_size, offset)
             df = pandas.read_sql_query(sql, connection, params.index_key)
             yield df
