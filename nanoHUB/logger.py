@@ -87,12 +87,12 @@ logging_conf = dict(
             propagate = True
         ),
         sshtunnel = dict(
-            level = logging.WARNING,
+            level = logging.CRITICAL,
             handlers = [
                 'console',
                 'syslog'
             ],
-            propagate = True
+            propagate = False
         )
     ),
     root = dict(
