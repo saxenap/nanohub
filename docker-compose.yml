@@ -18,9 +18,6 @@ services:
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
     volumes:
-      - type: bind
-        source: ./.cache
-        target: /${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}/.cache
       - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
     env_file:
       - ./nanoHUB/.env
