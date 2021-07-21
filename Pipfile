@@ -4,6 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [requires]
+# If using directly in your
+# local python installation (outside of Docker)
+# and you do not have python 3.9 installed, then:
+# 1. install pyenv
+# 2. pyenv install 3.9.0
+# 3. cd nanohub
+# 4. pyenv local 3.9.0
+# 5. pipenv install --python 3.9.
 python_version = "3.9"
 
 [dev-packages]
