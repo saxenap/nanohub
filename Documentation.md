@@ -60,6 +60,10 @@
     * This could result from Xcode being deleted. To fix this issue type xcode-select --reset and you should be able to pull after that. 
 
 
+## To make pip work without sudo:
+1. PATH=$PATH:/usr/bin/pip3
 
 
+## To install pipenv:
+1. pip3 install pipenv --user
 
