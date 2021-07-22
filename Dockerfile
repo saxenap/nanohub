@@ -83,6 +83,8 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=8888
 ENV JUPYTER_PORT=${JUPYTER_PORT}
+ARG JUPYTER_IP_ADDRESS
+ENV JUPYTER_IP_ADDRESS=${JUPYTER_IP_ADDRESS}
 RUN jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
@@ -90,7 +92,7 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
 #RUN nodeenv -p  && \
 #    jupyter contrib nbextension install --user && \
