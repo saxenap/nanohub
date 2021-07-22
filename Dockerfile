@@ -92,35 +92,35 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-RUN nodeenv -p  && \
-    jupyter contrib nbextension install --user && \
-    jupyter nbextension enable codefolding/main && \
-    jupyter nbextension enable table_beautifier/main && \
-    jupyter nbextension enable toc2/main && \
-    jupyter nbextension enable splitcell/main && \
-    jupyter nbextension enable init_cell/main && \
-    jupyter nbextension enable tree-filter/main && \
-    jupyter nbextension enable jupyter_boilerplate/main && \
-    jupyter nbextension enable scroll_down/main && \
-    jupyter nbextension enable notify/main && \
-    jupyter nbextension enable skip-traceback/main && \
-    jupyter nbextension enable move_selected_cells/main && \
-    jupyter nbextension enable livemdpreview/main && \
-    jupyter nbextension enable highlighter/main && \
-    jupyter nbextension enable go_to_current_running_cell/main && \
-    jupyter nbextension enable execute_time/main && \
-    jupyter nbextension enable datestamper/main && \
-    jupyter nbextension enable addbefore/main && \
-    jupyter nbextension enable Hinterland/main && \
-    jupyter nbextension enable snippets/main && \
-#    jupyter nbextension enable --py --sys-prefix qgrid && \
-#    jupyter serverextension enable jupyterlab_sql --py --sys-prefix && \
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
-    jupyter labextension install --no-build jupyterlab-topbar-text && \
-    jupyter labextension install --no-build @jupyterlab/toc && \
-    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
-    jupyter labextension install --no-build @jupyterlab/debugger && \
-    jupyter lab build --dev-build=False;
+#RUN nodeenv -p  && \
+#    jupyter contrib nbextension install --user && \
+#    jupyter nbextension enable codefolding/main && \
+#    jupyter nbextension enable table_beautifier/main && \
+#    jupyter nbextension enable toc2/main && \
+#    jupyter nbextension enable splitcell/main && \
+#    jupyter nbextension enable init_cell/main && \
+#    jupyter nbextension enable tree-filter/main && \
+#    jupyter nbextension enable jupyter_boilerplate/main && \
+#    jupyter nbextension enable scroll_down/main && \
+#    jupyter nbextension enable notify/main && \
+#    jupyter nbextension enable skip-traceback/main && \
+#    jupyter nbextension enable move_selected_cells/main && \
+#    jupyter nbextension enable livemdpreview/main && \
+#    jupyter nbextension enable highlighter/main && \
+#    jupyter nbextension enable go_to_current_running_cell/main && \
+#    jupyter nbextension enable execute_time/main && \
+#    jupyter nbextension enable datestamper/main && \
+#    jupyter nbextension enable addbefore/main && \
+#    jupyter nbextension enable Hinterland/main && \
+#    jupyter nbextension enable snippets/main && \
+##    jupyter nbextension enable --py --sys-prefix qgrid && \
+##    jupyter serverextension enable jupyterlab_sql --py --sys-prefix && \
+#    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
+#    jupyter labextension install --no-build jupyterlab-topbar-text && \
+#    jupyter labextension install --no-build @jupyterlab/toc && \
+#    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
+#    jupyter labextension install --no-build @jupyterlab/debugger && \
+#    jupyter lab build --dev-build=False;
 EXPOSE ${JUPYTER_PORT}
 
 
