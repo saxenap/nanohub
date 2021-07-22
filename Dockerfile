@@ -69,10 +69,12 @@ COPY nanoHUB/.env ./nanoHUB/.env
 
 
 FROM build-image AS code-base-image
-USER ${NB_USER}
-WORKDIR ${APP_DIR}
+USER root
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 COPY --from=app-image --chown=${NB_UID}:${NB_GID} ${APP_DIR} ${APP_DIR}
+RUN chown -R ${NB_USER} ${APP_DIR}
+USER ${NB_USER}
+WORKDIR ${APP_DIR}
 RUN pip3 install .
 
 
