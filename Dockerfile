@@ -5,13 +5,14 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
-ENV TZ=America/Indiana/Indianapolis
+ARG TZ
+ENV TZ=${TZ}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ARG BUILD_WITH_JUPYTER=1
 ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
 ARG NB_USER
-ARG NB_UID="1000"
-ARG NB_GID="100"
+ARG NB_UID
+ARG NB_GID
 ENV NB_USER=${NB_USER}
 ENV NB_UID=${NB_UID}
 ENV NB_GID=${NB_GID}
@@ -92,7 +93,7 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
 #RUN nodeenv -p  && \
 #    jupyter contrib nbextension install --user && \
@@ -129,6 +130,7 @@ EXPOSE ${JUPYTER_PORT}
 FROM jupyter-image AS dev-image
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
+VOLUME ${APP_DIR}
 
 
 FROM code-base-image AS scheduler-image
