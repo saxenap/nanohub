@@ -8,6 +8,8 @@ services:
       target: scheduler-image
       args:
         NB_USER: "${NB_USER}"
+        NB_UID: "${NB_UID}"
+        NB_GID: "${NB_GID}"
         APP_DIR_NAME: "${APP_DIR_NAME}"
         HOME_DIR_NAME: "${HOME_DIR_NAME}"
         CRONTAB_FILE: "${CRONTAB_FILE}"
