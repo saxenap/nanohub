@@ -6,18 +6,31 @@ setup:
 
 dev:
 	git pull
-	docker-compose down
-	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) docker-compose up --build
+	make dev-down
+	make dev-up
 
 pipeline-test:
 	git pull
-	docker-compose -f docker-compose-pipeline.yml down
+	make pipeline-down
 	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g)  CRONTAB_FILE=nanoHUB/scheduler/crontab.test docker-compose -f docker-compose-pipeline.yml up --build
 
 pipeline-prod:
 	git pull
-	docker-compose -f docker-compose-pipeline.yml down
+	make pipeline-down
 	NB_USER="$(whoami)" NB_UID="$(id -u)" NB_GID="$(id -g)" CRONTAB_FILE=nanoHUB/scheduler/crontab docker-compose -f docker-compose-pipeline.yml up --build
+
+
+########################################################################################################################
+# Base Commands
+
+dev-down:
+	docker-compose down
+
+dev-up:
+	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) docker-compose up --build
+
+pipeline-down:
+	docker-compose -f docker-compose-pipeline.yml down
 
 ########################################################################################################################
 #These run inside the container
@@ -33,8 +46,11 @@ show-cron_tasks:
 # Others
 
 gcloud_ip=$(shell curl -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
+
+gsetup: setup
+	$(shell sed -i -e "/JUPYTER_DISPLAY_IP_ADDRESS/ a JUPYTER_DISPLAY_IP_ADDRESS='$(gcloud_ip)'" .env)
+
 gcloud:
 	git pull
-	$(shell sed -i -e "/JUPYTER_DISPLAY_IP_ADDRESS/ a JUPYTER_DISPLAY_IP_ADDRESS='$(gcloud_ip)'" .env)
 	docker-compose down
 	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) docker-compose up --build
