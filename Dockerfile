@@ -90,8 +90,11 @@ ARG ORIGIN_IP_ADDRESS
 ENV ORIGIN_IP_ADDRESS=${ORIGIN_IP_ADDRESS}
 ARG JUPYTER_IP_ADDRESS
 ENV JUPYTER_IP_ADDRESS=${JUPYTER_IP_ADDRESS}
+ARG JUPYTER_DISPLAY_IP_ADDRESS
+ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
 RUN jupyter notebook --generate-config && \
     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.ServerApp.custom_display_url/ a c.ServerApp.custom_display_url = '${JUPYTER_DISPLAY_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
