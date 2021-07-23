@@ -22,7 +22,6 @@ pytest = "6.2"
 # delete Pipenv.lock file and then run pipenv install again
 black = "==19.10b0"
 typer = "*"
-google-cloud = "*"
 google-cloud-storage = "*"
 pandas = "*"
 numpy = "*"
