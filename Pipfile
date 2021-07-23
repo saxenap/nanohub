@@ -80,5 +80,9 @@ plotly = "*"
 chart-studio = "*"
 sklearn = "*"
 
+portray = "*"
+icecream="*"
+
+
 [pipenv]
 allow_prereleases = true
