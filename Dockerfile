@@ -80,10 +80,14 @@ RUN pip3 install .
 
 
 FROM code-base-image AS jupyter-image
+USER root
+RUN apt install -y nodejs
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=8888
 ENV JUPYTER_PORT=${JUPYTER_PORT}
+ARG ORIGIN_IP_ADDRESS
+ENV ORIGIN_IP_ADDRESS=${ORIGIN_IP_ADDRESS}
 ARG JUPYTER_IP_ADDRESS
 ENV JUPYTER_IP_ADDRESS=${JUPYTER_IP_ADDRESS}
 RUN jupyter notebook --generate-config && \
@@ -93,10 +97,9 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '*'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
+    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-#RUN nodeenv -p  && \
-#    jupyter contrib nbextension install --user && \
+RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable codefolding/main && \
 #    jupyter nbextension enable table_beautifier/main && \
 #    jupyter nbextension enable toc2/main && \
@@ -123,7 +126,7 @@ RUN jupyter notebook --generate-config && \
 #    jupyter labextension install --no-build @jupyterlab/toc && \
 #    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
 #    jupyter labextension install --no-build @jupyterlab/debugger && \
-#    jupyter lab build --dev-build=False;
+    jupyter lab build --dev-build=False;
 EXPOSE ${JUPYTER_PORT}
 
 
