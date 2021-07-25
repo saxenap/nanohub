@@ -106,11 +106,13 @@ RUN jupyter notebook --generate-config && \
     sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
     sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
+RUN jupyter-nbextension install rise --py --sys-prefix && \
+    jupyter-nbextension enable rise --py --sys-prefix
+RUN jupyter nbextension enable splitcell/splitcell
 #RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable codefolding/main && \
 #    jupyter nbextension enable table_beautifier/main && \
 #    jupyter nbextension enable toc2/main && \
-#    jupyter nbextension enable splitcell/main && \
 #    jupyter nbextension enable init_cell/main && \
 #    jupyter nbextension enable tree-filter/main && \
 #    jupyter nbextension enable jupyter_boilerplate/main && \
