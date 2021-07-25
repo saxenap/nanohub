@@ -9,6 +9,7 @@ class QueryParams:
     col_names: [] = field(default_factory=lambda: ['*'])
     index_key: str = ''
     condition: str = ''
+    offset = int = 0
 
 
 class DataframeObject:

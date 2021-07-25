@@ -1,5 +1,5 @@
 import logging
-
+import re
 from nanoHUB.dataaccess.common import QueryParams
 from pandas.core.frame import DataFrame
 from pathlib import Path
@@ -52,10 +52,19 @@ class ParquetFiles(AbstractCompressableFiles):
             return True
         return False
 
+    def read_last(self, dirpath: Path) -> DataFrame:
+        extension = self.get_file_extension()
+        max = -1
+        for file in dirpath.glob('*.' + extension):
+            num = int(re.search('(\d*)', file.name).group(1))
+            max = num if num > max else max
+        return pandas.read_parquet(Path(dirpath, str(max)).with_suffix(extension))
+
     def read_all(self, dirpath: Path) -> DataFrame:
+        extension = self.get_file_extension()
         return pandas.concat(
             pandas.read_parquet(parquet_file)
-            for parquet_file in dirpath.glob('*.' + self.get_file_extension())
+            for parquet_file in dirpath.glob('*.' + extension)
         )
 
     def save(self, df: DataFrame, outdir: Path, outfile: str):
@@ -83,7 +92,7 @@ class CachedDataLoader:
         print('Data for %s.%s not found in cache' % (params.db_name, params.table_name))
         return False
 
-    def get(self, params: QueryParams) -> DataFrame:
+    def get_all(self, params: QueryParams) -> DataFrame:
         datadir = Path(self.path + '/' + params.db_name + '/' + params.table_name + '/')
 
         self.logger.debug('Reading data for %s.%s from %s' % (params.db_name, params.table_name, datadir))
@@ -91,7 +100,7 @@ class CachedDataLoader:
         df = df.sort_values(params.index_key)
         return df
 
-    def save(self, df: DataFrame, params: QueryParams):
+    def save(self, df: DataFrame, params: QueryParams, incremental: bool = False):
 
         outdir = Path(self.path + '/' + params.db_name + '/' + params.table_name + '/')
 
