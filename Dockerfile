@@ -153,7 +153,7 @@ USER root
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/temp
-RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks
+RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks`
 RUN echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks
 #RUN echo "APP_DIR=${APP_DIR}" >> ${APP_DIR}/cron_tasks
 RUN cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks
@@ -162,7 +162,5 @@ COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
 RUN service rsyslog start
 RUN touch /var/log/cron.log
 RUN chown -R --from=root ${NB_USER} /var/log/cron.log
-#RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
-COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:cron] \ncommand = crontab -u  ${NB_USER} ${APP_DIR}/cron_tasks\n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
