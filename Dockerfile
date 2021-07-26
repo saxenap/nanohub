@@ -163,5 +163,7 @@ RUN service rsyslog start
 RUN touch /var/log/cron.log
 RUN chown -R --from=root ${NB_USER} /var/log/cron.log
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
-RUN printf "[program:cron] \ncommand = crontab -u  ${NB_USER} ${APP_DIR}/cron_tasks \nuser = root \nautostart=true \nautorestart=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:cron] \ncommand = crontab -u  ${NB_USER} ${APP_DIR}/cron_tasks \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/var/log/cron.log\nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+
+
 RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
