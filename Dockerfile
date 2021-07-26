@@ -149,12 +149,11 @@ VOLUME ${APP_DIR}
 
 
 FROM code-base-image AS scheduler-image
-USER ${NB_USER}
+USER root
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/cron_tasks
 RUN sed -i '1s/^/PATH=${PATH}\n/' ${APP_DIR}/cron_tasks
-USER root
 COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
 COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
 RUN service rsyslog start
