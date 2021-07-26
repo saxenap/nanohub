@@ -164,5 +164,5 @@ USER ${NB_USER}
 WORKDIR ${APP_DIR}
 RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
