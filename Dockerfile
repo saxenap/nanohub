@@ -153,19 +153,14 @@ USER root
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/temp
-RUN echo "PATH=${PATH}\n" > ${APP_DIR}/cron_tasks
-RUN echo "APP_DIR=${APP_DIR}\n" > ${APP_DIR}/cron_tasks
+RUN echo "PATH=${PATH}\n" >> ${APP_DIR}/cron_tasks
+RUN echo "APP_DIR=${APP_DIR}\n" >> ${APP_DIR}/cron_tasks
 RUN cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
 COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
 RUN service rsyslog start
 RUN touch /var/log/cron.log
 RUN chown -R --from=root ${NB_USER} /var/log/cron.log
-#RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
-#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-#RUN chmod 0644 ${APP_DIR}/cron_tasks
-#USER ${NB_USER}
-#WORKDIR ${APP_DIR}
 RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
