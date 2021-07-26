@@ -155,13 +155,14 @@ COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
 RUN service rsyslog start
 RUN touch /var/log/cron.log
 RUN chown -R --from=root ${NB_USER} /var/log/cron.log
-USER ${NB_USER}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/cron_tasks
-#RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
+RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
 #ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN chmod 0644 ${APP_DIR}/cron_tasks
+USER ${NB_USER}
+WORKDIR ${APP_DIR}
 RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-WORKDIR ${APP_DIR}
+
 
