@@ -153,8 +153,9 @@ USER root
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/temp
-RUN echo "PATH=${PATH}\n" >> ${APP_DIR}/cron_tasks
-RUN echo "APP_DIR=${APP_DIR}\n" >> ${APP_DIR}/cron_tasks
+RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks
+RUN echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks
+#RUN echo "APP_DIR=${APP_DIR}" >> ${APP_DIR}/cron_tasks
 RUN cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
 COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
