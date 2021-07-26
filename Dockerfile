@@ -42,6 +42,9 @@ RUN apt-get install -y --no-install-recommends \
         openssh-server \
         nano vim \
         python3-dev python3-venv python3-pip \
+        cron \
+        rsyslog \
+        supervisor \
         texlive-xetex \
         texlive-latex-base \
         texlive-fonts-recommended \
@@ -147,25 +150,18 @@ VOLUME ${APP_DIR}
 
 FROM code-base-image AS scheduler-image
 USER root
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    gcc \
-    make \
-    cron \
-    rsyslog \
-    supervisor
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
 COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
 RUN service rsyslog start
 RUN touch /var/log/cron.log
 RUN chown -R --from=root ${NB_USER} /var/log/cron.log
+USER ${NB_USER}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/cron_tasks
-RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
-USER ${NB_USER}
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+#RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
+#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN chmod 0644 ${APP_DIR}/cron_tasks
-RUN crontab ${APP_DIR}/cron_tasks
+RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
 COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR ${APP_DIR}
 

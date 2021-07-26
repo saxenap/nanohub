@@ -1,3 +1,5 @@
+env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g)
+
 ########################################################################################################################
 #These run on the host
 
@@ -12,12 +14,12 @@ dev:
 pipeline-test:
 	git pull
 	make pipeline-down
-	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g)  CRONTAB_FILE=nanoHUB/scheduler/crontab.test docker-compose -f docker-compose-pipeline.yml up --build
+	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab.test docker-compose -f docker-compose-pipeline.yml up --build
 
 pipeline-prod:
 	git pull
 	make pipeline-down
-	NB_USER="$(whoami)" NB_UID="$(id -u)" NB_GID="$(id -g)" CRONTAB_FILE=nanoHUB/scheduler/crontab docker-compose -f docker-compose-pipeline.yml up --build
+	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab docker-compose -f docker-compose-pipeline.yml up --build
 
 
 ########################################################################################################################
@@ -27,10 +29,11 @@ dev-down:
 	docker-compose down
 
 dev-up:
-	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) docker-compose up --build
+	$(env-vars) docker-compose up --build
 
 pipeline-down:
 	docker-compose -f docker-compose-pipeline.yml down
+
 
 ########################################################################################################################
 #These run inside the container
@@ -53,4 +56,4 @@ gsetup: setup
 gcloud:
 	git pull
 	docker-compose down
-	NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) docker-compose up --build
+	$(env-vars) docker-compose up --build
