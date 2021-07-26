@@ -17,7 +17,7 @@ services:
     logging:
       driver: syslog
       options:
-        syslog-address: "${PAPERTRAIL_URL}"
+        syslog-address: "udp://${PAPERTRAIL_URL}"
         tag: "{{.Name}}/{{.ID}}"
     env_file:
       - ./nanoHUB/.env
