@@ -1,3 +1,5 @@
+PATH=
+
 * * * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/_task_test.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
 0 */2 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_citations.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
 0 */2 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_citations_map_contacts.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
