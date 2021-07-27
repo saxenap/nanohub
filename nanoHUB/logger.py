@@ -58,30 +58,37 @@ logging_conf = dict(
     handlers = dict(
         console = dict(
             **{'class': 'logging.StreamHandler'},
-            level = logging.INFO,
             formatter = 'simple',
             stream = 'ext://sys.stdout'
+        ),
+        syslog = dict(
+            **{'class': 'logging.handlers.SysLogHandler'},
+            formatter = 'simple',
+            address = '/dev/log'
         )
     ),
     loggers = dict(
         root = dict(
             level = logging.NOTSET,
             handlers = [
-                'console'
+                'console',
+                'syslog'
             ],
             propagate = True
         ),
         paramiko = dict(
             level = logging.WARNING,
             handlers = [
-                'console'
+                'console',
+                'syslog'
             ],
             propagate = True
         ),
         sshtunnel = dict(
             level = logging.CRITICAL,
             handlers = [
-                'console'
+                'console',
+                'syslog'
             ],
             propagate = False
         )
@@ -89,7 +96,8 @@ logging_conf = dict(
     root = dict(
         level = logging.NOTSET,
         handlers = [
-            'console'
+            'console',
+            'syslog'
         ]
     )
 )
