@@ -61,12 +61,6 @@ logging_conf = dict(
             level = logging.INFO,
             formatter = 'simple',
             stream = 'ext://sys.stdout'
-        ),
-        syslog = dict(
-            **{'class': 'logging.handlers.SysLogHandler'},
-            level = logging.INFO,
-            formatter = 'simple',
-            address = '/dev/log'
         )
     ),
     loggers = dict(
