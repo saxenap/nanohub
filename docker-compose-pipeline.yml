@@ -23,4 +23,5 @@ services:
     env_file:
       - ./nanoHUB/.env
 #    command: bash -c "sudo --preserve-env cron -f && tail -f /var/log/cron.log"
-    command: bash -c "sudo --preserve-env /usr/bin/supervisord"
+#    command: bash -c "sudo --preserve-env /usr/bin/supervisord"
+    command: bash -c "sudo --preserve-env cron -f"
