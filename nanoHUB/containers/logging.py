@@ -10,7 +10,7 @@ class LoggingContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     logging = providers.Resource(
-        logging.config.dictConfig(logging_conf),
+        logging.config.dictConfig(logging_conf)
 
     )
     # logging = providers.Resource(
