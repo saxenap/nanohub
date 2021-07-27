@@ -157,8 +157,8 @@ RUN printf "[program:cron] \ncommand = cron -f   \nstartsecs = 0 \nuser = root \
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
-RUN echo "*.*       @@${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
-#RUN echo "*.*      /dev/stdout" >> /etc/rsyslog.conf
+#RUN echo "*.*       @@${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
+RUN echo "*.*      /dev/stdout" >> /proc/self/fd/1
 RUN service rsyslog start
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
