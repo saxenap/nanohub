@@ -9,9 +9,18 @@ class LoggingContainer(containers.DeclarativeContainer):
 
     config = providers.Configuration()
 
+    # logging = providers.Resource(
+    #     logging.config.dictConfig(logging_conf),
+    #
+    # )
     logging = providers.Resource(
-        logging.config.dictConfig(logging_conf),
-
+        logging.basicConfig,
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[
+            logging.handlers.SysLogHandler(address=('logs.papertrailapp.com',19303)),
+            logging.StreamHandler()
+        ]
     )
     # log = logger()
     # log.addHandler(SysLogHandler(address=(
