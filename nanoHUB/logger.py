@@ -64,7 +64,7 @@ logging_conf = dict(
         syslog = dict(
             **{'class': 'logging.handlers.SysLogHandler'},
             formatter = 'simple',
-            address = '/dev/log'
+            facility = 'logging.handlers.SysLogHandler.LOG_DAEMON',
         )
     ),
     loggers = dict(
