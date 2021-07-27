@@ -154,9 +154,11 @@ USER root
 RUN apt-get install -y --no-install-recommends \
         cron \
         rsyslog \
-        supervisor
+        supervisor \
+        systemd
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
@@ -168,4 +170,3 @@ RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks
 RUN echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks
 RUN cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks
 RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
-RUN service rsyslog start
