@@ -15,11 +15,11 @@ services:
         CRONTAB_FILE: "${CRONTAB_FILE}"
         PAPERTRAIL_URL: "${PAPERTRAIL_URL}"
     restart: always
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "udp://${PAPERTRAIL_URL}"
-        tag: "{{.Name}}/{{.ID}}"
+#    logging:
+#      driver: syslog
+#      options:
+#        syslog-address: "udp://${PAPERTRAIL_URL}"
+#        tag: "{{.Name}}/{{.ID}}"
     env_file:
       - ./nanoHUB/.env
 #    command: bash -c "sudo --preserve-env cron -f && tail -f /var/log/cron.log"
