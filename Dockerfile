@@ -153,12 +153,11 @@ RUN apt-get install -y --no-install-recommends \
         rsyslog \
         supervisor
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
-RUN printf "[program:cron] \ncommand = cron -f   \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:cron] \ncommand = cron -f   \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
-#RUN echo "*.*       @@${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
-RUN echo "*.*      /dev/stdout" >> /proc/self/fd/1
+RUN echo "*.*       @@${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 RUN service rsyslog start
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
