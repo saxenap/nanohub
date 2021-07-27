@@ -1,8 +1,6 @@
 FROM ubuntu:latest as base-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
@@ -24,6 +22,11 @@ ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN apt-get update -y
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+RUN apt-get install -y --no-install-recommends \
+        language-pack-en-base && \
+    locale-gen "en_US.UTF-8"
 
 
 FROM base-image AS user-image
@@ -153,7 +156,7 @@ RUN apt-get install -y --no-install-recommends \
         rsyslog \
         supervisor
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
-RUN printf "[program:cron] \ncommand = cron -f -l 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}

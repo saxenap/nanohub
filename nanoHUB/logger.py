@@ -114,7 +114,7 @@ def logger(name: str = None):
     # print(logger.handlers)
     # handler = logger.handlers[0]
     # handler.setFormatter(CustomFormatter())
-    logger.addFilter(ModuleNameFilter('nanoHUB'))
+    # logger.addFilter(ModuleNameFilter('nanoHUB'))
     return logger
 
 
