@@ -164,13 +164,13 @@ VOLUME ${APP_DIR}
 
 FROM app-image AS scheduler-image
 USER root
-#RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
-#RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
-#RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
-#RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
-#ARG PAPERTRAIL_URL
-#ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
-#RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
+RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+ARG PAPERTRAIL_URL
+ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
+RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
 ARG CRONTAB_FILE
 COPY ${CRONTAB_FILE} ${APP_DIR}/temp
