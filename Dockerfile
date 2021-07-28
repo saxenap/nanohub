@@ -150,15 +150,17 @@ EXPOSE ${JUPYTER_PORT}
 
 
 FROM jupyter-image AS app-image
-USER ${NB_USER}
+USER root
 WORKDIR ${APP_DIR}
 COPY . .
-RUN pip3 install .
 
 
 FROM app-image AS dev-image
+USER root
+COPY --from=app-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
+RUN pip3 install .
 VOLUME ${APP_DIR}
 
 
