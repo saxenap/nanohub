@@ -3,15 +3,18 @@
 **/*.DS_Store
 **/Thumbs.db
 *.iml
-**/*.idea/
+*.egg-info
+.git
+.idea
+
+
 MANIFEST.in
 LICENSE.md
 
 
 
 #General
-README.md
-**/git*
+
 
 #App folders/files
 **/*.log
@@ -19,16 +22,9 @@ README.md
 **/*.github
 archive/
 
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
-.virtual_documents
-*/.virtual_documents/*
-*.egg-info/*
 
-Dockerfile
-docker-compose*.yml
-.gitignore
-.dockerignore
+**/.ipynb_checkpoints
+**/.virtual_documents
 
 **/venv
 
