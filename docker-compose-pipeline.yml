@@ -15,6 +15,9 @@ services:
         CRONTAB_FILE: "${CRONTAB_FILE}"
         PAPERTRAIL_URL: "${PAPERTRAIL_URL}"
         CRON_LOG_FILE: "${CRON_LOG_FILE}"
+        LANG: "${LANG}"
+        LC_ALL: "${LC_ALL}"
+        LOCALE: "${LOCALE}"
     restart: always
 #    logging:
 #      driver: syslog

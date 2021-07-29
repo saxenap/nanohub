@@ -1,6 +1,8 @@
 FROM ubuntu:latest as base-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
@@ -21,8 +23,12 @@ ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ARG LANG
+ENV LANG=${LANG}
+ARG LC_ALL
+ENV LC_ALL=${LC_ALL}
+ARG LOCALE
+ENV LOCALE=${LOCALE}
 ARG DEBIAN_FRONTEND=noninteractive
 RUN set -x \
     && build_deps=' \
@@ -61,11 +67,13 @@ RUN set -x \
         $jupyter_deps \
     \
     && locale-gen en_US \
-    && locale-gen "en_US.UTF-8" \
+    && locale-gen ${LOCALE} \
     && update-locale \
     \
     && useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" \
     && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
     && cp /root/.bashrc ${NB_USER_DIR}/ \
     && chown -R --from=root ${NB_USER} ${NB_USER_DIR} \
     \
@@ -84,9 +92,10 @@ RUN pipenv lock -r > requirements.txt \
     && pip3 install --no-cache-dir -r requirements.txt
 
 
-FROM base-image AS copied-packages-image
-USER root
+FROM packages-image AS copied-packages-image
+WORKDIR ${APP_DIR}
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+RUN . ${VIRTUAL_ENV}/bin/activate
 
 
 FROM copied-packages-image AS jupyter-image
@@ -149,22 +158,20 @@ RUN jupyter contrib nbextension install --user \
 EXPOSE ${JUPYTER_PORT}
 
 
-FROM jupyter-image AS app-image
-USER root
+FROM base-image AS src-image
 WORKDIR ${APP_DIR}
 COPY . .
 
 
-FROM app-image AS dev-image
-USER root
-COPY --from=app-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
-USER ${NB_USER}
+FROM jupyter-image AS dev-image
 WORKDIR ${APP_DIR}
+COPY --from=src-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
+USER ${NB_USER}
 RUN pip3 install .
 VOLUME ${APP_DIR}
 
 
-FROM app-image AS scheduler-image
+FROM dev-image AS scheduler-image
 USER root
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf

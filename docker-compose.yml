@@ -19,6 +19,9 @@ services:
         JUPYTER_IP_ADDRESS: "${JUPYTER_IP_ADDRESS}"
         JUPYTER_PORT: "${JUPYTER_PORT}"
         BUILD_WITH_JUPYTER: "${BUILD_WITH_JUPYTER}"
+        LANG: "${LANG}"
+        LC_ALL: "${LC_ALL}"
+        LOCALE: "${LOCALE}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
@@ -26,4 +29,6 @@ services:
       - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
     env_file:
       - ./nanoHUB/.env
+      - ./nanoHUB/.config
     command: [jupyter, lab]
+#    command: bash -c "tail -f /dev/stdout"
