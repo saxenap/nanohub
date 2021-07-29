@@ -23,6 +23,7 @@ archive/
 */.ipynb_checkpoints/*
 .virtual_documents
 */.virtual_documents/*
+*.egg-info/*
 
 Dockerfile
 docker-compose*.yml
