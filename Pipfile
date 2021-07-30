@@ -21,6 +21,7 @@ pytest = "6.2"
 # need to define exact (pre) version for black
 # delete Pipenv.lock file and then run pipenv install again
 sqlalchemy = "*"
+alembic = "*"
 black = "*"
 isort = "*"
 typer = "*"
