@@ -22,6 +22,7 @@ pytest = "6.2"
 # delete Pipenv.lock file and then run pipenv install again
 sqlalchemy = "*"
 alembic = "*"
+sqlalchemy-migrate = "*"
 black = "*"
 isort = "*"
 typer = "*"

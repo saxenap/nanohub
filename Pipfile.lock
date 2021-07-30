@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "90f60fe31bea405de6713b5105c8b86dc63d01a76c1d0af122e235ade4837503"
+            "sha256": "6b24c591a37b78b5da37ad7301c0b3e130acd8465eb1fac61e07fd3697ed7530"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1432,12 +1432,20 @@
             ],
             "version": "==0.9.0"
         },
+        "pbr": {
+            "hashes": [
+                "sha256:42df03e7797b796625b1029c0400279c7c34fd7df24a7d7818a1abb5b38710dd",
+                "sha256:c68c661ac5cc81058ac94247278eeda6d2e6aecb3e227b0387c30d277e7ef8d4"
+            ],
+            "markers": "python_version >= '2.6'",
+            "version": "==5.6.0"
+        },
         "pdocs": {
             "hashes": [
                 "sha256:4f5116cf5ce0fa9f13171cd74db224636d4d71370115eefce22d8945526fcfc0",
                 "sha256:f148034970220c9e05d2e04d8eb3fcec3575cf480af0966123ef9d6621b46e4f"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4'",
+            "markers": "python_version >= '3.6' and python_version < '4.0'",
             "version": "==1.1.1"
         },
         "pexpect": {
@@ -2168,6 +2176,22 @@
             "index": "pypi",
             "version": "==1.4.22"
         },
+        "sqlalchemy-migrate": {
+            "hashes": [
+                "sha256:0bc02e292a040ade5e35a01d3ea744119e1309cdddb704fdb99bac13236614f8",
+                "sha256:e5d2348db19a5062132d93e3b4d9e7644af552fffbec4c78cc5358f848d2f6c1"
+            ],
+            "index": "pypi",
+            "version": "==0.13.0"
+        },
+        "sqlparse": {
+            "hashes": [
+                "sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0",
+                "sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==0.4.1"
+        },
         "sshtunnel": {
             "hashes": [
                 "sha256:4a07cf989712e8ba76a370584bec922d14775054b3ff18e5d075507a298dc3ed",
@@ -2176,6 +2200,13 @@
             ],
             "index": "pypi",
             "version": "==0.4.0"
+        },
+        "tempita": {
+            "hashes": [
+                "sha256:38392bb708a10128419f75fa9120a6d2c8d137013b353968e5008a77a5c7a2ca",
+                "sha256:e92b560e99a171f9338a9b3ebab9050184fe3b8618c213ec47c153580df6c294"
+            ],
+            "version": "==0.5.3.dev0"
         },
         "tenacity": {
             "hashes": [
@@ -2324,7 +2355,7 @@
                 "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4",
                 "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
             "version": "==1.26.6"
         },
         "watchdog": {
