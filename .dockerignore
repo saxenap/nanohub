@@ -6,15 +6,15 @@
 *.egg-info
 .git
 .idea
-
+*.py[cod]
+__pycache__
+.virtual_documents
+.ipynb_checkpoints
 
 MANIFEST.in
 LICENSE.md
 
-
-
 #General
-
 
 #App folders/files
 **/*.log
@@ -22,10 +22,7 @@ LICENSE.md
 **/*.github
 archive/
 
-
 **/.ipynb_checkpoints
 **/.virtual_documents
 
 **/venv
-
-
