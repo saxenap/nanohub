@@ -1,0 +1,4905 @@
+8 87.5% MUNCIE, INDIANA, US  12.5% INDIANAPOLIS, INDIANA, US
+acperkins
+gkpolston
+poltera2
+agilmore
+akschmitt101
+gcdecker
+faroseh
+23 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+loutocky
+mage
+xhenzl00
+rasiel
+xpavlo04
+jendelin1
+xmisek00
+xbotko00
+nano_xtalav00
+pospa83
+ufyzguest
+xhakto00
+jmacak
+immortal
+clown
+roman
+callos
+xuhlar00
+kliball
+xzaple12
+vinecko
+18 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+krivak
+mikkiste
+xkroli00
+xhrube00
+hugotek
+xkubin08
+magellan
+majlos
+berzby
+jiri_novosad
+susen
+jirkami
+lordraia
+jchmelik
+poloop
+xholik00
+benda
+6 100.0% STOCKHOLM, STOCKHOLMS LAN, SE  0.0% 
+yiyepianzou
+jtli3
+pirre
+mkes1982
+ghandi
+26 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+loutocky
+mage
+xhenzl00
+rasiel
+xpavlo04
+jendelin1
+xmisek00
+xjanic06
+xbotko00
+nano_xtalav00
+pospa83
+sulcj
+ufyzguest
+xhakto00
+jmacak
+immortal
+cendar
+clown
+roman
+callos
+xuhlar00
+kliball
+xzaple12
+vinecko
+6 66.7% AUSTIN, TEXAS, US  16.7% BERKELEY, CALIFORNIA, US
+ferdousi
+lettertohyo
+ddrum2000
+aramirez
+enshaoliu
+jamil
+7 71.4% AUSTIN, TEXAS, US  14.3% BERKELEY, CALIFORNIA, US
+ferdousi
+lettertohyo
+ddrum2000
+enshaoliu
+cybersnoopy
+jamil
+18 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+krivak
+mikkiste
+xkroli00
+xhrube00
+hugotek
+xkubin08
+magellan
+majlos
+berzby
+jiri_novosad
+susen
+jirkami
+lordraia
+jchmelik
+poloop
+xholik00
+benda
+6 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+xjanos07
+xsedam00
+xbartu
+xjaros24
+xnavra28
+23 87.0% AUSTIN, TEXAS, US  4.3% CAMBRIDGE, MASSACHUSETTS, US
+jkdavid
+cybersnoopy
+ddrum2000
+sayid
+dharma135
+shannonlew
+braganza_michael
+femto
+orsonlo
+dipanjan
+lettertohyo
+radiation
+hhuang
+greatjw
+exlove
+mer99tigers
+candle120
+leeckung
+pradeepranjal
+harip1985
+enshaoliu
+jamil
+5 40.0% CHICAGO, ILLINOIS, US  20.0% INDIANAPOLIS, INDIANA, US
+saradhya
+tsfisher
+srutichigs
+wongchen
+dhruvsingh
+24 75.0% WEST LAFAYETTE, INDIANA, US  4.2% BOULDER, COLORADO, US
+boersenn
+mjwaters
+lachlanbadger
+andrewotte
+prrussel
+strachan
+tmlowe
+mbosley
+skyaw
+jbernhar
+sfairfie
+tisolamp
+sbook
+jrcalver
+abreisin
+ebarriba
+bturk
+awibawa
+smithmc
+abartow
+ehalsey
+klfrank
+banglin
+9 66.7% WEST LAFAYETTE, INDIANA, US  11.1% INDIANAPOLIS, INDIANA, US
+mjwaters
+mkittle
+attn007
+sollila
+abreisin
+amalling
+vskhadka
+yanyao
+6 66.7% WEST LAFAYETTE, INDIANA, US  33.3% CINCINNATI, OHIO, US
+awinston
+bturk
+awibawa
+rflynn
+mbelcher
+jptucker
+13 100.0% CHICAGO, ILLINOIS, US  0.0% 
+slasselle
+lbrengman
+jwang10
+wpearse
+therrmann
+dcao
+tofinesse333
+mfenech
+mehwish916
+jmarrone
+cblack
+robbrown
+mzou
+30 83.3% WEST LAFAYETTE, INDIANA, US  3.3% BOULDER, COLORADO, US
+boersenn
+mjwaters
+mtmannin
+lachlanbadger
+andrewotte
+prrussel
+strachan
+tmlowe
+mbosley
+rflynn
+sollila
+skyaw
+jbernhar
+sfairfie
+sbook
+tis0lamp
+abreisin
+amalling
+hjaganat
+ebarriba
+jptucker
+bturk
+awibawa
+smithmc
+mkittle
+abartow
+dcorbitt
+ehalsey
+klfrank
+banglin
+16 93.8% BOISE, IDAHO, US  6.2% PHOENIX, ARIZONA, US
+ssessi
+stewartsoda
+darrinreed
+hbui
+zencharren
+justinbutterfield
+lincstar182
+aaronwozniak
+chrisraymes
+sahar
+davidknight
+petersonidaho
+otrejo
+dency_daniel
+jvalmanza
+12 83.3% NEWARK, DELAWARE, US  8.3% PHILADELPHIA, PENNSYLVANIA, US
+ecewy
+watermir
+nupur
+colin_shaw2003
+lyalex
+easong
+ningshao
+jayps2005
+cpthomp
+murat83
+siliconsolar
+kunalghosh
+12 100.0% LOS ANGELES, CALIFORNIA, US  0.0% 
+yimingis
+sgu001
+arbitro
+aagar001
+bsg721
+littlegu5
+faroughp
+moccamse
+mpenchev
+kcarp001
+jcabi001
+dtewe001
+12 100.0% CHICAGO, ILLINOIS, US  0.0% 
+hknai
+kalbertine
+emurphy
+erobinson
+swilson
+jroden
+dcooperberg
+stacilaci56
+seankim
+jmarrone
+nchu
+pszalwinski
+311 100.0% CHICAGO, ILLINOIS, US  0.0% 
+dtorres
+ksampson
+pdziedzic
+tgonzales
+ajm105
+mbykowski
+mnovacanes
+pbaranwal
+tchou
+danielbaik
+ccarhart
+chicah444
+bigkrezca32
+ashutton
+rferraro
+jyoung88
+asuresh
+tsn821
+dsy389
+bniklinska
+ktaylor
+jschulze
+xyin
+jesnyder
+nshultz
+jdshank44
+jdrake
+igemp
+smw823
+adhar2
+jlt453
+chastings
+ndvora
+sflores
+kalbertine
+choel
+slasselle
+dnebel
+jshabosky
+srao
+kparekh
+ealtman
+jmeissner
+agast
+bdemurihaeberle
+bweisse
+slu
+mmotiani
+wstokely
+bfu109
+mehwish916
+abruzek
+robbrown
+aepstein
+gschultz
+mroebuck
+pmodi
+rsmith
+kmortensen
+spark
+jswanson
+pcoleman
+prettynpink221
+mgilmour
+dliu
+brwass
+mhyre
+suchida
+vleung
+therrmann
+mshah22
+eskim
+rpickering
+laurahchoi
+kmorgan
+jbeltran
+csherman
+dspade
+sstrong
+mfa713
+jramsley
+zes975
+ekatz
+jdarby
+hknai
+lawchang88
+dfang
+kkao
+hdurschlag
+kmp423
+wpearse
+asantamarina
+claireboland
+aechevarria
+mja276
+nperkins
+als753
+ysalah
+jteno
+bschnedl
+evedgebah
+jsavitsky
+lfs919
+atalai
+aschattner
+jpineda
+sdang
+erobinson
+dcao
+jswenson
+kkang
+frankzhang
+ymanibog
+sdixit
+dsturgeon
+jmehrotra
+rgribben
+mfenstermaker
+jaq945
+agoodman
+rgopal
+g3styx
+dufford
+kcebrian
+alopez
+acm
+ldelaney
+dsiegal
+clifford
+akim
+jbastiaens
+rtsang
+psampath
+agassifeng
+mzou
+pszalwinski
+heisenman
+jwang10
+ganderson
+nkraska
+clin
+kbatra
+tofinesse333
+vladmanko
+mlowes
+kvb507
+mfederspiel1
+alondanon
+jstroup
+cpa475
+bsummersgill
+kbg813
+akhan
+dflint
+bschaefer
+jps939
+xbasko
+cboland
+acarroll
+cwhite
+shaolinquan
+swalchuk
+dculhane
+kshedd
+ksulzer
+dchoi
+wheat_thin636
+abarr
+rmetzler
+fkhan
+mamofa
+cpark
+eohira
+jgavil
+jzona
+rbaroch
+awhittington
+lgerkowicz
+vrivas
+lbrengman
+alang
+sindhu108
+rmb907
+skramer
+gescobar
+awagner
+npentelovitch
+wuttarapatriyakul
+ehaug
+msarkulova
+ecunningham
+evelyncarter
+dmenon
+khiggins
+sburrill
+aim512
+wsun
+amorales
+dal767
+jmenkin
+yixak
+scrow
+ahurd
+gdasovich
+vgunderson
+jdinneen
+ewest
+apumm
+eschaefer
+jobremski
+jweishaar
+cblack
+toconnell
+cmcgourty
+pkalkat
+erausch
+abeswick
+jbragg
+jmarrone
+dwang
+clu
+dwg482
+arahman
+jonaltenhofen
+mbarrett
+vvalenzuela
+calfonso
+yongjoo87
+nfrench
+jlye
+lowen
+del982
+djwhack03
+jmehra
+jdattilo
+dblumenthal
+aocchiuti
+aka220
+mis130
+jlee
+cnh872
+seankim
+cclark
+msivasubramaniam
+skim
+hschroeder
+mkubiak
+ktietjen
+kfreer
+darosner
+shanks53
+ikornblau
+gbanner
+kroderer
+rkhazai
+swilson
+stacilaci56
+noodles5
+asisodia
+jhan
+rlee
+kstoerzinger
+ckwan
+tcouri
+ebell
+amahajan
+kstoddart
+zeidlab
+fome
+aji536
+bmattson
+soconnell
+cfrench
+aroybal
+treber
+zsersland
+ndhawan
+dshabeeb
+cpowersmaher
+pnolan
+mfenech
+jessicag
+dburk
+smo596
+jcarson
+dcooperberg
+aasthana
+kcysewski
+jchowaniec
+jhl326
+mhoffmann
+sarnold
+fzhang
+rickyp999
+mfrancisco
+nchu
+ktommerdahl
+6 100.0% SALT LAKE CITY, UTAH, US  0.0% 
+jshumaker
+catcall
+retzloff
+l84119
+ben19q
+harald84
+27 85.2% SALT LAKE CITY, UTAH, US  7.4% PROVO, UTAH, US
+empire3k
+dmauchley
+catcall
+extrasmoodious
+jrwells
+kigen
+ellingsito
+ochukhrai
+lexe
+xiaoguo
+ilya1987
+tmleynek
+ijhuggins
+lsross5
+efillerup
+bendmart
+l84119
+rusteng
+meghannsmit
+dstle
+battmanz
+natemccaughey
+bclayton2003
+madmax
+wbmckean
+kurt_retzloff
+6 66.7% SALT LAKE CITY, UTAH, US  16.7% PROVO, UTAH, US
+jeweed
+dkbags
+blacksun7x
+williamcarlquist
+nparker
+chunderbutt
+7 85.7% VIRGINIA BEACH, VIRGINIA, US  14.3% BALTIMORE, MARYLAND, US
+johnkibet
+nan0hub
+huuthuong28
+quantumfactor
+bamiduro
+ompenrose
+35 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+sedlakp
+mage
+kubb
+xpavlo04
+jardakn
+jendelin1
+xmisek00
+magellan
+jiri_novosad
+xjanic06
+xbotko00
+xpapez00
+haldy
+nano_xtalav00
+sulcj
+vidan
+jarek
+wing
+clown
+immortal
+xuhlar00
+jiriholubcik
+callos
+mirek
+xkrahu03
+xsvabf00
+zeron
+xzaple12
+jchmelik
+vinecko
+16 93.8% BOISE, IDAHO, US  6.2% PHOENIX, ARIZONA, US
+ssessi
+stewartsoda
+grock
+hbui
+justinbutterfield
+lincstar182
+aaronwozniak
+chrisraymes
+kriscampbell
+sahar
+davidknight
+otrejo
+victorkelley
+dency_daniel
+jvalmanza
+34 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+mikkiste
+sedlakp
+hugotek
+xzimek01
+loutocky
+majlow
+lordraia
+xbartu
+xkroli00
+kuzdaso
+majlos
+berzby
+jiri_novosad
+xjaros24
+benda
+ufyzguest
+xhakto00
+xbetla00
+jirkami
+xjanos07
+cendar
+xsedam00
+poloop
+reznicekm
+xnavra28
+xhrube00
+xkubin08
+xlazni05
+czkiller
+susen
+lumpikur
+17 76.5% WEST LAFAYETTE, INDIANA, US  11.8% INDIANAPOLIS, INDIANA, US
+pgururaj
+bupolin77
+vidnari
+shorif
+zhudongchun
+cbburger
+zainu
+tjandran
+junezhu
+gkarakon
+cinedemian
+ssalamat
+masud001
+newmin
+jhenrie
+turkstra
+kim70
+10 90.0% BLACKSBURG, VIRGINIA, US  10.0% WASCO, CALIFORNIA, US
+oshekari
+ghandi32
+cushenj
+da400king
+dditzler
+javiii87
+dgilham
+nyan84
+agah
+vklall
+7 42.9% BLACKSBURG, VIRGINIA, US  42.9% EDINBURG, VIRGINIA, US
+chuckdeez810
+bdgordon
+ghandi32
+jenneg19
+nyrhokie
+cstringe
+12 75.0% BLACKSBURG, VIRGINIA, US  8.3% DANVILLE, VIRGINIA, US
+betog
+oshekari
+djcook
+ghandi32
+cushenj
+noondduh
+vespasianvs
+javiii87
+dgilham
+nyan84
+vklall
+5 40.0% EDINBURG, VIRGINIA, US  40.0% BLACKSBURG, VIRGINIA, US
+bdgordon
+ykim
+chunkysoup
+cstringe
+36 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+sedlakp
+mage
+kubb
+xhenzl00
+clovek
+xpavlo04
+jardakn
+poolee
+jendelin1
+magellan
+xjanic06
+xbotko00
+xpapez00
+nano_xtalav00
+sulcj
+ufyzguest
+jmacak
+vidan
+jarek
+clown
+immortal
+cendar
+poloop
+roman
+jiriholubcik
+xkrahu03
+mirek
+xuhlar00
+zeron
+xzaple12
+jchmelik
+martingt110
+vinecko
+31 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+solda
+sedlakp
+hugotek
+loutocky
+dallda
+lordraia
+xbartu
+rasiel
+xkroli00
+xmisek00
+koren
+majlos
+berzby
+xjaros24
+benda
+ufyzguest
+xhakto00
+xbetla00
+jirkami
+xsedam00
+reznicekm
+xnavra28
+xhrube00
+kliball
+oti
+czkiller
+susen
+lumpikur
+pekosek23
+371 99.2% CHICAGO, ILLINOIS, US  0.3% NOTRE DAME, INDIANA, US
+dtorres
+ksampson
+jlemaster
+tgonzales
+ccl356
+mbykowski
+jdeschenes
+pbaranwal
+tchou
+ccarhart
+ashutton
+rferraro
+jyoung88
+bpk122
+tsn821
+bniklinska
+xyin
+jschulze
+nshultz
+jdrake
+jesnyder
+igemp
+adhar2
+jlt453
+mradadia
+zharb
+ndvora
+sflores
+kalbertine
+cvenatta
+jallen
+slasselle
+sju
+dnebel
+jdawson
+srao
+eunterbrink
+roub0008
+kparekh
+jkircher
+cconrad
+ealtman
+jmeissner
+marthachang
+bdemurihaeberle
+bweisse
+aahmad
+jlopez
+slu
+mmotiani
+wstokely
+bfu109
+lfoulke
+abruzek
+robbrown
+aepstein
+jguliap
+rkaringada
+gschultz
+lwelke
+dyao
+aelmy
+mroebuck
+rsmith
+kmortensen
+asprague
+bwalker423
+tpoole
+spark
+jswanson
+pcoleman
+crush
+prettynpink221
+mgilmour
+jilliann2
+dliu
+mtapkowski
+brwass
+mhyre
+kkovatch
+lstene
+suchida
+vleung
+laybar
+mshah22
+eskim
+rpickering
+dshafir
+cpai
+laurahchoi
+leochild2005
+kmorgan
+dspade
+csherman
+jbeltran
+astrick
+sstrong
+mfa713
+aaronbenjamin
+jramsley
+ekatz
+hknai
+jdarby
+dfang
+kkao
+hdurschlag
+kmp423
+wpearse
+asantamarina
+claireboland
+aechevarria
+mja276
+nperkins
+als753
+ysalah
+jteno
+bschnedl
+justineshaw
+jsavitsky
+asarwark
+cgrandau
+dwu
+ktakahashi
+atalai
+jordanduval
+aschattner
+jpineda
+barlas
+sdang
+jswenson
+erobinson
+dcao
+kkang
+jjaume
+jsnyder
+frankzhang
+jroig1
+ymanibog
+sdixit
+rgribben
+mfenstermaker
+cchristianson
+cmiksis
+jaq945
+agoodman
+rgopal
+chaimann
+g3styx
+achin
+dufford
+smoffett
+kcebrian
+slhatch
+alopez
+acm
+ldelaney
+jdavid
+dsiegal
+jbastiaens
+rtsang
+psampath
+mzou
+lkarvelis
+pszalwinski
+ganderson
+bfrett
+nkraska
+clin
+kbatra
+awellman
+ikos
+mlowes
+alondanon
+jstroup
+bsummersgill
+kbg813
+hwolfman
+jsneed
+dflint
+bschaefer
+ebader
+jps939
+xbasko
+cwhite
+balenwhi
+chaselhorst
+nmsingh
+swalchuk
+dculhane
+osostan
+kshedd
+smui
+mfederspiel
+ksulzer
+mkahle
+abarr
+rmetzler
+mamofa
+cpark
+eohira
+jroden
+ameyers
+jgavil
+jzona
+awhittington
+vrivas
+lbrengman
+skramer
+ohkwon
+gescobar
+awagner
+npentelovitch
+wuttarapatriyakul
+ehaug
+smoy
+msarkulova
+ecunningham
+slim
+kschuette
+dmenon
+evelyncarter
+khiggins
+sburrill
+wsun
+amorales
+jmenkin
+bmanojlovic
+yixak
+scrow
+ahurd
+lkingsbury
+swahab
+gdasovich
+sdaudi
+vgunderson
+jdinneen
+ewest
+rwinnegar
+mkalina
+eschaefer
+fuckme
+jobremski
+cliu
+jweishaar
+cblack
+cmcgourty
+pkalkat
+erausch
+abeswick
+chem10107
+jbragg
+jmarrone
+dwang
+clu
+dwg482
+arahman
+churley
+vvalenzuela
+calfonso
+yongjoo87
+nfrench
+jlye
+bbrochu
+lowen
+del982
+asiddiqui
+djwhack03
+jmehra
+jdattilo
+smiller
+dblumenthal
+jneilsson
+amelnyk
+aocchiuti
+aka220
+jlee
+cdipompeo
+cclark
+seankim
+msivasubramaniam
+skim
+mphilben
+hschroeder
+mkubiak
+ktietjen
+sfriedman
+kfreer
+darosner
+elemasters
+shanks53
+ikornblau
+gbanner
+geieea
+kroderer
+csouthard
+rkhazai
+swilson
+stacilaci56
+noodles5
+mchen
+rkatz
+asisodia
+swundrow
+bnielsen
+msood
+jhan
+rlee
+mrahman23
+ckwan
+tcouri
+psteptoe
+ebell
+amahajan
+jcummins
+jaltenhofen
+vmanko
+kstoddart
+fome
+bvu
+emurphy
+bmattson
+soconnell
+cfrench
+grebesco
+cvega
+aroybal
+treber
+zsersland
+aloon
+ausmanlk
+ndhawan
+dshabeeb
+klandry
+lweiss
+kgspears
+cpowersmaher
+dbaik
+pnolan
+athaler
+mfenech
+pliu
+dburk
+smo596
+jcarson
+mpsorkin
+sfarley
+elliottwallace
+dcooperberg
+aasthana
+jchowaniec
+mhoffmann
+uchidas
+sarnold
+fzhang
+damaranto
+mfrancisco
+tejerina
+nchu
+ktommerdahl
+19 78.9% CHICAGO, ILLINOIS, US  5.3% DEKALB, ILLINOIS, US
+psteptoe
+jcummins
+jsteinberg
+eunterbrink
+alondanon
+jjaume
+pdziedzic
+rtsang
+geieea
+sburrill
+mickey_g3
+jjones
+cfrench
+jroig
+ktakahashi
+achin
+jordanduval
+ckilic
+mickey
+48 100.0% CHICAGO, ILLINOIS, US  0.0% 
+weichiwong
+ndk510
+kohnes86
+crip1163
+danfullin
+thuynh86
+jrw580
+sianmei
+nahmadi
+northlild85
+kjv526
+downin24
+pootietang
+nulongsnapper86
+thatkidandy
+kwoodward
+shehanfernando
+grm154
+srv901
+schatz
+methompson86
+vac781
+epd800
+chrismeetsparis
+dwillnu
+blkhawk005
+spilewski
+achin
+mmapodaca
+cmaikens
+rizalph
+tvc310
+allisonchoing
+jsp255
+tejerina
+ausmanlk
+ecarter
+albertlui
+tgillard
+jojonelli
+nutmeg0440
+jspark
+present2010
+kevinl85
+22 95.5% CHICAGO, ILLINOIS, US  4.5% INDIANAPOLIS, INDIANA, US
+weichiwong
+ayousef
+alondanon
+danstrone
+ikonstantinov
+pinchuk
+xyb9013
+jroden
+xyb901
+xyb9014
+kwoodward
+justineshaw
+mfa713
+pjryan
+xyb9012
+mmapodaca
+cmaikens
+tejerina
+ausmanlk
+vgunderson
+mcolvin
+6 83.3% CHICAGO, ILLINOIS, US  16.7% INDIANAPOLIS, INDIANA, US
+cmaikens
+ayousef
+jroden
+xyb901
+xyb9014
+mmapodaca
+10 90.0% OGDEN, UTAH, US  10.0% HOUSTON, TEXAS, US
+gelfling
+timdavis
+cinglefield
+student
+mmalmrose
+amywebster
+kathrynday
+kevinsmith2
+15 100.0% SEOUL, SEOUL-T'UKPYOLSI, KR  0.0% 
+bunnoi21
+beahn87
+kwos001
+skku34
+gidwldl86
+myandante1
+ytw4246
+ezclub
+cretalugo
+kykk4
+salem
+sjsik25
+dubu00
+cihee08
+dkttk4
+32 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+sedlakp
+kubb
+hajny
+haldy123
+xpavlo04
+poolee
+jendelin1
+xmisek00
+xstava05
+jiri_novosad
+xjanic06
+xpapez00
+sulcj
+ufyzguest
+djnavr
+cendar
+clown
+immortal
+roman
+jiriholubcik
+callos
+mirek
+xkrahu03
+xuhlar00
+zeron
+kliball
+xzaple12
+jchmelik
+vinecko
+30 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+mikkiste
+hugotek
+mage
+loutocky
+dallda
+lordraia
+xbartu
+jardakn
+xkroli00
+majlos
+berzby
+xjaros24
+benda
+xbetla00
+jirkami
+xjanos07
+xsedam00
+xnavra28
+krivak
+xhrube00
+xkubin08
+xlazni05
+czkiller
+oti
+lumir
+pekosek23
+xholik00
+13 100.0% SEOUL, SEOUL-T'UKPYOLSI, KR  0.0% 
+meteor1024
+gidwldl86
+gangneng82
+hyperlky
+cretalugo
+tpwlsdh
+kykk4
+salem
+jackassman
+sjsik25
+ytw4246
+skku34
+cihee08
+14 71.4% OGDEN, UTAH, US  14.3% SALT LAKE CITY, UTAH, US
+timdavis
+chulopackers
+cinglefield
+student
+mmalmrose
+xiexienin
+amywebster
+jmkluthe
+kathrynday
+kevinsmith2
+joehammer79
+10 80.0% OGDEN, UTAH, US  10.0% HOUSTON, TEXAS, US
+gelfling
+timdavis
+student
+mmalmrose
+amywebster
+kathrynday
+kevinsmith2
+drewcasselberry
+26 100.0% BRNO, JIHOMORAVSKY KRAJ, CZ  0.0% 
+sedlakp
+tomasbzonek
+hajny
+xhenzl00
+xpavlo04
+poolee
+xstava05
+jiri_novosad
+xjanic06
+xbotko00
+nano_xtalav00
+jmacak
+jarek
+cendar
+immortal
+poloop
+roman
+callos
+jiriholubcik
+mirek
+xkrahu03
+xzaple12
+vinecko
+23 87.0% STANFORD, CALIFORNIA, US  4.3% SANTA ROSA, CALIFORNIA, US
+jaehlee
+hspwong
+youngy
+dmg131
+branetr
+twkt03
+xuanwu
+twoon
+elvislin
+letswin16
+changw
+mrlin
+chenying119
+rparsa
+mistyblue122
+djacobs7
+dejia
+ling84
+jia_sfo
+jayparker
+millaniow
+crkenney
+10 100.0% STANFORD, CALIFORNIA, US  0.0% 
+ling84
+djacobs7
+rparsa
+branetr
+elvislin
+crkenney
+youngy
+mistyblue122
+twkt03
+15 100.0% STANFORD, CALIFORNIA, US  0.0% 
+peichen
+djacobs7
+ling84
+jia_sfo
+elvislin
+millaniow
+oliviawei
+youngy
+crkenney
+mistyblue122
+twkt03
+dmg131
+branetr
+chenying119
+11 90.9% PHOENIX, ARIZONA, US  9.1% TUCSON, ARIZONA, US
+morvaridd
+royj
+tjgraf
+mmellor10
+anujasu
+ryanbeavers
+grek23
+moe
+garrettschlenvogt
+myztical7
+netonim
+6 83.3% TAIPEI, T'AI-WAN, TW  16.7% HSINCHU, T'AI-WAN, TW
+huiwen
+hmhuang
+tcyeh
+bhsu
+cchl
+doncr
+7 100.0% PHOENIX, ARIZONA, US  0.0% 
+royj
+bandit143
+tjgraf
+mmellor10
+grek23
+garrettschlenvogt
+dbethel
+145 79.3% WEST LAFAYETTE, INDIANA, US  10.3% LOUISVILLE, KENTUCKY, US
+ongt
+singapaul
+dmsnell
+et279
+astacy
+gzarse
+sundeepvem
+kyangchul
+gustaf89
+millies
+chang61
+dulmes
+jidthekid
+tmoffitt
+bskorupa
+seshaw
+jkalbfle
+ebuysse
+aforkner
+dtruax
+asudibyo
+jtill04
+brunner2112
+mrhee
+longja
+dsutherl
+zarastra
+ttho
+bmroozia
+dvanclev
+deetman
+freedomjustice
+kelkwa11
+jkurasz
+jwetheri
+nannachh
+tcollopy
+jgries
+lai
+kassovic
+jcwirth
+mswallow
+kklacik
+rahoward
+ftanjono
+jgu
+ahermann
+nchirla
+rparisi
+npanitch
+bashir
+lmertes
+jostendo
+werman691
+nmisiuna
+gpajot
+mharger
+tdjanoko
+ajplaymaker
+aashi
+wow676
+akhilesh
+wizdh
+pateldm
+jackfrost9p
+lpeterus
+anraj
+nlabianc
+bache
+wnoh
+kim131
+mrmillz
+taylorcl
+rkv0000
+priyam
+samkothari79
+zer0xxx
+mhain
+pbayuart
+alayi
+atruesde
+ahartnet
+bsyoder
+griffinm
+smchaudh
+chermawi
+spgreene
+apuri
+mille177
+babaumga
+docdaa008
+dgrothe
+wehlhard
+sdidla
+mtummala
+rachitbiyani
+jshahid
+sprashan
+yi0
+csrockerzero
+scyther314159
+sstreete
+bsarlitt
+mwarsco
+ashayat
+smith571
+jfawcett
+johns180
+rsherloc
+skovich
+bdannan
+han45
+mtanoto
+wang209
+vinsma
+cabault
+sumeetkumargupta
+fuzzy_maraca77
+sageorge
+irony59
+jaycrayz
+rtrusty
+elric22
+sbach
+neudeck
+dplamber
+pranaynanda
+kim130
+czahner
+jskim
+mdsnyder
+john3636
+dube0
+stoneagelove
+xmzhang
+terran010
+obernada
+danielac
+zeich
+wildkid256
+jsterlin
+21 47.6% WEST LAFAYETTE, INDIANA, US  42.9% CINCINNATI, OHIO, US
+et279
+jkurasz
+astacy
+spank_fusion
+arorar
+somacroy
+kassovic
+trs4ece
+ebuysse
+kim130
+babaumga
+sdidla
+jshahid
+mamitche
+dergan
+wizdh
+dvanclev
+pmongkol
+ezarowny
+kdaiya
+13 53.8% LOUISVILLE, KENTUCKY, US  46.2% WEST LAFAYETTE, INDIANA, US
+jkalbfle
+dhum
+smith571
+neudeck
+dmsnell
+nmisiuna
+lcowsert
+ahermann
+jtill04
+dopkick
+ajplaymaker
+jdickers
+mswallow
+11 45.5% INDIANAPOLIS, INDIANA, US  45.5% WEST LAFAYETTE, INDIANA, US
+judoma
+camyers
+bsparson
+alayi
+sageorge
+nlabianc
+ajrobiso
+rparisi
+spamilton1
+docdaa008
+6 100.0% WEST LAFAYETTE, INDIANA, US  0.0% 
+dmmitche
+spgreene
+samkothari79
+scyther314159
+dube0
+gustaf89
+30 86.7% WEST LAFAYETTE, INDIANA, US  6.7% CINCINNATI, OHIO, US
+ongt
+singapaul
+dmsnell
+jkurasz
+johns180
+astacy
+tcollopy
+kassovic
+gustaf89
+sumeetkumargupta
+kklacik
+rahoward
+pbayuart
+ftanjono
+griffinm
+smchaudh
+tmoffitt
+vivihaha
+ebuysse
+chermawi
+nmisiuna
+mharger
+spgreene
+docdaa008
+dmmitche
+zarastra
+terran010
+pmongkol
+kdaiya
+123 85.4% WEST LAFAYETTE, INDIANA, US  5.7% CINCINNATI, OHIO, US
+ongt
+singapaul
+dmsnell
+astacy
+chaines
+gzarse
+gustaf89
+bsparson
+aashi21
+chang61
+dulmes
+gsinghal
+hiddendecoy
+joeblu
+jidthekid
+pjyoti
+tmoffitt
+seshaw
+nutomo
+nrrojas
+asudibyo
+brunner2112
+mrhee
+longja
+lpuglisi
+dsutherl
+pmongkol
+kelkwa11
+kdaiya
+gutierjm
+jkurasz
+jwetheri
+tcollopy
+jcwirth
+kklacik
+jones105
+rahoward
+ftanjono
+jgu
+ahermann
+nchirla
+rparisi
+npanitch
+nee_a87
+jostendo
+wangyangboy
+fisher
+werman691
+judoma
+nmisiuna
+babauman
+axavier
+tdjanoko
+jcleong
+wow676
+wizdh
+mamitche
+pateldm
+akhilesh
+hsvasi
+nlabianc
+swethy
+kim131
+mrmillz
+arorar
+zer0xxx
+zconvers
+mhain
+pbayuart
+atruesde
+sonicalflair
+bsyoder
+garg
+griffinm
+priyamtrivedi
+chermawi
+acallawa
+spgreene
+docdaa008
+dgrothe
+mtummala
+dmmitche
+csrockerzero
+sstreete
+mwarsco
+johns180
+rsherloc
+somacroy
+han45
+bdannan
+mtanoto
+vinsma
+sumeetkumargupta
+fuzzy_maraca77
+stucky
+sageorge
+irony59
+jaycrayz
+spamilton1
+rtrusty
+sbach
+kim130
+dplamber
+pranaynanda
+czahner
+jskim
+jenkinsalexp
+john3636
+dube0
+mattsbai
+aozero
+terran010
+lcowsert
+plaird
+dergan
+obernada
+jcromer
+zeich
+wildkid256
+12 41.7% LOUISVILLE, KENTUCKY, US  41.7% WEST LAFAYETTE, INDIANA, US
+smith571
+neudeck
+sprashan
+lcowsert
+dvanclev
+astacy
+adarmans
+chaines
+han45
+dopkick
+smchaudh
+gjross
+7 71.4% LOUISVILLE, KENTUCKY, US  28.6% WEST LAFAYETTE, INDIANA, US
+nanohueb
+csrockerzero
+blee292513
+nee_a87
+han45
+mtanoto
+singhs
+9 44.4% CINCINNATI, OHIO, US  44.4% WEST LAFAYETTE, INDIANA, US
+ebuysse
+aforkner
+et279
+mamitche
+wizdh
+lpeterus
+somacroy
+kassovic
+babaumga
+13 38.5% INDIANAPOLIS, INDIANA, US  30.8% WEST LAFAYETTE, INDIANA, US
+ebuysse
+camyers
+bsparson
+romanchd
+sageorge
+ftanjono
+ajrobiso
+somacroy
+spamilton1
+acgautam
+jsommer
+gbalmer
+68 85.3% WEST LAFAYETTE, INDIANA, US  4.4% CINCINNATI, OHIO, US
+dmsnell
+et279
+gutierjm
+jwetheri
+johns180
+astacy
+rsherloc
+arorar
+tcollopy
+gzarse
+bdannan
+kassovic
+jcwirth
+gustaf89
+kklacik
+pbayuart
+rahoward
+atruesde
+dulmes
+ftanjono
+jgu
+gsinghal
+sonicalflair
+gshaw
+irony59
+nchirla
+jaycrayz
+spamilton1
+jostendo
+wangyangboy
+rtrusty
+werman691
+aforkner
+nrrojas
+acallawa
+chermawi
+dplamber
+pranaynanda
+jskim
+jtill04
+brunner2112
+babaumga
+docdaa008
+dube0
+tdjanoko
+gbalmer
+mattsbai
+wow676
+lpuglisi
+sprashan
+terran010
+akhilesh
+dergan
+lpeterus
+dvanclev
+hsvasi
+nlabianc
+obernada
+pmongkol
+kelkwa11
+sstreete
+swethy
+mrmillz
+jsterlin
+kdaiya
+6 66.7% WEST LAFAYETTE, INDIANA, US  33.3% INDIANAPOLIS, INDIANA, US
+judoma
+alayi
+ftanjono
+rparisi
+spamilton1
+9 55.6% CINCINNATI, OHIO, US  33.3% WEST LAFAYETTE, INDIANA, US
+aforkner
+et279
+mamitche
+dergan
+wizdh
+joeblu
+pjyoti
+kdaiya
+8 87.5% WEST LAFAYETTE, INDIANA, US  12.5% INDIANAPOLIS, INDIANA, US
+werman691
+nsapra
+spaik
+nmisiuna
+johns180
+nlabianc
+ateixeir
+rtrusty
+112 89.3% WEST LAFAYETTE, INDIANA, US  3.6% CINCINNATI, OHIO, US
+singapaul
+astacy
+gzarse
+gustaf89
+bsparson
+chang61
+dulmes
+hiddendecoy
+joeblu
+jidthekid
+pjyoti
+seshaw
+nrrojas
+asudibyo
+jtill04
+brunner2112
+longja
+ttho
+pmongkol
+freedomjustice
+kelkwa11
+kdaiya
+gutierjm
+jkurasz
+jwetheri
+lonestar
+rkv000
+kassovic
+jcwirth
+kklacik
+jones105
+rahoward
+srettber
+ftanjono
+jgu
+ahermann
+gshaw
+crosis
+rparisi
+npanitch
+sagadi
+jostendo
+wangyangboy
+werman691
+junghanlee
+nmisiuna
+tdjanoko
+wow676
+anraj
+akhilesh
+pateldm
+lpeterus
+hsvasi
+nlabianc
+swethy
+wnoh
+kim131
+mrmillz
+sen2904
+nsapra
+arorar
+zconvers
+mhain
+pbayuart
+atruesde
+bsyoder
+garg
+smchaudh
+acallawa
+chermawi
+spgreene
+babaumga
+docdaa008
+dgrothe
+justinsyk
+wehlhard
+mtummala
+dmmitche
+jshahid
+sprashan
+sstreete
+mwarsco
+rsherloc
+johns180
+bdannan
+han45
+mtanoto
+vinsma
+gjross
+jaycrayz
+spamilton1
+smillies
+rtrusty
+sbach
+kim130
+dplamber
+pranaynanda
+czahner
+jskim
+john3636
+dube0
+mattsbai
+terran010
+lcowsert
+obernada
+wildkid256
+13 61.5% CINCINNATI, OHIO, US  30.8% WEST LAFAYETTE, INDIANA, US
+ebuysse
+aforkner
+et279
+chermawi
+mamitche
+jkurasz
+wizdh
+dergan
+sonicalflair
+pjyoti
+somacroy
+thatmushroom
+smillies
+6 50.0% LOUISVILLE, KENTUCKY, US  33.3% WEST LAFAYETTE, INDIANA, US
+wizdh
+nanohueb
+csrockerzero
+pmongkol
+davydotcom
+mtanoto
+8 62.5% WEST LAFAYETTE, INDIANA, US  12.5% -, -, -
+chen200
+clarksnano
+vivihaha
+xiao2
+shiv
+colbykd
+5 100.0% WEST LAFAYETTE, INDIANA, US  0.0% 
+usman
+elec1020
+araycho
+sunnyleekr
+samarthagarwal
+5 80.0% WEST LAFAYETTE, INDIANA, US  20.0% BERKELEY, CALIFORNIA, US
+sayeef
+samarthagarwal
+pshempel
+elec1020
+kbalamuk
+10 90.0% WEST LAFAYETTE, INDIANA, US  10.0% BERKELEY, CALIFORNIA, US
+sayeef
+sriniva0
+samarthagarwal
+kennell
+vrinside
+araycho
+elec1020
+kbalamuk
+augustcharles
+paul_nano_tran
+5 100.0% WEST LAFAYETTE, INDIANA, US  0.0% 
+mtmannin
+wang159
+elec1020
+augustcharles
+paul_nano_tran
+5 80.0% WEST LAFAYETTE, INDIANA, US  20.0% INDIANAPOLIS, INDIANA, US
+ruchichoudhary
+ricktest
+araycho
+bhaley
+augustcharles
+7 100.0% WEST LAFAYETTE, INDIANA, US  0.0% 
+apalaria
+ruchichoudhary
+kennell
+vrinside
+araycho
+scyther314159
+augustcharles
+9 66.7% WEST LAFAYETTE, INDIANA, US  11.1% CARBONDALE, ILLINOIS, US
+tehlike
+kcantley
+ssahmed
+dkearney
+nkharche
+adaku101
+wang159
+himadri
+sriraman
+5 100.0% WEST LAFAYETTE, INDIANA, US  0.0% 
+sriniva0
+kcantley
+rez
+kbalamuk
+WEST LAFAYETTE, INDIANA, US
+cchong
+jmelcher
+clarksm
+mmclennan
+ruth
+saumitra
+yqwu
+swoop
+gekco
+sanketmahajan
+hasanm
+snowwitje
+sbrophy
+cxsong
+raman
+nkissebe
+mourad
+reifenberger
+lanchun
+kufluogl
+ddatta
+goodman
+aweitzel
+bayalew
+khutchin
+mickcrowley
+sdaly
+sdandre
+9planets
+aeislam
+gaoyunfei
+rcoleman
+wizjeong
+shuiqing
+lundstro
+zooley2
+pmccallu
+sgangwal
+biswajit025
+rhee
+fsaied
+rlahiji
+neophyto
+aayanik
+sbrady
+psajor
+tchiujan
+chappell
+hwhillhouse
+ninad
+kalel
+zooley
+prnair
+lbiedermann
+pbatra
+thisishe
+ashraf
+lutfe_siddiqui
+koswatta
+raseong
+yru
+ebert
+skalafut
+lynewman
+bajones
+rrahman
+shetlerc
+saxep01
+pstepp
+vegaa
+kgrosskl
+rbwagner
+iyums
+pauldho
+potrawski
+weixu
+quickboy78
+pjdowns
+cgshields
+angik
+park42
+marti178
+xiaoc
+crallen
+bksubbarao
+liveletlive
+nchjian
+xuxcn
+deejayrudyg
+gururajvnaik
+nyquist
+bbeatty01
+gprakash
+jameslmullins
+huang27
+kkuriyan
+pascualg
+iwildeso
+mqi
+hatemelmatbouly
+jrp
+jrwilcox
+marisol
+jeyarama
+melloch
+xjren
+ameert
+haldun
+askiahill
+bolla
+gmford
+mahaprasadkar
+3ksnn64
+kim400
+park43
+jouyang
+agprasad
+shen17
+nvargo
+harris
+STANFORD, CALIFORNIA, US
+bilee
+artitw
+tejask
+morganyoung
+arash
+cloudies
+ycneilna
+nikonov
+jdgerling
+vlordi
+darve
+hayaska
+roumposg
+cheng4
+wangss
+hamels
+huaqu
+hatctww
+egley
+yangliu1
+aryanpour
+chya
+nasser
+anoshraj
+chadhag
+daims
+awhsing
+lees
+asalman73
+srim
+mstettle
+mona
+lhughes02
+khaki
+dmaz99
+dkienle
+joycezh
+jcholkim
+hpcheng
+papajim
+mreinig
+pvmrmurthy
+viralhs
+sqcao
+aneeshnainani
+tmmous
+gunjim
+jseiwert
+shaowei
+weirdo71
+rasitot
+gthareja
+venzz
+dalyx
+talipucar
+mcgarner
+younge994
+elvislin824
+sscully
+vicsta
+vancemc
+yuanzhang
+diulama
+sagimathai
+averma
+larry
+mtopinka
+heikam
+changwa
+yu0528
+ssundara
+shwetank
+kskucha
+rshyam
+simtool3
+sunils78
+cschan
+kumarp
+jfabbri
+simtool1
+rdin
+dandanda
+rhatcher
+veraz
+SEOUL, SEOUL-T'UKPYOLSI, KR
+jschaos
+eunhalee
+pborse
+karamba
+swani
+hyosung2
+nnrchae
+zeehwanee
+gunsko
+jonsaram
+leemtx
+pbd
+ytynew
+jinhchoi
+eljja
+phile
+hongkiha
+niceneph
+choi2408
+yd3210
+nanopp
+loup
+sacholom
+kcoon
+gomototo
+kshim
+jsh2003
+gurabaek
+xiaowai
+stepup2u
+khchoh
+youngamos
+physitect
+mabung
+leesooil
+yjjung
+rucyris
+sulee
+daniel3600
+ywnam
+ysyu71
+dokira
+choinex
+danggi
+pumpkin111
+purepass
+neodm
+fervinmoses
+bellview
+yaniari0
+fodkang8
+hotkunio
+majorana
+ledi98
+deamury
+yunhilee
+krkim
+seyo110
+an0808
+kwonhs
+ehdud
+manpha97
+faglory
+kipil84
+bard2
+papayali
+eagle1kys
+openwjy
+kuaaa1
+pmoon
+changmun
+neophoton
+jsangjun
+cameleon
+nuclear2
+shyny83
+psia
+ajay
+ggoomnamu
+iso10
+siryu011
+TAIPEI, T'AI-WAN, TW
+chweng
+zutoomouse
+cash
+allen130203
+yhwu
+kk1112
+ghask
+nash73
+asen
+bensonwang
+nctu
+iambenjo
+mplu
+stchang
+kartiknctu
+jtsheunano
+a1234567
+gilmore
+parkerdx
+shengkai
+smyu
+panjoan
+m9422508
+osl
+faihou
+jasonwu7157
+jamestw7193
+littlefriend
+quarter
+hylo
+mfwang
+jennerbt89
+jasonwoo7157
+ychuang
+myold123
+yclin0827
+taijim
+vcafe
+tugsuu
+ycstone
+arijit
+hellooomoto
+rinisha
+tywua
+ph492550289
+williamse
+wl10309yd
+aqefk
+linkwhat
+fjuphy92550227
+huan_492560064
+marsmarschen
+chinesek
+joe7489
+CHICAGO, ILLINOIS, US
+peterthree
+jcamden
+mmc
+lrossi
+goranzarko
+bager
+jchenil
+bradak
+jerickson
+laser
+edawson
+guyiyg99
+ghost9804
+fjl714
+fahlmanb
+inkatech
+jbrundage
+tavi
+wabdulkh
+xiaotiany
+hophysic
+valdur
+jonallen
+yha332
+karthik085
+evcarlso
+msc939
+jbc291
+panayoteas2002
+nwin16
+snyderk
+dandrews
+acc
+owenpriest
+alshiran
+pblikste
+egilson
+dzoller
+hmohseni
+cherney2
+nordqk
+jicks500
+sharmapulak
+yzhou24
+kthompso
+lqchen
+bjfaber
+candidate
+nvalley
+LOS ANGELES, CALIFORNIA, US
+citanon
+yina_wu0803
+ywkwon
+nanolab_usc
+mpedram
+fishikaw
+khoato
+pburke
+stormrage
+number2tiancai
+ppk
+tham
+l8erg8er
+vgambin
+boki
+eraymitch
+parasa
+yedoli87
+rtsainano
+whoknoez
+jlchenucla
+rno310
+shshah2
+yoav
+maechlin
+imecshao
+arthur
+willscui
+dpere002
+j12on
+geneslaf
+bandrade
+romanp
+captaina
+nikil
+dvc1000
+mjgriggs
+miriamheller
+usc_thomas
+gomezdea
+nanciek
+pd83
+kabbas
+mei
+skim1
+thanatoswang
+guangyu
+beomysong
+NEW YORK CITY, NEW YORK, US
+yiluo
+hchaya
+cvsnunez
+jeanwarshaw
+tsybeskov
+koplik
+acouzis
+akins
+mareks
+istvanj
+sashko89
+pivot
+cherianpperumal
+planarian
+laggard
+cuitino
+kuchnick
+rkouki
+hckluster
+nanoproject
+thestarcrossed
+sarnold935
+robinv
+ckrug
+cmstudios
+kimikiran
+gnggu
+kmarios1979
+thenu_cc
+paradox
+gdevrani
+kierthi
+whitesnownye
+nilufa
+nikhilmodi
+bob10
+eigentensor
+mwb5
+rverma
+bhupeshchandra
+prophecy118
+varma3008
+joshis
+yuyaoshan
+ggonzal
+zhchen
+stef0008
+yming
+SINGAPORE, SINGAPORE, SG
+focusonme
+summer21
+peayush
+shikhor_himadri
+oderlander
+mumpybunty
+ardhiharianto
+charisse
+yokeking
+gangzhang2006
+ustckose
+verawong83
+myjasonlee
+u0303154
+jialy25
+djaizen
+tomrun
+munie
+star
+aisy
+sheevchenco
+ntuliucy
+sonchu
+cpuman01
+jinping
+fastmice
+utaker
+anson4693
+kshubhakar
+salil82
+rskajen
+joannayong83
+cocopel
+jpzou
+vie_charlie
+tancs
+ryangcn
+darren1980
+chinsk
+yanchiew
+coolclump
+huio0
+izam
+abotello
+CAMBRIDGE, MASSACHUSETTS, US
+onayfeh
+mcullin1
+roscoe
+tlangdo
+zhaoxu2
+niashwin
+vinith
+xiaoyingliu
+jarrodv
+sibir
+elikovich
+jodhner
+davidl
+mchamilt
+dukovski
+jsorcutt
+slaveng
+buranjith
+sp
+tianbz
+rmullen
+esneider
+edejong
+mkotiuga
+bajjuri_6
+applekwisp
+hauserm
+jfjhong
+jkgoebel
+esharmon
+shuohao
+jay0647
+gushers
+naumanhk
+michaelt
+kaseyrussell
+wangyangcn
+aspuru
+sgradecak
+BEIJING, BEIJING, CN
+aether
+liqwnegf
+lxy9977
+painmoth
+cindy
+xubing
+pb00002068
+crownadam
+lxu
+xhqspace
+mascaij
+iskory
+simonguan
+hzhang
+greenstone
+walter
+wanghao
+liuhongwei9413
+rudolph
+cindy_lv
+ccamp
+renezhong
+y1ding
+abzero
+liangjin
+jinzhang
+breezejohn
+zhaonan
+lee2002hu
+xiaochenyanyu
+xiaowangzi
+liangxuelei
+lihong
+yunfeng512
+yongxu
+lyguat
+jasmine
+xingtaihc
+URBANA, ILLINOIS, US
+anjali
+mohamed
+ncsachen
+tayebi
+schiu
+macjr
+mkuroda
+rtoghraee
+jpbeck
+toddnief
+an427
+andydon
+hankgreenjr
+dmattson
+hahm1
+jsyoon
+ravaioli
+cdong3
+jake
+ccam1202
+pmartin7
+jnormal34
+aksamija
+mbach
+yliu88
+bmather
+chedong
+pkgudla
+rmashl
+aswin_kannan
+basuanirban
+pablo11180
+bramesh
+lajiapo
+jin
+aluru
+jodell
+WASHINGTON, DISTRICT OF COLUMBIA, US
+mtf21
+bahram
+rahul
+scerwin
+idanman
+corycress
+sfarrel2
+ssrit
+udnagn
+mail2madhuri
+adambumgarner
+jsander
+kbussmann
+norflekr
+badri
+manu71
+sminnika
+jguyer
+crittens
+sergio
+rbarto
+andrew
+drhoten
+senapal
+krausejl1
+zxxgmu
+younes
+ndhar
+gokhanesen
+mlview
+tallison
+andy203
+xzjluo
+MIAMI, FLORIDA, US
+oppenheim123
+ttedrow
+pdrzaic
+vedverma
+zakash23
+kurtmcnabb
+arjunsurya21
+vidyarthireddy
+riera
+vineeth
+wilson_isaac
+renaissancekrishna
+slimacampos
+abhiramreddy_cheruku
+brkak132
+rkalli
+munis447
+sidz832002
+rsumanth
+ckhanal
+yordanka03
+sandy239
+xuanwang
+jaimerincon
+antonso
+ginukotgeo
+huangking1
+harindra
+arshadiqbal99
+nkrvivek
+nareinb
+umasista09
+NEW DELHI, DELHI, IN
+gajanan
+thamilchelvi
+nafis
+atulveer
+jadhav
+hnds
+itsnaushad
+fahima
+varunpenmatsa
+praneesh
+nanomandy
+mayankghai
+disha
+aruntej
+vishnu439
+pulugurtha
+njainsspl
+skchakarvarti
+abhinavharlalka2007
+paradigm8
+akgjkiapt
+abhijeetvnit
+sharadbags
+amitharode
+sudhansh74
+garima
+maltibansal
+kapilnanohub
+dinasingh
+magnet
+pinkesh
+PHOENIX, ARIZONA, US
+shumway
+ferry
+gchen0505
+dbriner
+r37775
+rfdb90
+wzhao
+ycao17
+sridhar
+ruviwije
+asha0311
+lubytony
+emacs
+msanger
+omarbenitez
+sbc4897
+nazee
+tuocvungoc
+knuttz45
+mwparke
+hrkhan
+sharna
+drlx
+maximsukharev
+saurabhr8here
+vasileska
+vishtriv
+bumahmud75
+syu01
+gshh
+bumahmud
+GAINESVILLE, FLORIDA, US
+fortes
+guoj
+figueire
+sebgoa
+ngel1914
+samsam
+pmx22
+rayne667
+yijianoy
+jkfodor
+abehnam
+skaypreg
+adabala
+kalyangokhale
+psrivats
+sabrialkis
+vcsel
+jdmyers
+fellc
+whsu
+sidc
+srivats
+tsugawa
+kpsingh
+zhichao
+heogyver
+younggator
+knowledge
+ammatsun
+selvik
+adietrich
+TOKYO, TOKYO, JP
+wakamin
+helmy
+kobayashi
+siliconcagecluster
+ikuta
+nozaki
+noriosadachika
+anto
+wilz23
+saeedpk
+g_m_z
+kaz830
+dfs85
+sofyanade
+wl
+nils
+svdkar
+miya_tokyo_tech
+nishitani
+skuwabara
+whf8000
+natsumizu
+tsutsumi
+uno
+qfangzhang
+miczek
+kuroykkr1129
+tmatsu
+harada
+kurokawa
+RICHARDSON, TEXAS, US
+quantumkapnob
+bgladden
+tynylee
+nanolake
+fakhrul
+somilkumar
+rnaplus
+rcleavelin
+dbkyj
+ddraeger
+ravirajamiyer
+arifsonnet
+waszabela
+kjcho
+adamskelton
+rpratiwadi
+tsomin
+anishachhabra
+sagnik
+syj1209
+uthamanraju
+inod
+gell
+jceckerl
+nicollian
+manyam
+raghavendrakamath
+BERKELEY, CALIFORNIA, US
+joeringg
+jgrossman
+genekuo
+rishi
+cclo
+apirkle
+jbneaton
+cdweis
+tangney
+tsengy
+lkwagner
+cheolwhan
+drnick
+espark
+c_chen
+dolphin
+zachaj
+ppatel
+daveprender
+wangr2
+egarnett
+drichards
+kylesun
+joydeep
+jrenzas
+schwegler
+MUMBAI, MAHARASHTRA, IN
+kamal_karda
+ssmande
+gautamkapila
+mangesh
+mayankiitb
+hnraval
+snehs
+vrajesh_maheta
+sreenidhi
+nageswar
+navaneeth
+sandhya
+uditmonga
+bbkarthi
+bwaj
+srchimata
+shwetabhi
+nareshkumaremani
+marshnil
+angada
+gaurav1
+asnani_raj
+arunp
+knayak
+lordsham
+ANKARA, ANKARA, TR
+mekircalar
+sususs
+ferhatn
+ocean
+sultancevik
+sailord
+demetakten
+marano
+smarter
+caapon
+sblisesivdin
+mutluavci
+selim
+gkorkmaz
+ermanekler
+edakiraz
+arda_fb
+zehan
+alize_barefoot
+kanturalihan
+onbasli
+ozguraktas
+abdurrahman
+PHILADELPHIA, PENNSYLVANIA, US
+jmcgon
+robertjo
+korneva
+merdemk
+saurabhmadaan
+querner
+calusine
+blankenburgnano
+skurtas
+izzycat2007
+arrhenius
+ozga
+apaulson
+lovesm3s
+laizhao
+uwepr
+vivek_nsv
+bcaccavale
+kyban
+lxshry
+xlong
+xingchen
+bgelinas
+CINCINNATI, OHIO, US
+craigagne
+saumitra2
+saumitra3
+saumitra4
+wanjunjun
+drennedr
+joelhoffa
+micahzender
+vepachnh
+nikhil_k_bhandari
+amrahmadain
+sampsoaw
+sidsizzle
+divya
+ogall
+vikram
+sjogleka
+divsnvik
+noelds
+gangadharan
+savi
+deepthi
+PARIS, ILE-DE-FRANCE, FR
+costin_anghel
+cmo_ief
+huet
+poiroux
+erika
+barral
+rififi
+soliveres
+fluff
+nhnha
+fredens
+dquerlioz
+jeanmidy
+anbena
+utpal
+carosell
+hamoudi
+blayac
+mikaelcasse
+tntwcg
+freeg
+hamiehs
+RALEIGH, NORTH CAROLINA, US
+ralphyoung
+sunilbasavaraj
+matias
+paecwu
+doug_barlage
+gjmulhol
+trharris
+ssendlin
+amemara
+raghavjumade
+jkiesow
+gfalco
+bala
+hm10074
+shuming
+wwagner
+duketip
+ksc30
+johnsmith
+ergopatty
+supercool
+mag18
+BENGALORE, KARNATAKA, IN
+sathe
+maithily_kohale
+vsvram
+srihari
+rakeshjnc
+chaitubek
+prasadreddy85
+shubhakar
+siddu479
+murugeswaran
+bharathims
+nayanpatel
+rajesh_nasa
+geetharani
+rgnanadavid
+kranthivlsi
+vasudha
+darukaprasad
+balajiram
+ALBANY, NEW YORK, US
+nrana
+sansiri_h
+parker9
+leeji
+isis
+jamesraynolds
+mb7010
+clee
+vibhu
+voranik
+kennerly
+grao
+mevang
+hamiri
+jbeyer3
+sk684174
+rk532992
+asicliu
+kangcy
+CAIRO, AL QAHIRAH, EG
+mnabil8
+aelfalaky
+amressawi
+yasser_sabry
+m_ossimi
+ashaker2k
+communicator
+ehafez
+nhrafat
+fadlaeg
+sakr
+bosshoof
+omgf2000
+msherif
+kareem2k4
+yousrykamal
+ATLANTA, GEORGIA, US
+wschild
+derajan
+voytech
+gt2465a
+prabath
+rn_musin
+gatordan82
+azad_jn
+bipbip
+gcunningham
+skumar33
+muqarrab
+markyou
+mrag
+marcuslay
+lxb1111
+PORTLAND, OREGON, US
+titash
+yaswanth
+pankaj
+bsheriff
+qdled
+smuddu
+mradosav
+billlinux
+ramakg
+rehman0201
+motorboy
+saurabhj
+nandamur
+sameerpradhan
+yaminisyadav
+BANGKOK, KRUNG THEP, TH
+sanook
+wviroj
+putchonguth
+dph3ay
+kaze
+phys_pucca
+chanunant
+suwimoldubost
+chatrpng
+thawan
+nuttachai
+sky_ubu
+stephandubas
+go_golf_go
+songphol
+AUSTIN, TEXAS, US
+kamranv
+ssamavedam
+dahmad
+mfoisy
+piccirillo
+deanjennings1138
+eluther
+etutuc
+breeja
+slipson
+fountain
+sonchoy
+okinjo
+rajatg
+MADISON, WISCONSIN, US
+hjryu
+mgeer
+yifeimo
+jfrey
+yfpjaya
+cheory58
+jlbemley
+manirupa
+shots47s
+jonghoopark
+rbflyrun
+mhhuang
+euaruksakul
+liuyan
+TEL AVIV, TEL AVIV, IL
+dmarchak
+srichter
+liors
+yosish
+ilyato
+marc_altman
+igorger
+zoharku
+mishapah
+azulaida
+eilon
+dboris
+ariel
+BALTIMORE, MARYLAND, US
+bmd11umt
+mnoginov
+nanokristi
+latonya
+alexenko
+apatters
+mayy
+sw
+ccsmith
+blueyoung7
+cebonner
+pourrad
+sirius1106
+VIRGINIA BEACH, VIRGINIA, US
+hlixx004
+vgavrile
+mo303
+ambelgrave
+rquintil
+rocketgirl
+pawilliams
+rajinikonda420
+nmkgon
+gyanesh06
+empressarthur
+nanohub2
+dula
+INDIANAPOLIS, INDIANA, US
+dvasileska
+tokyo2000
+weile0115
+pamama
+svadivel
+vrawat
+samuz21
+fsheng
+qhang
+rsayer
+eupho55
+rmmacrae
+mwhite
+CHENNAI, TAMIL NADU, IN
+enganesh50
+netgatenasa
+akashkaul
+orangemail
+chandrasekaran
+agrajame
+jeetu_singh
+vin3ny
+muralinano
+dkgarg
+girishav
+rishonjohn
+challa_arjun
+LOUISVILLE, KENTUCKY, US
+atentik
+adityamohite
+jaynickel
+dantypas
+dqhong
+lee297
+misko9
+dmitrii4nanohub
+tsparks2
+bojebojo
+aelayat2
+lionel87
+njk20
+BIRMINGHAM, ALABAMA, US
+bowman
+pvp1703
+camata
+sgcamata
+satya176
+shk123
+bhamonline
+lyleholt
+jfmcc
+poboi24
+omondis99
+hviolin
+saisantoshblr
+ATHENS, ATTIKI, GR
+panostsr
+sferasthegreat
+soras
+pdimit
+golf3gt
+mhanias
+gsksma
+rion
+kotsovos
+verrelli
+kurkost
+xzianni
+SAO PAULO, SAO PAULO, BR
+nascire
+jjsousa
+ltpeixoto
+brito
+fabio
+blz
+ajchiquito
+jaimesousa
+qu
+xuruma
+gonper
+ecosta
+STOCKHOLM, STOCKHOLMS LAN, SE
+jarl123
+valurg
+srkirk
+zjqiu
+hpalm1
+stahel
+chobik
+sonip
+kebaborre
+sandeepnagar
+pcfresher
+bellmanz
+CHARLOTTESVILLE, VIRGINIA, US
+adept
+sv4e
+avik
+neetikapur
+unluerdincer
+riyashergill
+svasudev
+tank
+vikram12
+adept_final
+ascooper
+odm2b
+ALGIERS, ALGER, DZ
+abderrezak
+ziar_toufik
+nlamine6
+momaro2002
+zoheir75
+atmanous
+alibenamara
+kouissa
+bennabi
+rabiaa
+zairnadia
+yazid
+BOGOTA, DISTRITO ESPECIAL, CO
+egondo84
+lombo
+jcoper
+hmortizs
+neoedwin
+dvlcnano
+hmendez
+clarilu83
+kike
+tperaltabenitez
+joseaureliocampomarulanda
+ROCHESTER, NEW YORK, US
+bharatv_99
+slrommel
+bobnsmile
+suyanalorena
+vikkyjagan
+bmn179
+gparret1
+booker
+repemc
+kalapod
+drcunning
+VANCOUVER, BRITISH COLUMBIA, CA
+whatdoyoumeanpigscantfly
+elviajero
+drewlam
+lukasc
+yuvahi
+sajeevalakkatt
+gabadir
+katli
+dipsg2004
+ryant
+discorder
+MADRID, MADRID, ES
+ignacio
+rgargallo
+paodcas
+oana
+perezco
+jnunez
+jmlloren
+fgamiz
+jfranco
+adrianagil
+nikopako
+ZURICH, ZURICH, CH
+hammer
+colombo
+irinchev
+roger
+arunmohan
+rickardlovblom
+chierold
+nilsketter
+ruhstaller
+epaulard
+guido
+KONGENS LYNGBY, HOVEDSTADEN, DK
+tjuhejsan
+mkjftf
+gustafson
+tma
+niehls
+fnutte242
+evilper
+sadeghyazdi
+s001477
+padala
+CLEVELAND, OHIO, US
+moracu
+rsc22
+rschakraborty
+gamebluster
+jradak7
+appusom
+azar
+zxia
+rdudukovich
+annabraham
+MORGANTOWN, WEST VIRGINIA, US
+dkorakakis
+kabulski
+jharman2
+sridharkv
+chi_ra
+nshelton
+whhoney
+ronak
+lrodak
+kkasarla
+MOSCOW, MOSCOW CITY, RU
+goga10
+vbochenkov
+chaldyshev
+jadiema
+dmigo
+ilya
+nestoklon
+jenia
+cyhdyk
+EL PASO, TEXAS, US
+vrvemuri
+lush
+eagardner
+ehagedorn
+gagonzalez3
+iampgray
+rafaordo
+wlfornes
+jlvalenzuela2
+LEUVEN, VLAAMS-BRABANT, BE
+soree
+cdetaver
+bletchley
+guruprasadkatti
+huangsp1
+markocosic
+sulejmani
+lbiesemans
+jamody
+MONTREAL, QUEBEC, CA
+renshiwei
+allesbesser
+zahidf
+mkaustubha
+smashbopp
+kbevan
+nanoquebec
+szkopek
+skafshar
+BARCELONA, CATALONIA, ES
+pherbcn
+oscarigl
+jmlopezg
+didac
+mariomontes
+ocasals
+joe438
+mporti
+markramis
+SALT LAKE CITY, UTAH, US
+peel
+dk12
+petebuzianis
+msmiller
+jpolarisj
+b4schroer
+sickchick
+u0356611
+tec_rat
+ROMA, LAZIO, IT
+franchi
+mottavi
+arrenio
+fbeltram
+rmiscios
+touch41
+antoniovalletta
+alefor51
+pnenzi
+HSINCHU, T'AI-WAN, TW
+kfyu
+kinet
+cyhsieh
+buster_roc
+horsegi
+jack_man
+ndlsimlab
+cjtang
+cyh
+VIENNA, WIEN, AT
+pourfath
+clemens
+ceric
+poornachandu
+melenk
+palankovski
+ansgar
+sverdlov
+GRENOBLE, RHONE-ALPES, FR
+vincer
+clement
+vladimir_pasca
+azerty
+bennamanekamal
+porret
+chaisant
+guenifin
+SAN DIEGO, CALIFORNIA, US
+jsale
+dmk23
+boulderhan
+ejseto
+sandros1
+mohanty
+sohadalal
+nanotube80
+PRAGUE, HLAVNI MESTO PRAHA, CZ
+kelum
+voves1212
+elsaym1
+ocze
+martin_d
+tomekls
+moh_atef2001
+petusaad
+SEATTLE, WASHINGTON, US
+daleblehman
+maxwellgoldade
+jeanwang
+drdude
+xiaoyumiao
+qadir03
+tucc
+lam
+LONDON, ENGLAND, UK
+xguo
+lc358
+peiwern
+breezejd
+saker82
+genetic
+jleitch
+obee
+AMHERST, MASSACHUSETTS, US
+rreznikz
+shangyr
+aswinsreedhar
+mathwhiz2304
+yavuzcet
+nhekofors
+tbhiggins
+nanoedumass
+UTICA, NEW YORK, US
+qazi
+nanotube77
+bes
+eddys1
+sunyitmark
+singhsaab1
+lnel24
+rcolgan
+SHANGHAI, SHANGHAI, CN
+smilingsailor
+xialicheng
+waynechen
+lixing
+xianglee
+jzhj01
+kevinfang
+lingfengmao
+TAMPA, FLORIDA, US
+mjgrav2001
+athina
+dhodges
+dorielle
+asine
+fma
+brossie
+slava
+TAEJON, CH'UNGCH'ONG-NAMDO, KR
+mcshin
+hkyu2000
+pireuz
+sunhonet
+sunhonet2
+nano_icu
+woopa
+pipien
+MILANO, LOMBARDIA, IT
+ingenieurzz
+raoufbarboza
+gulinatt
+cattafra
+drfalken
+dninno
+toschi
+griso_1981
+NUREMBERG, BAYERN, DE
+mdheinemann
+bumblebee
+bratagh
+thilokunz
+mkretsch
+lulinina
+lgo
+KUALA LUMPUR, KUALA LUMPUR, MY
+boudjella
+nmiyer
+alex84sl
+pkooi11
+chinee
+rmdnor
+hendrayana_thaha
+COVENTRY, ENGLAND, UK
+accelrys
+beng85
+saurabh_pande
+gonzo
+kaashifo
+ioana
+nwilson
+CAMBRIDGE, ENGLAND, UK
+lynchp2
+tanloongpeng
+srikanthnag
+chrisfi
+clang
+jeonggunlee
+gregmcm
+COLLEGE STATION, TEXAS, US
+daruo
+luishreyesbarrios
+damadfish
+pli
+zounaies
+madfish
+shivakarsh
+PITTSBURGH, PENNSYLVANIA, US
+bostonfan4
+tomek
+noewashere
+alysha21
+ricketts
+bopqod
+olegm
+NOTRE DAME, INDIANA, US
+debdeep
+dwheeler
+malam1
+sinopeter
+nanastos
+hugendfan10
+lsmith
+EAST LANSING, MICHIGAN, US
+hogant
+jingacla
+baczewsk
+alexazima
+deep_choudhuri
+thomasluo
+cfzsg
+HARRISBURG, PENNSYLVANIA, US
+davidsalloum
+ma019399
+onix
+myersrr
+ranguranganath
+mikeameen
+lperraud
+BOLOGNA, EMILIA-ROMAGNA, IT
+cfiegna
+nzanolla
+stefanopoli
+seminente
+esangiorgi
+vertumno
+UNIVERSITY PARK, PENNSYLVANIA, US
+mpellen
+notsofast
+won1229
+shlim76
+wxh22
+devmp3
+FAYETTEVILLE, ARKANSAS, US
+dguzun
+rrajgar
+jiangwu
+vkunets
+rxs10
+emilfred12
+SYRACUSE, NEW YORK, US
+urmi
+isokolov
+js
+trail3dogs
+qdiduck
+kamadevagrad
+HONG KONG, HONG KONG (SAR), HK
+cwb
+usttang
+robotdesigners
+matrony
+tanvir
+xjtuzln
+WATERLOO, ONTARIO, CA
+dshiri
+rabbani
+chrisrodgers
+anant
+gismondi
+vgupta
+ALBUQUERQUE, NEW MEXICO, US
+ronghuawang
+darfdm
+wzortman
+malloy
+uzbit
+nespor
+ROORKEE, UTTARAKHAND, IN
+santoshvlsi
+princekomal
+suri5
+balwinder
+vinitpec
+yamini_21dec
+NASHVILLE, TENNESSEE, US
+abufai
+elexiz
+ptc2u
+aydren
+pamelasexton
+inovikov
+BOULDER, COLORADO, US
+mjbarger
+rajender
+u0244603
+sauer
+rworkman
+tianwei
+SANTA BARBARA, CALIFORNIA, US
+ashokramu
+hadi
+sclin
+jooneau
+amitabh
+noneboy
+TROIS-RIVIERES, QUEBEC, CA
+pelletbr
+rondeauski
+vixxen
+deryma
+ble
+lrondeau
+ANN ARBOR, MICHIGAN, US
+kundar
+mintheman01
+dbasu
+minsey
+nethivenu
+jankit
+MUENCHEN, BAYERN, DE
+frickes
+kreupl
+sedeagu
+smnlocci
+lingitz
+lenz
+BERLIN, BERLIN, DE
+tanduay
+net_worker
+vytla
+benuhlig
+asaf
+SYDNEY, NEW SOUTH WALES, AU
+chrisnugroho
+nanomate
+jondyne
+irfansyah
+ccescott
+BRNO, JIHOMORAVSKY KRAJ, CZ
+tomanek
+vesna
+ladas_m
+nosekz
+kremilek
+MUNCIE, INDIANA, US
+rcosby
+rcox
+danielnbaker
+sudhendra
+mkreber
+DHAKA, DHAKA, BD
+ksajib
+hasib_eee
+hasan
+tawhid
+sujan
+WARSAW, MAZOWIECKIE, PL
+lukarwacki
+korzen86
+hallek
+davidbrunel
+stefanek
+BOISE, IDAHO, US
+wenzhouc
+jasonpeterson
+ben_anderson1
+brianmeek
+skgroothuis
+PROVIDENCE, RHODE ISLAND, US
+gbothun
+morris333
+jes
+tfkuo
+spalef
+MEXICO CITY, DISTRITO FEDERAL, MX
+fesime95
+emurrieta
+jegonzal
+seratermin
+jose_trinidad
+CHANDIGARH, CHANDIGARH, IN
+anteshgupta
+keya
+jmakkolil
+shuchi1
+tarunjot
+LAUSANNE, VAUD, CH
+quyong
+yazyev
+vpott
+ravi2052
+pingwang101
+BLOOMINGTON, INDIANA, US
+caneke
+mrubin123
+john1248
+aflood
+eshook
+MELBOURNE, VICTORIA, AU
+cryptonomicon
+michaelwest
+sasikaran
+zanyfool
+dmoo
+KOLKATA, WEST BENGAL, IN
+utpal_ganguly
+gauravshukla
+akmishra
+adgcal
+ranjana12
+ISTANBUL, ISTANBUL, TR
+gurel
+miyaten
+zerenali
+qwer4321
+ilker_oztelcan
+KOELN, NORDRHEIN-WESTFALEN, DE
+eschermann
+vthang
+sebasff
+oyassur
+sandow
+DODGEVILLE, MICHIGAN, US
+senthilkhumar
+elengr
+ravichandra
+vparkash
+dnaneet
+AMSTERDAM, NOORD-HOLLAND, NL
+evzon
+peterthijs
+xbarto26
+ecarlen
+FRANKFURT AM MAIN, HESSEN, DE
+hpkeil
+s_holst
+metalmonster
+reizei
+MOBILE, ALABAMA, US
+prasanthgo
+jithudevineni
+sravan
+hameed425
+NEW HAVEN, CONNECTICUT, US
+sridhark
+worldxj
+shyam1915
+anilmutha
+-, -, -
+cm
+abbas1979
+fireball003
+rwortman
+NORMAN, OKLAHOMA, US
+labumm
+jonhenri
+bmason
+elizondo
+COIMBATORE, TAMIL NADU, IN
+balou_m
+ramamet
+krishna_gadi_fan
+sankariahpalaniswamy
+DAVIS, CALIFORNIA, US
+xjing
+jmtarazi
+gagalli
+swapnizzle
+GWALIOR, MADHYA PRADESH, IN
+pankajs
+dranurag
+deelep014
+narsi
+CHOLULA, PUEBLA, MX
+prosales
+ulises_mendez09
+champac
+gefe
+AACHEN, NORDRHEIN-WESTFALEN, DE
+matthiasbaus
+birgerberghoff
+bolten
+zeromon
+BUCHAREST, BUCURESTI, RO
+pcristea
+razvan28
+ovidiu82
+marinaru35
+COLUMBUS, OHIO, US
+anisha
+itsme190606
+windl
+patnarin
+OTTAWA, ONTARIO, CA
+starla
+dscansen
+swtsang
+tmacelwee
+SAINT PAUL, MINNESOTA, US
+bdsolar
+dguire
+ashok_muralidhar
+mec3usa
+HAMBURG, HAMBURG, DE
+padun
+mprada
+klinke
+hacksgen
+CHARLOTTE, NORTH CAROLINA, US
+jcpoler6
+harsh2312
+kinpatel
+carie417
+MANCHESTER, ENGLAND, UK
+dmerry
+lem
+ernie
+cobraq8
+BLACKSBURG, VIRGINIA, US
+abhishekiin
+zohebmunshi
+pooya
+syedh
+JAKARTA, JAKARTA RAYA, ID
+k_priambodo
+yulandi
+nugraha
+basso
+STORRS MANSFIELD, CONNECTICUT, US
+ondatrazibethicus
+sporadic
+hsilva
+adaihf
+SOMERS, NEW YORK, US
+inancmeric
+mike_hargrove
+poldiges
+btaylor
+TORONTO, ONTARIO, CA
+icathcar
+ruda333
+pegah_queen
+cultivator
+KALAMAZOO, MICHIGAN, US
+cdgore
+nayane
+k3babcoc
+e2sodt
+RICHMOND, VIRGINIA, US
+robersonjc
+figarky
+nanovcu
+prasen
+EDMONTON, ALBERTA, CA
+trojan
+navidp
+msbonifas
+duranta23
+MARSEILLE, PROVENCE-ALPES-COTE D'AZUR, FR
+petarvidak
+yoannrozier
+moreaumathieu
+gizachew
+RIO DE JANEIRO, RIO DE JANEIRO, BR
+arturlopes
+singulani
+polislima
+tiagosiman
+CLUJ-NAPOCA, CLUJ, RO
+rstiufiuc
+agrama
+cristian_morari
+carp_c_bogdan
+THIRUVANANTHAPURAM, KERALA, IN
+mohabey
+pangraci
+kaustubhshanbhag
+renji143
+ISLAMABAD, ISLAMABAD, PK
+maftabrafiq
+farohafeb
+gbn
+BUFFALO, NEW YORK, US
+bpekoglu
+tragab
+jl010i
+GOETEBORG, VASTRA GOTALAND, SE
+5igno
+traveler
+nassar
+SHEFFIELD, ENGLAND, UK
+damien
+robairey
+eurigjones
+HOUSTON, TEXAS, US
+jgcheng
+djeconomou
+dm
+HAIFA, HEFA, IL
+apriel
+elado
+mnadam
+BORDEAUX, AQUITAINE, FR
+fregonese
+montassarnaj
+adelguer
+TRONDHEIM, SOR-TRONDELAG, NO
+kolberg
+asmundfl
+yunliu
+AMES, IOWA, US
+reusswig
+forrestchi
+ykent0406
+ORLANDO, FLORIDA, US
+akarakoti
+fhkaatz
+dwasler
+ROCHESTER, MINNESOTA, US
+kjs901
+nan0
+stevecampbell
+ADDIS ABABA, ADIS ABEBA, ET
+agoram2
+damotg
+abraham
+ENSCHEDE, OVERIJSSEL, NL
+cosmeata
+tjpeters
+jlvdsteen
+DAYTON, OHIO, US
+jen7182
+eradiance05
+tpurvines
+LONDON, ONTARIO, CA
+mbarua
+abdallah1982
+maher2100
+PERAI, PULAU PINANG, MY
+mkhairul
+cahyo
+seksean
+PADERBORN, NORDRHEIN-WESTFALEN, DE
+klischka
+elenatschumak
+ckuhoff
+TUSCALOOSA, ALABAMA, US
+iostrovskiy
+cygnusc
+wenlei
+HELSINKI, SOUTHERN FINLAND, FI
+rniemine
+vaikee
+jj
+SAINT LOUIS, MISSOURI, US
+akmnewaz
+mbjones
+zjuphy1980
+PORTO ALEGRE, RIO GRANDE DO SUL, BR
+rego
+menegotto
+magnusk8
+PISA, TOSCANA, IT
+gfiori
+bardine
+pmarco
+NANJING, JIANGSU, CN
+wanthere
+shenhaij
+wchennj
+RANCHI, JHARKHAND, IN
+polash
+parthaprotim_borah
+parthaprotim
+ITHACA, NEW YORK, US
+michefish
+jeg48
+baslan
+NEWCASTLE UPON TYNE, ENGLAND, UK
+uppalsuresh
+enrique
+rimoon
+L'VIV, L'VIVS'KA OBLAST', UA
+sezam
+bovgyra
+yocto
+NEWARK, DELAWARE, US
+appeli
+josferri
+kolodzey
+STRASBOURG, ALSACE, FR
+pregaldiny
+sasam
+sasaaa23
+TRENTO, TRENTINO-ALTO ADIGE, IT
+oleksiy
+shminhaz
+ntripathi
+BEAUMONT, TEXAS, US
+sayils
+selcukbelek
+humorstar
+SURAT, GUJARAT, IN
+jalaj
+djayspooky
+fogla
+TAMPERE, WESTERN FINLAND, FI
+nadir
+mrouvala
+jussipen
+WUXI, HUNAN, CN
+xuchuanjin
+llllll
+gl67
+READING, ENGLAND, UK
+doig007
+ceriapraseodymia
+KIEV, KYYIV, UA
+basheera
+yec
+LIMA, PROVINCIA DE LIMA, PE
+joseflores
+jrojas
+JENA, THURINGEN, DE
+molz82
+hoersel
+SAN JUAN, SAN JUAN, PR
+josemarcel4
+ojuan
+SENDAI-SHI, MIYAGI, JP
+hiraquanttohoku
+ramanman
+MONTPELLIER, LANGUEDOC-ROUSSILLON, FR
+armand
+mth34
+YEKATERINBURG, SVERDLOVSK, RU
+radikrad
+artem
+NAGPUR, MAHARASHTRA, IN
+arbardhan007
+manish_pinge
+KARLSRUHE, BADEN-WURTTEMBERG, DE
+akdemir
+kirkhofeling
+POMPANO BEACH, FLORIDA, US
+tsungchow
+valli
+KNOXVILLE, TENNESSEE, US
+ilia2006
+chuckmelcher
+CLEMSON, SOUTH CAROLINA, US
+kewrig
+wolf
+MANILA, MANILA, PH
+jasconstantino
+cortez
+SOUTHAMPTON, ENGLAND, UK
+ormgi
+11degrees
+WUERZBURG, BAYERN, DE
+janheinrich
+deibel
+INDORE, MADHYA PRADESH, IN
+vaibhav_neema
+adityabillore
+EINDHOVEN, NOORD-BRABANT, NL
+nico999
+fwittebrood
+LISBON, LISBOA, PT
+mirabilis
+dcopeto
+ZAGREB, GRAD ZAGREB, HR
+aficnar
+mpoljak
+BREMEN, BREMEN, DE
+maestrop
+nanofan
+BELO HORIZONTE, MINAS GERAIS, BR
+elmo
+alemmar
+RIYADH, AR RIYAD, SA
+msunaidi
+biotele
+RAPID CITY, SOUTH DAKOTA, US
+amazonense
+zzhu
+MINSK, MINSKAYA VOBLASTS', BY
+barkaline
+smart
+TORINO, PIEMONTE, IT
+kdurais
+melania
+HARBIN, HEILONGJIANG, CN
+corr
+mikehuihui
+ILMENAU, THURINGEN, DE
+polyakov
+rgranz
+CORK, CORK, IE
+lcwair
+afzalian
+BRISBANE, QUEENSLAND, AU
+zamberdine
+uqpgeor2
+CLARKSBURG, WEST VIRGINIA, US
+jschulze1
+scsong71
+DUBLIN, DUBLIN CITY, IE
+jomahony
+aakande
+KRAKOW, MALOPOLSKIE, PL
+sulka
+pelekwojcik
+NAPOLI, CAMPANIA, IT
+miano
+enricadr
+BASEL, BASEL-STADT, CH
+michelcalame
+nanoniko
+SPOKANE, WASHINGTON, US
+kmbuck
+pwinter
+LUBLIN, LUBELSKIE, PL
+piotrek3311
+pnita
+FARGO, NORTH DAKOTA, US
+kjean
+mgbbgm
+CANCUN, QUINTANA ROO, MX
+cabrera
+cesarin
+TURKU, WESTERN FINLAND, FI
+ethenideg
+satatu
+HA NOI, DAC LAC, VN
+huymap
+trantienphuc
+SAN JOSE, SAN JOSE, CR
+snunezcr
+dayavag
+PERTH, WESTERN AUSTRALIA, AU
+jmduwa
+aislinn
+TAINAN, T'AI-WAN, TW
+juniorway
+bendix
+TALLAHASSEE, FLORIDA, US
+subhoneel
+panyamak
+RUE, PICARDIE, FR
+denisrideau
+rideaud
+RABAT, RABAT-SALE-ZEMMOUR-ZAER, MA
+aouaj
+abdellah
+BRATISLAVA, BRATISLAVA, SK
+donnicka
+ballo
+COLUMBIA, MISSOURI, US
+jonassen
+ddrmq3
+CHUNGJU, CH'UNGCH'ONG-BUKTO, KR
+oncircle
+ykparksss
+WROCLAW, DOLNOSLASKIE, PL
+jstanislawczyk
+laplacedaemon
+TEZPUR, ASSAM, IN
+digbijoy
+freakinkid
+STUTTGART, BADEN-WURTTEMBERG, DE
+b_kannan
+jalstadt
+ROLLA, MISSOURI, US
+sej423
+krlhc8
+UMEA, VASTERBOTTENS LAN, SE
+bilalayan10
+bilalayan
+LAFAYETTE, LOUISIANA, US
+anitapatel21
+parimal
+CHENGDU, SICHUAN, CN
+jeffei
+winsaint
+TRANBJERG, MIDTJYLLAND, DK
+buchtrup
+poppenheim
+VILLENEUVE, RHONE-ALPES, FR
+marcm
+greven
+ATHENS, OHIO, US
+mishrasunny
+dtbeaver
+BELFAST, NORTHERN IRELAND, UK
+co2
+prainey
+ADELAIDE, SOUTH AUSTRALIA, AU
+mswiggs
+blan0060
+PATRAI, AKHAIA, GR
+kefthymiou
+dozius
+TIANJIN, TIANJIN, CN
+dawnlight
+peterhopey
+KLUANG, JOHOR, MY
+cyp506
+huiping726
+QINGDAO, SHANDONG, CN
+aaa100
+lihuilmylmy
+SHANXI, LIAONING, CN
+icejenn
+nanofield
+VICKSBURG, MISSISSIPPI, US
+haskins
+majured
+NARBONNE, LANGUEDOC-ROUSSILLON, FR
+edbelan
+snanot
+PARMA, EMILIA-ROMAGNA, IT
+franchisecondo
+bianco82
+HATTIESBURG, MISSISSIPPI, US
+boomer_
+orcutt
+TBILISI, T'BILISI, GE
+d_jishiashvili
+vasili
+VALPARAISO, VALPARAISO, CL
+fbonoc
+taller
+FASSBERG, NIEDERSACHSEN, DE
+mrfrog
+HYDERABAD, ANDHRA PRADESH, IN
+lkjoshi
+CALGARY, ALBERTA, CA
+m994301009
+LEXINGTON, KENTUCKY, US
+alan1955
+CARBONDALE, ILLINOIS, US
+lei
+PONDICHERRY, PUDUCHERRY, IN
+vedarajarajan
+PADOVA, VENETO, IT
+urbo83
+EDINBURGH, SCOTLAND, UK
+khosla
+GREENSBORO, NORTH CAROLINA, US
+zhanglei90
+CALI, VALLE DEL CAUCA, CO
+vartman7
+ABSECON, NEW JERSEY, US
+elmer6970
+SAN ANTONIO, TEXAS, US
+aarbouet
+AHMEDABAD, GUJARAT, IN
+mann
+POZNAN, WIELKOPOLSKIE, PL
+mizdebski
+DETROIT, MICHIGAN, US
+mmh3599
+KWANGJU, KWANGJU-JIKHALSI, KR
+pcandme
+LINZ, OBEROSTERREICH, AT
+ilyanamiranda
+SKOPJE, KARPOS, MK
+ljupcopejov
+DONETS'K, DONETS'KA OBLAST', UA
+myron
+GUWAHATI, ASSAM, IN
+hdudumoni
+ATHENS, GEORGIA, US
+nanoxu
+OGDEN, UTAH, US
+jmwilso1
+EDINBURG, TEXAS, US
+banatoski
+COLOMBO, WESTERN, LK
+vyshnavi
+TUCSON, ARIZONA, US
+buerki
+BUDAPEST, BUDAPEST, HU
+takacss
+LAS VEGAS, NEVADA, US
+uvrjm
+OSLO, OSLO, NO
+vajeeston
+SAINT PETERSBURG, SAINT PETERSBURG CITY, RU
+woolyfury
+BELGRADE, VOJVODINA, RS
+oziris
+CANBERRA, AUSTRALIAN CAPITAL TERRITORY, AU
+timmeehan
+TRICHUR, KERALA, IN
+geojtgeojtgeojt
+KANPUR, UTTAR PRADESH, IN
+lokipal
+TRIESTE, FRIULI-VENEZIA GIULIA, IT
+bzessim
+DURHAM, NEW HAMPSHIRE, US
+bappachem
+AMRITSAR, PUNJAB, IN
+dkrandhawa
+BOCHUM, NORDRHEIN-WESTFALEN, DE
+kdetken
+BASAURI, PAIS VASCO, ES
+jaume
+GLASGOW, SCOTLAND, UK
+mintyfreshness
+DUBAI, DUBAI, AE
+mmansuri
+HANGZHOU, ZHEJIANG, CN
+vivibear
+TOULOUSE, MIDI-PYRENEES, FR
+baudrand
+SANTIAGO DE COMPOSTELA, GALICIA, ES
+manuel
+NAGAR, RAJASTHAN, IN
+shounakde
+OVERLAND PARK, KANSAS, US
+hasan1
+BUENOS AIRES, DISTRITO FEDERAL, AR
+naty
+ALLAHABAD, UTTAR PRADESH, IN
+ershadismite
+PULLMAN, WASHINGTON, US
+mohalkhedher
+BEL AIR, MARYLAND, US
+metarecon
+TAEGU, TAEGU-JIKHALSI, KR
+nckang
+RAIPUR, CHHATTISGARH, IN
+vizay0201
+PORTO, PORTO, PT
+kanal2001
+LINKOPING, OSTERGOTLANDS LAN, SE
+ulfsa
+BRUGG, BERN, CH
+davidpires
+CADIZ, ANDALUCIA, ES
+doponce
+PUNE, MAHARASHTRA, IN
+cbasu
+CHEYENNE, WYOMING, US
+arefinia
+SWANSEA, WALES, UK
+dbarbosag
+AUBURN, ALABAMA, US
+cctin
+KHARAGPUR, WEST BENGAL, IN
+tkm
+KERPEN, RHEINLAND-PFALZ, DE
+tal_marian
+LODZ, LODZKIE, PL
+dgaldo
+POHANG, KYONGSANG-BUKTO, KR
+cosmosinu
+PROVO, UTAH, US
+minerm6713
+NEW ORLEANS, LOUISIANA, US
+jiajunchen
+THANH PHO HO CHI MINH, HO CHI MINH, VN
+nhan
+HAMILTON, ONTARIO, CA
+hytham
+BANDUNG, JAWA BARAT, ID
+sandift03
+LINCOLN, NEBRASKA, US
+yppzm
+GRAND RAPIDS, MICHIGAN, US
+jiaoh
+LANCASTER, ENGLAND, UK
+clei
+TIMISOARA, TIMIS, RO
+mariuspaulescu
+JALANDHAR, PUNJAB, IN
+suksham
+VALENCIA, COMUNIDAD VALENCIANA, ES
+jalba
+HALIFAX, NOVA SCOTIA, CA
+evvp137
+KAISERSLAUTERN, RHEINLAND-PFALZ, DE
+w_mathis
+EUGENE, OREGON, US
+heinerlinke
+TEHRAN, TEHRAN, IR
+aliorouji
+IASI, IASI, RO
+irinel_casian
+LJUBLJANA, LJUBLJANA, SI
+michaelm
+OLYMPIA, WASHINGTON, US
+lucian
+BATON ROUGE, LOUISIANA, US
+yaoxu
+BIALYSTOK, PODLASKIE, PL
+aniag06
+HANNOVER, NIEDERSACHSEN, DE
+jianxiong
+KATOWICE, SLASKIE, PL
+heniek
+BRAUNSCHWEIG, NIEDERSACHSEN, DE
+me1357
+FRESNO, CALIFORNIA, US
+gottepuanil
+SHIJIAZHUANG, HEBEI, CN
+bohuifeng
+NICOSIA, NICOSIA, CY
+sersunzo
+HUNTSVILLE, ALABAMA, US
+paulecalvert
+COCHIN, KERALA, IN
+weareus_1999
+NOVOSIBIRSK, NOVOSIBIRSK, RU
+alemm
+SOFIA, GRAD SOFIYA, BG
+gmadjarova
+MONTERREY, NUEVO LEON, MX
+vidhyabhojan
+BELLINGHAM, WASHINGTON, US
+patrickgroup
+LUGANO, TICINO, CH
+checkfrog
+TULSA, OKLAHOMA, US
+oszwaldowski
+LOGAN, UTAH, US
+hinton
+VISHAKHAPATNAM, ANDHRA PRADESH, IN
+prasadmvd
+KEMEROVO, KEMEROVO, RU
+lisichkin
+RICHLAND, WASHINGTON, US
+satyak
+EDINBURG, VIRGINIA, US
+shaktigupta
+CARACAS, DISTRITO FEDERAL, VE
+fgarciasanchez
+WELLINGTON, WELLINGTON, NZ
+bartludbrook
+GENOVA, LIGURIA, IT
+marco
+LEIPZIG, SACHSEN, DE
+buettner
+PILANI, RAJASTHAN, IN
+pankaj_27sep
+HEFEI, ANHUI, CN
+flysands
+PRESCOTT, ARIZONA, US
+abcarterjr
+HUNTINGTON, WEST VIRGINIA, US
+cbhuffman
+REYKJAVIK, HOFUOBORGARSVAOIO, IS
+arikan
+IPOH, PERAK, MY
+zureq01
+KOBE-SHI, HYOGO, JP
+fritzsan
+VILLAVICENCIO, META, CO
+go_rodrigo
+ESKISEHIR, ESKISEHIR, TR
+retrosaurus
+JILIN, JILIN, CN
+betsyer
+SAARBRUCKEN, SAARLAND, DE
+vivekanandbhardwaj
+KYOTO, KYOTO, JP
+nanodwarf
+MAYAGUEZ, MAYAGUEZ, PR
+kathy_chic
+COSENZA, CALABRIA, IT
+dmaji
+FLORIANOPOLIS, SANTA CATARINA, BR
+daniellohmann
+COLUMBIA, SOUTH CAROLINA, US
+tipirnen
+SIVAKASI, TAMIL NADU, IN
+srajayaganesh
+MUSCAT, MASQAT, OM
+raheel
+HERMOSILLO, SONORA, MX
+maldona
+NIS, VOJVODINA, RS
+jankovic
+CAMPINAS, SAO PAULO, BR
+julianabatist
+COOKEVILLE, TENNESSEE, US
+vsudir
+CORPUS CHRISTI, TEXAS, US
+technologiclee
+NANTONG, JIANGSU, CN
+zhangxef
+PADANG, SUMATERA BARAT, ID
+ratna
+CHIHUAHUA, CHIHUAHUA, MX
+jaynelle
+WAIPAHU, HAWAII, US
+mikeohale
+KANE'OHE, HAWAII, US
+mail2345
+JACKSONVILLE, FLORIDA, US
+davidiw
+BURY SAINT EDMUNDS, ENGLAND, UK
+seengaf
+DEPOE BAY, OREGON, US
+codeman
+ROUEN, HAUTE-NORMANDIE, FR
+lefezb
+KINGSVILLE, TEXAS, US
+mmmu44
+YEREVAN, YEREVAN, AM
+tmakaryan
+PENSACOLA, FLORIDA, US
+normaldrey
+SHERMAN, TEXAS, US
+zenock
+DANVILLE, VIRGINIA, US
+guirreri
+XIAMEN, FUJIAN, CN
+ybsyz123
+LUEBECK, SCHLESWIG-HOLSTEIN, DE
+katiko
+ROSTOV-NA-DONU, ROSTOV, RU
+werwolf
+KHARAGPUR, BIHAR, IN
+pramey
+PORT LOUIS, PORT LOUIS, MU
+krishtee
+BISTRITA, BISTRITA-NASAUD, RO
+marius
+UJJAIN, MADHYA PRADESH, IN
+nanopsychic
+MANKATO, MINNESOTA, US
+rhinyshi
+DALAMAN, MUGLA, TR
+ipeeek
+YANCHENG, SICHUAN, CN
+renyu
+PALMS, MICHIGAN, US
+janomac
+REIMS, CHAMPAGNE-ARDENNE, FR
+kagacem
+HONAUNAU, HAWAII, US
+taras
+KELSO, WASHINGTON, US
+allc
+GILLETTE, WYOMING, US
+jtseng
+EAST NEW MARKET, MARYLAND, US
+eguy
+GUIYANG, GUIZHOU, CN
+msdeng
+RICHARDS BAY, KWAZULU-NATAL, ZA
+spmdluli
+NEW GLOUCESTER, MAINE, US
+soktyabr
+CHARLESTON, WEST VIRGINIA, US
+mashiur
+CHUR, GRAUBUNDEN, CH
+microman_ch
+PONTIANAK, KALIMANTAN BARAT, ID
+asepsuheri
+543 29532
+/Users/sdy/Desktop/classcluster/xu_cl_V1_files/2007spring/xu_v1_2007s_vi.png PNG
