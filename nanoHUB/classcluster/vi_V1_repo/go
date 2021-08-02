@@ -1,0 +1,36 @@
+#!/bin/sh
+
+rm -f Fall2008_clustersAndMatrices.csv
+rm -f Fall2008_extractedClusters_57_DT.csv
+rm -f Fall2008_orderList_57_DT.csv
+rm -f Fall2008_orderList_57_DT.png
+rm -f Fall2008_orderList_57_DTsequence.txt
+
+semester=Fall2008
+semesterStart=2008-07-01
+semesterEnd=2009-01-01
+userXtoolXdayFile=userXtoolXday.csv
+usersGeoclusteredProtocol=users_geoclustered_protocol_5-6-7_on_or_after_2007-01-01.20131231.csv
+tolerance=57
+
+python ZentnerDifference.py ${userXtoolXdayFile} \
+                            ${semester} \
+                            6
+
+python GetClustersFromDifferenceFileDayTolerance.py ${semester}_clustersAndMatrices.csv \
+                                                    ${semester} \
+                                                    ${tolerance} \
+                                                    ${userXtoolXdayFile}
+
+python TestClusterSimilaritiesExp.py -c ${semester}_extractedClusters_${tolerance}_DT.csv \
+                                     -g ${usersGeoclusteredProtocol} \
+                                     -s ${semesterStart} \
+                                     -e ${semesterEnd} \
+                                     -f ${userXtoolXdayFile}
+
+python MakeFullRaindrop.py -c ${semester}_orderList_${tolerance}_DT.csv \
+                           -g ${usersGeoclusteredProtocol} \
+                           -s ${semesterStart} \
+                           -e ${semesterEnd} \
+                           -f ${userXtoolXdayFile} \
+                           -k Y
