@@ -1,4 +1,4 @@
-# class-cluster Guide
+# classcluster Guide
 
 ### Naming Breakdown
 
