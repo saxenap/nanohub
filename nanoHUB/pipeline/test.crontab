@@ -21,3 +21,5 @@
 * * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/db2users_remap_sf.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
 * * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_nh_usage_survey.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
 * * * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_user_contribution_update.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
+
+30 3 * * *  cd /home/nanoHUB-user && PATH=/home/nanoHUB-user/venv/bin:$PATH && nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/simulation_user_lifetimes.ipynb --log-level=INFO >> /var/log/cron.log 2>&1
