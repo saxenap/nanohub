@@ -1,9 +1,5 @@
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
-from alembic import context
+from alembic import context, command
 from nanoHUB.rfm import model
 from nanoHUB.application import Application
 
@@ -54,24 +50,22 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-
-    connection = App
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    connectable = get_connectable(config.get_main_option("mysql.database.name"))
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata
         )
 
         with context.begin_transaction():
             context.run_migrations()
 
+    connection.close()
 
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
+def get_connectable(db_name: str):
+    application = Application.get_instance()
+    return application.new_db_engine(db_name)
+
+run_migrations_online()
+
