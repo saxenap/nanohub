@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 import pymysql
+from sqlalchemy import create_engine
 from sshtunnel import create_logger , SSHTunnelForwarder
 from paramiko import Transport
 
@@ -20,6 +21,7 @@ class DbConnectionParams:
     db_host: str
     db_username: str
     db_password: str
+    db_charset: str
     db_port: int = 3306
 
 
@@ -35,8 +37,28 @@ class PyMysqlConnectionFactory(IDbConnectionFactory):
             database=db_name,
             user=self.params.db_username,
             passwd=self.params.db_password,
-            port=self.params.db_port
+            port=self.params.db_port,
+            charset=self.params.db_charset
         )
+
+    def set_port(self, port: int) -> None:
+        self.params.db_port = port
+
+
+class SqlAlchemyConnectionFactory(IDbConnectionFactory):
+
+    def __init__(self, params: DbConnectionParams):
+        self.params = params
+
+    def get_connection_for(self, db_name: str):
+        return create_engine('mysql+pymysql://{}:{}@{}:{}/{}?charset={}'.format(
+            self.params.db_username,
+            self.params.db_password,
+            self.params.db_host,
+            self.params.db_port,
+            db_name,
+            self.params.db_charset
+        ))
 
     def set_port(self, port: int) -> None:
         self.params.db_port = port

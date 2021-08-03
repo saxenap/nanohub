@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 from nanoHUB.dataaccess.connection import DbConnectionParams, PyMysqlConnectionFactory, TunneledConnectionParams, TunneledConnectionFactory
+from nanoHUB.dataaccess.connection import SqlAlchemyConnectionFactory
 from nanoHUB.logger import logger
 import logging
 
@@ -14,11 +15,17 @@ class DatabaseContainer(containers.DeclarativeContainer):
         db_host = config.database.host,
         db_username = config.database.user,
         db_password = config.database.password,
-        db_port = config.database.port
+        db_port = config.database.port,
+        db_charset = config.database.charset
     )
 
+    # db_connection_factory_inner = providers.Factory(
+    #     PyMysqlConnectionFactory,
+    #     db_params
+    # )
+
     db_connection_factory_inner = providers.Factory(
-        PyMysqlConnectionFactory,
+        SqlAlchemyConnectionFactory,
         db_params
     )
 
