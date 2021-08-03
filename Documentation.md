@@ -5,6 +5,10 @@
 * Added Custom Environment Variables
 * Opened Jupyter Lab
 
+## Minimum Requirements 
+1. Have Docker version 20.0 or above 
+2. Have at least 5 GB of space available on your local machine 
+
 ## Resources Used
 * Docker Desktop Engine Version 20.10.7
 * Github: https://github.com/saxenap/nanohub.git
@@ -50,7 +54,16 @@
     
     * This could mean your Docker engine (and Docker Desktop, if applicable) is turned off. 
 
+## Git Pull
+1. xcrun: error: active developer path ("/Applications/Xcode.app/Contents/Developer") does not exist 
+
+    * This could result from Xcode being deleted. To fix this issue type xcode-select --reset and you should be able to pull after that. 
 
 
+## To make pip work without sudo:
+1. PATH=$PATH:/usr/bin/pip3
 
+
+## To install pipenv:
+1. pip3 install pipenv --user
 

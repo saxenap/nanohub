@@ -83,7 +83,6 @@ class TunneledConnection(IConnection):
 Sql to  DataFrame Mapping
 '''
 
-
 class SqlDataFrameMapper:
     def __init__(self, connection: IConnection, chunk_size: int = 1000000):
         self.connection = connection
@@ -91,10 +90,10 @@ class SqlDataFrameMapper:
 
     def map(self, params: QueryParams) -> DataFrame:
         connection = self.connection.get_connection()
-        offset = 0
+        offset = params.offset
         while True:
             sql = 'SELECT ' + ','.join(
-                params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' ORDER BY ' + params.index_key + ' LIMIT %d OFFSET %d'
+                params.col_names) + ' FROM ' + params.db_name + '.' + params.table_name + ' ' + params.condition + ' LIMIT %d OFFSET %d'
             sql = sql % (self.chunk_size, offset)
             df = pandas.read_sql_query(sql, connection, params.index_key)
             yield df
@@ -131,6 +130,56 @@ class ETL:
                 partial_df = self.transformer.transform(partial_df, table_info)
                 self.loader.save(partial_df, params)
 
-        return self.loader.get(params)
+        return self.loader.get_all(params)
+
+
+class IncrementalCache:
+    def __init__(
+            self, data_mapper: SqlDataFrameMapper, transformer: ITransformer, loader: CachedDataLoader
+    ):
+        self.data_mapper = data_mapper
+        self.transformer = transformer
+        self.loader = loader
+
+    def __call__(self, params: QueryParams) -> DataFrame:
+
+        if not self.loader.exists(params):
+            table_info = self.data_mapper.get_table_info(params)
+            for partial_df in self.data_mapper.map(params):
+                partial_df = self.transformer.transform(partial_df, table_info)
+                self.loader.save(partial_df, params)
+
+        return self.loader.get_all(params)
+
+@dataclass
+class IQuery:
+    sql: str
+    primary_key: str
+    table_names: []
+    limit: int
+    offset: int
+
+    def new_for(self):
+        raise NotImplementedError
+
+    def get_sql(self):
+        raise NotImplementedError
+
+
+class SqlTableInfo:
+    def __init__(self, connection: IConnection):
+        self.connection = connection
+
+    def get_primary_key_for(self, db_name: str, table_name: str):
+        sql = f"SHOW INDEX FROM {db_name}.{table_name} WHERE Key_name = 'PRIMARY';"
+        cursor = self.connection.get_connection().cursor()
+        cursor.execute(sql)
+        columns = cursor.description
+        result = [{columns[index][0]:column for index, column in enumerate(value)} for value in cursor.fetchall()]
+        return result[0]['Column_name']
+
+    def get_column_types(self, db_name: str, table_name: str) -> DataFrame:
+        sql = f"SELECT COLUMN_NAME , DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA={db_name} AND TABLE_NAME={table_name};"
+        return pandas.read_sql_query(sql, self.connection.get_connection())
 
 

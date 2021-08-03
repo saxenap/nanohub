@@ -8,6 +8,7 @@ class DatabaseSettings(BaseSettings):
     host: str = Field(env='db_host')
     user: str = Field(env='db_user')
     password: str = Field(env='db_password')
+    charset: str = Field(env='db_charset')
 
 
 class SshTunnel(BaseSettings):
@@ -40,10 +41,6 @@ class ExecutorSettings(BaseSettings):
     max_retries_on_failure: int = Field(env='executor_max_retries_on_failure')
 
 
-class SystemSettings(BaseSettings):
-
-    timezone: str = Field(env='system_timezone')
-
 # class RemoteServicesSettings(BaseSettings):
 
 #     papertrail_hostname: str = Field(env='papertrail_hostname')
@@ -56,5 +53,4 @@ class Settings(BaseSettings):
     salesforce: SalesforceSettings = SalesforceSettings()
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
-    systemsettings: SystemSettings = SystemSettings()
 #     remoteservicessettings: RemoteServicesSettings = RemoteServicesSettings()

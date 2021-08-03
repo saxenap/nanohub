@@ -87,12 +87,12 @@ logging_conf = dict(
             propagate = True
         ),
         sshtunnel = dict(
-            level = logging.WARNING,
+            level = logging.CRITICAL,
             handlers = [
                 'console',
                 'syslog'
             ],
-            propagate = True
+            propagate = False
         )
     ),
     root = dict(
@@ -116,5 +116,3 @@ def logger(name: str = None):
     # handler.setFormatter(CustomFormatter())
     logger.addFilter(ModuleNameFilter('nanoHUB'))
     return logger
-
-
