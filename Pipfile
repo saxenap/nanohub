@@ -81,6 +81,7 @@ matplotlib = "*"
 # This happens because pipenv is trying to build numpy and scipy from source.
 # Solution - export SYSTEM_VERSION_COMPAT=1
 seaborn = "*"
+openpyxl = "*"
 plotly = "*"
 chart-studio = "*"
 sklearn = "*"
