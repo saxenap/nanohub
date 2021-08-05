@@ -174,8 +174,8 @@ def merge_tool_data(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame, d
 
 def update_user_info(engine):
     sql1 = '''
-    INSERT INTO rfm_data.%s (id, username, name, email, last_visit_date, registration_date, lifetime_days)
-    SELECT id, username, name, email, lastvisitDate, registerDate, timestampdiff(DAY, registerDate, lastvisitDate)
+    INSERT INTO rfm_data.%s (id, username, name, email, last_visit_date, registration_date)
+    SELECT id, username, name, email, lastvisitDate, registerDate
     FROM nanohub.jos_users
     WHERE NOT EXISTS (SELECT 1 FROM rfm_data.user_descriptor WHERE rfm_data.user_descriptor.id = nanohub.jos_users.id)
     '''
@@ -183,15 +183,24 @@ def update_user_info(engine):
     sql2 = '''
     UPDATE rfm_data.%s INNER JOIN nanohub.jos_users
         ON rfm_data.user_descriptor.id = nanohub.jos_users.id
-    SET rfm_data.user_descriptor.lifetime_days = timestampdiff(DAY, nanohub.jos_users.registerDate, nanohub.jos_users.lastvisitDate)
+    SET rfm_data.user_descriptor.last_visit_date = nanohub.jos_users.lastvisitDate
     WHERE rfm_data.user_descriptor.last_visit_date != nanohub.jos_users.lastvisitDate
     '''
     sql2= sql2 % (UserDescriptors.__tablename__)
+
+    sql3 = '''
+    UPDATE rfm_data.%s
+    SET lifetime_days = CASE
+        WHEN timestampdiff(DAY, registration_date, last_visit_date) = 0 THEN 1
+        ELSE timestampdiff(DAY, registration_date, last_visit_date)
+    END
+    ''' % (UserDescriptors.__tablename__)
 
     with engine.begin() as connection:
         with connection.begin() as transaction:
             connection.execute(sql1)
             connection.execute(sql2)
+            connection.execute(sql3)
 
 
 def update_tool_info(engine, toolstart_df, tool_version_df):
