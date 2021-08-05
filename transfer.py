@@ -50,9 +50,9 @@ def get_tool_version_df() -> pd.DataFrame:
     )
 
 
-def new_toolstart_df() -> pd.DataFrame:
+def new_toolstart_df(last_inserted_id: int) -> pd.DataFrame:
     df = pd.read_sql_query(
-        "SELECT id, datetime, user, tool, walltime, cputime FROM nanohub_metrics.toolstart",
+        "SELECT id, datetime, user, tool, walltime, cputime FROM nanohub_metrics.toolstart WHERE id > %d ORDER BY id " % (last_inserted_id),
         nanohub_engine
     )
     df['datetime'] = pd.to_datetime(df['datetime'],errors='coerce')
@@ -147,7 +147,7 @@ def update_last_toolstart_id(df: pd.DataFrame, connection):
 
 
 def get_last_updated_toolstart_id(session):
-    statement = select(LastUpdateRecord)
+    statement = select(LastUpdateRecord).order_by(LastUpdateRecord.id.desc()).limit(1)
     result = session.execute(statement).scalars().all()
     if len(result) == 0:
         return 0
@@ -208,11 +208,6 @@ def update_tool_info(engine, toolstart_df, tool_version_df):
         final.first_sim_date = temp.first_sim_date
     '''
     sql = sql % (UserDescriptors.__tablename__, TempUserDescriptors.__tablename__)
-    session = Session(engine, future=True)
-    last_updated_toolstart_id = get_last_updated_toolstart_id(session)
-    session.close()
-
-    toolstart_df = toolstart_df[toolstart_df.id > last_updated_toolstart_id]
 
     if len(toolstart_df) > 0:
         merged_df = merge_tool_data(toolstart_df, tool_version_df)
@@ -223,12 +218,22 @@ def update_tool_info(engine, toolstart_df, tool_version_df):
             connection.execute(sql)
 
 
-pd.options.mode.chained_assignment = None
+def execute(engine, use_cache=True):
+    pd.options.mode.chained_assignment = None
+    session = Session(engine, future=True)
+    if use_cache:
+        toolstart_path = Path(cache_dir, 'toolstart_1')
+        toolstart_df = read_df(toolstart_path)
+    else:
+        last_inserted_id = get_last_updated_toolstart_id(session)
+        toolstart_df = new_toolstart_df(last_inserted_id)
 
-toolstart_path = Path(cache_dir, 'toolstart_1')
-toolstart_df = read_df(toolstart_path)
-tool_version_df = get_tool_version_df()
+    tool_version_df = get_tool_version_df()
+
+    update_user_info(engine)
+    update_tool_info(engine, toolstart_df, tool_version_df)
+
+    session.close()
 
 
-update_user_info(rfm_engine)
-update_tool_info(rfm_engine, toolstart_df, tool_version_df)
+execute(rfm_engine, use_cache=False)
