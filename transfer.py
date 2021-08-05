@@ -9,7 +9,7 @@ from IPython.display import display
 from nanoHUB.application import Application
 from nanoHUB.dataaccess.sql import SqlDataFrameMapper
 from nanoHUB.dataaccess.sql import CachedConnection, TunneledConnection
-from nanoHUB.rfm.model import LastUpdateRecord
+from nanoHUB.rfm.model import LastUpdateRecord, TempUserDescriptors, UserDescriptors
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -96,7 +96,6 @@ def tool_counts(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame) -> pd
     return df.groupby(['user', 'toolname'])['toolname'].count().to_frame(name='tools_used_count').reset_index()
 
 
-
 def max_min_simulation_datetimes(df: pd.DataFrame) -> pd.DataFrame:
     df = filter_nulls(df, 'user')
     df = df.groupby(['user']).agg(min_datetime=('datetime', np.min), max_datetime=('datetime', np.max)).reset_index()
@@ -106,10 +105,10 @@ def max_min_simulation_datetimes(df: pd.DataFrame) -> pd.DataFrame:
 
 def simulation_lifetime(df: pd.DataFrame) -> pd.DataFrame:
     df = max_min_simulation_datetimes(df)
-    df['simulation_lifetime_days'] = (df['max_datetime'] - df['min_datetime']).dt.days
+    df['sims_lifetime'] = (df['max_datetime'] - df['min_datetime']).dt.days
     # What happens to users who only used simulations for < 24hrs?
     # We assign 1 day to them.
-    df.loc[df.simulation_lifetime_days == 0, 'simulation_lifetime_days'] = 1
+    df.loc[df.sims_lifetime == 0, 'sims_lifetime'] = 1
     df.drop('min_datetime', axis=1, inplace=True)
     df.drop('max_datetime', axis=1, inplace=True)
     return df
@@ -117,8 +116,8 @@ def simulation_lifetime(df: pd.DataFrame) -> pd.DataFrame:
 
 def earliest_latest_simulations(df: pd.DataFrame) -> pd.DataFrame:
     df = max_min_simulation_datetimes(df)
-    df = df.rename({'min_datetime': 'earliest_simulation'}, axis=1)
-    df = df.rename({'max_datetime': 'latest_simulation'}, axis=1)
+    df = df.rename({'min_datetime': 'first_sim_date'}, axis=1)
+    df = df.rename({'max_datetime': 'last_sim_date'}, axis=1)
     return df
 
 
@@ -129,15 +128,21 @@ def tools_used(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame, delimi
 
 def simulations_run_count(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame) -> pd.DataFrame:
     df = tool_counts(toolstart_df, tool_version_df)
-    df = df.rename({'tools_used_count': 'simulations_run_count'}, axis=1)
+    df = df.rename({'tools_used_count': 'sims_count'}, axis=1)
     return df.groupby(['user']).sum().reset_index()
+
+
+def sims_activity_days(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.groupby('user').agg(sims_activity_days=('user', 'count')).reset_index()
+    return df
 
 
 def update_last_toolstart_id(df: pd.DataFrame, connection):
     last_id = df.iloc[-1]["id"]
     now = datetime.now()
     formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-    sql = "INSERT INTO rfm_data.last_update_record (last_processed_toolstart_id, last_processed_toolstart_id_updated) VALUES (%s, %s);"
+    sql = "INSERT INTO rfm_data.%s (last_processed_toolstart_id, last_processed_toolstart_id_updated)" % LastUpdateRecord.__tablename__
+    sql = sql + " VALUES (%s, %s);"
     connection.execute(sql, (int(last_id), formatted_date))
 
 
@@ -149,14 +154,19 @@ def get_last_updated_toolstart_id(session):
     return result[0].last_processed_toolstart_id
 
 
-def map_from_tool_data(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame, delimiter: str = ',') -> pd.DataFrame:
+def merge_tool_data(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame, delimiter: str = ',') -> pd.DataFrame:
     simulation_lifetime_df = simulation_lifetime(toolstart_df)
     tools_used_df = tools_used(toolstart_df, tool_version_df)
     simulations_count_df = simulations_run_count(toolstart_df, tool_version_df)
     earliest_latest_simulations_df = earliest_latest_simulations(toolstart_df)
+    sims_activity_days_df = sims_activity_days(toolstart_df)
 
     df_merged = reduce(lambda left,right: pd.merge(left, right, on=['user'], how='outer'), [
-        simulation_lifetime_df, tools_used_df, simulations_count_df, earliest_latest_simulations_df
+        simulation_lifetime_df,
+        tools_used_df,
+        simulations_count_df,
+        earliest_latest_simulations_df,
+        sims_activity_days_df
     ])
     # display(df_merged)
     return df_merged
@@ -164,17 +174,19 @@ def map_from_tool_data(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame
 
 def update_user_info(engine):
     sql1 = '''
-    INSERT INTO rfm_data.user_descriptors (id, username,name,email, lastvisitDate, registerDate, user_lifetime_days)
+    INSERT INTO rfm_data.%s (id, username, name, email, last_visit_date, registration_date, lifetime_days)
     SELECT id, username, name, email, lastvisitDate, registerDate, timestampdiff(DAY, registerDate, lastvisitDate)
     FROM nanohub.jos_users
-    WHERE NOT EXISTS (SELECT 1 FROM rfm_data.user_descriptors WHERE rfm_data.user_descriptors.id = nanohub.jos_users.id)
+    WHERE NOT EXISTS (SELECT 1 FROM rfm_data.user_descriptor WHERE rfm_data.user_descriptor.id = nanohub.jos_users.id)
     '''
+    sql1 = sql1 % (UserDescriptors.__tablename__)
     sql2 = '''
-    UPDATE rfm_data.user_descriptors INNER JOIN nanohub.jos_users
-        ON rfm_data.user_descriptors.id = nanohub.jos_users.id
-    SET rfm_data.user_descriptors.user_lifetime_days = timestampdiff(DAY, nanohub.jos_users.registerDate, nanohub.jos_users.lastvisitDate)
-    WHERE rfm_data.user_descriptors.lastvisitDate != nanohub.jos_users.lastvisitDate
+    UPDATE rfm_data.%s INNER JOIN nanohub.jos_users
+        ON rfm_data.user_descriptor.id = nanohub.jos_users.id
+    SET rfm_data.user_descriptor.lifetime_days = timestampdiff(DAY, nanohub.jos_users.registerDate, nanohub.jos_users.lastvisitDate)
+    WHERE rfm_data.user_descriptor.last_visit_date != nanohub.jos_users.lastvisitDate
     '''
+    sql2= sql2 % (UserDescriptors.__tablename__)
 
     with engine.begin() as connection:
         with connection.begin() as transaction:
@@ -184,15 +196,18 @@ def update_user_info(engine):
 
 def update_tool_info(engine, toolstart_df, tool_version_df):
     sql = '''
-    UPDATE rfm_data.user_descriptors AS final JOIN rfm_data.temp_user_descriptors AS temp
+    UPDATE rfm_data.%s AS final JOIN rfm_data.%s AS temp
     ON final.username = temp.user
     SET
-        final.simulations_run_count = temp.simulations_run_count,
-        final.simulation_lifetime_days = temp.simulation_lifetime_days,
+        final.sims_count = temp.sims_count,
+        final.sims_lifetime = temp.sims_lifetime,
+        final.sims_activity_days = temp.sims_activity_days,
         final.tools_used_count = temp.tools_used_count,
-        final.tools_used_names = temp.tools_used_names
+        final.tools_used_names = temp.tools_used_names,
+        final.last_sim_date = temp.last_sim_date,
+        final.first_sim_date = temp.first_sim_date
     '''
-
+    sql = sql % (UserDescriptors.__tablename__, TempUserDescriptors.__tablename__)
     session = Session(engine, future=True)
     last_updated_toolstart_id = get_last_updated_toolstart_id(session)
     session.close()
@@ -200,8 +215,8 @@ def update_tool_info(engine, toolstart_df, tool_version_df):
     toolstart_df = toolstart_df[toolstart_df.id > last_updated_toolstart_id]
 
     if len(toolstart_df) > 0:
-        merged_df = map_from_tool_data(toolstart_df, tool_version_df)
-        merged_df.to_sql('temp_user_descriptors', engine, if_exists='replace')
+        merged_df = merge_tool_data(toolstart_df, tool_version_df)
+        merged_df.to_sql(TempUserDescriptors.__tablename__, engine, if_exists='replace')
 
         with engine.begin() as connection:
             update_last_toolstart_id(toolstart_df, connection)
@@ -217,8 +232,3 @@ tool_version_df = get_tool_version_df()
 
 update_user_info(rfm_engine)
 update_tool_info(rfm_engine, toolstart_df, tool_version_df)
-
-
-
-
-
