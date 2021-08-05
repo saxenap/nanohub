@@ -49,18 +49,20 @@ etl = ETL(
 # ))
 # print('sessionlog_metrics complete.')
 
+
 # tool_versions = etl(QueryParams(
 #     db_name='nanohub', table_name='jos_tool_version', col_names = ['*'], index_key='id'
 # ))
 # print('toolversions complete.')
-tools = etl(QueryParams(
-    db_name='nanohub_metrics', table_name='tools', col_names = ['*'], index_key='tool'
-))
-print('tools complete.')
-# toolstarts = etl(QueryParams(
-#     db_name='nanohub_metrics', table_name='toolstart', col_names = ['*'], index_key='id'
+
+# tools = etl(QueryParams(
+#     db_name='nanohub_metrics', table_name='tools', col_names = ['*'], index_key='tool'
 # ))
-# print('toolstarts complete.')
+# print('tools complete.')
+toolstarts = etl(QueryParams(
+    db_name='nanohub_metrics', table_name='toolstart', col_names = ['*'], index_key='id'
+))
+print('toolstarts complete.')
 # toolevents = etl(QueryParams(
 #     db_name='nanohub_metrics', table_name='toolevents', col_names = ['*'], index_key='entryID'
 # ))
@@ -71,5 +73,5 @@ print('tools complete.')
 # print('logins complete.')
 # print(toolstarts)
 
-table_info = SqlTableInfo(connection)
-print(table_info.get_primary_key_for('nanohub_metrics', 'userlogin'))
+# table_info = SqlTableInfo(connection)
+# print(table_info.get_primary_key_for('nanohub_metrics', 'userlogin'))
