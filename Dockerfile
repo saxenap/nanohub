@@ -128,7 +128,8 @@ RUN jupyter contrib nbextension install --user \
     && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
     && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
     && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-RUN jupyter contrib nbextension install --user && \
+#RUN jupyter contrib nbextension install --user && \
+#    jupyter nbextension enable execute_time/main
 #    jupyter nbextension enable codefolding/main && \
 #    jupyter nbextension enable table_beautifier/main && \
 #    jupyter nbextension enable toc2/main && \
@@ -142,7 +143,7 @@ RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable livemdpreview/main && \
 #    jupyter nbextension enable highlighter/main && \
 #    jupyter nbextension enable go_to_current_running_cell/main && \
-    jupyter nbextension enable execute_time/main && \
+#    jupyter nbextension enable execute_time/main && \
 #    jupyter nbextension enable datestamper/main && \
 #    jupyter nbextension enable addbefore/main && \
 #    jupyter nbextension enable Hinterland/main && \
@@ -154,7 +155,7 @@ RUN jupyter contrib nbextension install --user && \
 #    jupyter labextension install --no-build @jupyterlab/toc && \
 #    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
 #    jupyter labextension install --no-build @jupyterlab/debugger && \
-    jupyter lab build --dev-build=False;
+#    jupyter lab build --dev-build=False;
 EXPOSE ${JUPYTER_PORT}
 
 
