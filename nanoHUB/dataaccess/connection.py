@@ -4,7 +4,8 @@ import pymysql
 from sqlalchemy import create_engine
 from sshtunnel import create_logger , SSHTunnelForwarder
 from paramiko import Transport
-
+from nanoHUB.dataaccess.sql import CachedConnection, TunneledConnection
+import os
 
 class IDbConnectionFactory:
 
@@ -104,6 +105,19 @@ class TunneledConnectionFactory(IDbConnectionFactory):
         return self.db_factory.get_connection_for(db_name)
 
 
+
+def get_connection():
+    return CachedConnection(TunneledConnection(
+        ssh_host = os.getenv('tunnel_ssh_host'),
+        ssh_username = os.getenv('tunnel_ssh_username'),
+        ssh_password = os.getenv('tunnel_ssh_password'),
+        ssh_port = int(os.getenv('tunnel_ssh_port')),
+        remote_bind_address = os.getenv('tunnel_remote_bind_address'),
+        remote_bind_port = int(os.getenv('tunnel_remote_bind_port')),
+        db_host = os.getenv('db_host'),
+        db_username = os.getenv('db_user'),
+        db_password = os.getenv('db_password')
+    ))
 
 '''
 Problem with packet sizing - Paramiko drops connection
