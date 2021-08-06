@@ -20,6 +20,7 @@ pytest = "6.2"
 [packages]
 # need to define exact (pre) version for black
 # delete Pipenv.lock file and then run pipenv install again
+cython = "*"
 sqlalchemy = "*"
 alembic = "*"
 sqlalchemy-migrate = "*"
@@ -60,6 +61,8 @@ jupyterlab-quickopen = "*"
 jupyterlab_executor = "*"
 RISE = "*"
 jupyter_helpers = "*"
+jupyterlab-kite = ">=2.0.2"
+jupyterlab-tabular-data-editor = "*"
 #qgrid = "*"
 #ipywidgets = "*"
 #jupyterlab-topbar = "*"
