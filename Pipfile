@@ -3,6 +3,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+# If getting errors regarding BLAS & LAPACK libraries, use:
+# export SYSTEM_VERSION_COMPAT=1
+
 [requires]
 # If using directly in your
 # local python installation (outside of Docker)
