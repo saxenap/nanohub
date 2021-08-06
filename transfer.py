@@ -4,11 +4,8 @@ import pandas as pd
 import numpy as np
 import os
 from datetime import datetime
-from IPython.display import display
 
 from nanoHUB.application import Application
-from nanoHUB.dataaccess.sql import SqlDataFrameMapper
-from nanoHUB.dataaccess.sql import CachedConnection, TunneledConnection
 from nanoHUB.rfm.model import LastUpdateRecord, TempUserDescriptors, UserDescriptors
 
 from sqlalchemy import select
@@ -20,27 +17,6 @@ nanohub_engine = application.new_db_engine('nanohub')
 metrics_engine = application.new_db_engine('nanohub_metrics')
 
 cache_dir = Path(Path(os.getenv('APP_DIR')), '.cache')
-
-
-def get_connection():
-    return CachedConnection(TunneledConnection(
-        ssh_host = os.getenv('tunnel_ssh_host'),
-        ssh_username = os.getenv('tunnel_ssh_username'),
-        ssh_password = os.getenv('tunnel_ssh_password'),
-        ssh_port = int(os.getenv('tunnel_ssh_port')),
-        remote_bind_address = os.getenv('tunnel_remote_bind_address'),
-        remote_bind_port = int(os.getenv('tunnel_remote_bind_port')),
-        db_host = os.getenv('db_host'),
-        db_username = os.getenv('db_user'),
-        db_password = os.getenv('db_password')
-    ))
-
-
-def data_mapper(chunksize: int = 1000):
-    return SqlDataFrameMapper(get_connection(), chunksize)
-
-
-default_data_mapper = data_mapper()
 
 
 def get_tool_version_df() -> pd.DataFrame:
@@ -178,15 +154,14 @@ def update_user_info(engine):
     SELECT id, username, name, email, lastvisitDate, registerDate
     FROM nanohub.jos_users
     WHERE NOT EXISTS (SELECT 1 FROM rfm_data.user_descriptor WHERE rfm_data.user_descriptor.id = nanohub.jos_users.id)
-    '''
-    sql1 = sql1 % (UserDescriptors.__tablename__)
+    ''' % (UserDescriptors.__tablename__)
+
     sql2 = '''
     UPDATE rfm_data.%s INNER JOIN nanohub.jos_users
         ON rfm_data.user_descriptor.id = nanohub.jos_users.id
     SET rfm_data.user_descriptor.last_visit_date = nanohub.jos_users.lastvisitDate
     WHERE rfm_data.user_descriptor.last_visit_date != nanohub.jos_users.lastvisitDate
-    '''
-    sql2= sql2 % (UserDescriptors.__tablename__)
+    ''' % (UserDescriptors.__tablename__)
 
     sql3 = '''
     UPDATE rfm_data.%s
@@ -230,19 +205,24 @@ def update_tool_info(engine, toolstart_df, tool_version_df):
 def execute(engine, use_cache=True):
     pd.options.mode.chained_assignment = None
     session = Session(engine, future=True)
-    if use_cache:
-        toolstart_path = Path(cache_dir, 'toolstart_1')
-        toolstart_df = read_df(toolstart_path)
-    else:
-        last_inserted_id = get_last_updated_toolstart_id(session)
-        toolstart_df = new_toolstart_df(last_inserted_id)
 
-    tool_version_df = get_tool_version_df()
+    try:
+        if use_cache:
+            toolstart_path = Path(cache_dir, 'toolstart_1')
+            toolstart_df = read_df(toolstart_path)
+        else:
+            last_inserted_id = get_last_updated_toolstart_id(session)
+            toolstart_df = new_toolstart_df(last_inserted_id)
 
-    update_user_info(engine)
-    update_tool_info(engine, toolstart_df, tool_version_df)
+        tool_version_df = get_tool_version_df()
 
-    session.close()
+        update_user_info(engine)
+        update_tool_info(engine, toolstart_df, tool_version_df)
+
+    except:
+        raise
+    finally:
+        session.close()
 
 
 execute(rfm_engine, use_cache=False)
