@@ -64,7 +64,7 @@ jupyterlab-quickopen = "*"
 jupyterlab_executor = "*"
 RISE = "*"
 jupyter_helpers = "*"
-jupyterlab-kite = ">=2.0.2"
+#jupyterlab-kite = ">=2.0.2"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
@@ -73,7 +73,7 @@ jupyterlab_github = "*"
 #jupyterlab-topbar = "*"
 #lckr-jupyterlab-variableinspector = "*"
 jupyterlab-lsp = "*"
-#python-lsp-server = {extras = ["all"],version = "*"}
+python-lsp-server = {extras = ["all"],version = "*"}
 #jupyterlab_voyager = "*"
 ##########################################
 #jupyterlab-git = "*"
