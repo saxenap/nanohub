@@ -58,6 +58,8 @@ jupyter_contrib_nbextensions = "*"
 jupyter_nbextensions_configurator = "*"
 jupyterlab_execute_time = "*"
 jupyterlab_code_formatter = "*"
+jupyter-resource-usage = "*" # Required by jupyterlab-system-monitor
+jupyterlab-topbar = "*" # Required by jupyterlab-system-monitor
 jupyterlab-system-monitor = "*"
 #jupyterlab_sql = "*"
 jupyterlab-quickopen = "*"
@@ -70,7 +72,6 @@ jupyterlab-git = "*"
 jupyterlab_github = "*"
 #qgrid = "*"
 #ipywidgets = "*"
-#jupyterlab-topbar = "*"
 #lckr-jupyterlab-variableinspector = "*"
 jupyterlab-lsp = "*"
 python-lsp-server = {extras = ["all"],version = "*"}
