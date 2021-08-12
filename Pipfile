@@ -94,6 +94,7 @@ openpyxl = "*"
 plotly = "*"
 chart-studio = "*"
 sklearn = "*"
+yellowbrick = "*"
 
 portray = "*"
 icecream="*"
