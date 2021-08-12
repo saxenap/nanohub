@@ -68,3 +68,68 @@ class LastUpdateRecord(Base):
     id: int = Column(Integer, primary_key=True)
     last_processed_toolstart_id: int = Column(BigInteger, server_default='0', unique=True, nullable=False, index=True)
     last_processed_toolstart_id_updated: str = Column(DateTime)
+
+
+
+class AbstractToolEvents(Base):
+    __abstract__ = True
+    __table_args__ = {'mysql_engine':'InnoDB', 'mysql_charset':'utf8mb4', 'mysql_collate': 'utf8mb4_unicode_ci'}
+
+    toolevents__first_start_date: str = Column(DateTime, nullable=True, index=True)
+    toolevents__last_start_date: str = Column(DateTime, nullable=True, index=True)
+
+    toolevents__first_finish_date: str = Column(DateTime, nullable=True, index=True)
+    toolevents__last_finish_date: str = Column(DateTime, nullable=True, index=True)
+
+    toolevents__lifetime: int = Column(Integer, nullable=True, comment='days from first to last simulation')
+    toolevents__count: int = Column(Integer, nullable=True, comment='number of simulations')
+    toolevents__activity_days: int = Column(Integer, comment='count of days spent performing simulations')
+    toolevents__tools_used_names: str = Column(Text,nullable=True, comment='names of tools used in simulations')
+    toolevents__tools_used_count: int = Column(Integer, nullable=True, comment='number of tools used in simulations')
+
+    toolevents__active_days: int = Column(Integer, comment='count of days performing any activity')
+    average_freqency: int = Column(Numeric, index=True, comment='F = lifetime in days / Days spent on nanoHUB')
+
+    '''
+       http://dev.mysql.com/doc/refman/5.5/en/timestamp.html
+       By default, TIMESTAMP columns are NOT NULL, cannot contain NULL values, and assigning NULL assigns the current timestamp.
+       '''
+    _last_updated: str = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), nullable=False, index=True)
+
+    def __repr__(self):
+        return "<{klass} @{id:x} {attrs}>".format(
+            klass=self.__class__.__name__,
+            id=id(self) & 0xFFFFFF,
+            attrs=" ".join("{}={!r}".format(k, v) for k, v in self.__dict__.items()),
+        )
+
+class TempToolEvents(AbstractUserDescriptor):
+    __tablename__ = "temp_descriptors_tool_events"
+
+    temp_id: int = Column(Integer, primary_key=True)
+    user: str = Column(String(150), unique=True)
+
+
+class ToolEvents(AbstractToolEvents):
+    __tablename__ = "descriptors_tool_events"
+
+    id: int = Column(Integer, primary_key=True)
+
+    username: str = Column(String(150), unique=True)
+    name: str = Column(String(255))
+    email: str = Column(String(150))
+
+    registration_date: str = Column(DateTime, index=True)
+    last_visit_date: str = Column(DateTime, index=True)
+    lifetime_days: int = Column(Integer, comment='last day - registration day')
+
+    _created: str = Column(DateTime, nullable=True)
+
+
+class ToolEventsLastUpdate(Base):
+    __tablename__ = "toolevent_update_history"
+    __table_args__ = {'mysql_engine':'InnoDB', 'mysql_charset':'utf8mb4', 'mysql_collate': 'utf8mb4_unicode_ci'}
+
+    id: int = Column(Integer, primary_key=True)
+    last_processed_toolevent_id: int = Column(BigInteger, server_default='0', unique=True, nullable=False, index=True)
+    last_processed_toolevent_id_updated: str = Column(DateTime)

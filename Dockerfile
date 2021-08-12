@@ -64,6 +64,10 @@ RUN set -x \
         locales \
         $pipeline_deps \
         python3-dev python3-venv python3-pip \
+    \
+    && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt-get install -y --no-install-recommends \
         $jupyter_deps \
     \
     && locale-gen en_US \
@@ -128,6 +132,8 @@ RUN jupyter contrib nbextension install --user \
     && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
     && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
     && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
+RUN jupyter labextension install jupyterlab-topbar-extension
+RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
 #RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable execute_time/main
 #    jupyter nbextension enable codefolding/main && \
