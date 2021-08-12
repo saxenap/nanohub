@@ -95,5 +95,10 @@ sklearn = "*"
 portray = "*"
 icecream="*"
 
+## Google API stuff
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
+
 [pipenv]
 allow_prereleases = true
