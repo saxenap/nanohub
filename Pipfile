@@ -102,6 +102,12 @@ icecream="*"
 google-api-python-client = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
+oauth2client = "3.0.0"
+
+## researcher scraping
+python-Levenshtein = "*"
+scholarly = "*"
+google = "*"
 
 [pipenv]
 allow_prereleases = true
