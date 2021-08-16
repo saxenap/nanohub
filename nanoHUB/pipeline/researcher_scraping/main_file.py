@@ -182,6 +182,8 @@ while batch_e_flag == False:
         batch_e_flag = True
 
 proxy_flag = False 
+
+start_t = time.time()
 for instance in batch(range(c_sample2.shape[0]),batch_size)[batch_no:]: ## TODO : debug flag, revert to 0
     instance = list(instance)
     temp_sample = c_sample2.iloc[instance,:]
@@ -429,7 +431,8 @@ for instance in batch(range(c_sample2.shape[0]),batch_size)[batch_no:]: ## TODO 
     # wait for next batch instance
     time.sleep(np.random.randint(30,121))
 
-
+    if start_t - time.time() >= 3*60*60: #3 hour run sessions
+        break
 # %% graveyard
     
     # %% Research ID_sf

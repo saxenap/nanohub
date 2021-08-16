@@ -21,3 +21,9 @@
 30 4 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/db2users_remap_sf.ipynb --log-level=INFO 2>&1 | /usr/bin/logger -t CRON
 30 4 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_nh_usage_survey.ipynb --log-level=INFO 2>&1 | /usr/bin/logger -t CRON
 30 0 28 * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/salesforce/task_user_contribution_update.ipynb --log-level=INFO 2>&1 | /usr/bin/logger -t CRON
+
+## researcher scraping + sf data importing automation
+30 2 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/researcher_scraping/runs_main_file_py.ipynb --log-level=INFO 2>&1 | /usr/bin/logger -t CRON
+30 2 * * *  nanoHUB task execute /home/nanoHUB-user/app/nanoHUB/pipeline/SF_dataimports/general_imports.ipynb --log-level=INFO 2>&1 | /usr/bin/logger -t CRON
+
+
