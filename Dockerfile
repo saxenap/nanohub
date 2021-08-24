@@ -63,7 +63,7 @@ RUN set -x \
         sudo \
         locales \
         $pipeline_deps \
-        python3-dev python3-venv python3-pip \
+        python3-dev python3-venv python3-pip python3-wheel \
     \
     && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
@@ -92,6 +92,8 @@ WORKDIR ${APP_DIR}
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 COPY Pipfile.lock .
+RUN pip3 install wheel
+RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel
 RUN pipenv lock -r > requirements.txt \
     && pip3 install --no-cache-dir -r requirements.txt
 
