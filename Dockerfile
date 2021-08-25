@@ -197,5 +197,7 @@ ENV CRON_LOG_FILE=${CRON_LOG_FILE}
 RUN sed -i "s%$% ${CRON_LOG_FILE}%" ${APP_DIR}/temp \
     && echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
     && echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks \
+    && echo "APP_DIR=${APP_DIR}" >> ${APP_DIR}/cron_tasks \
     && cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks \
+    && sed -i "s%{{APP_DIR}}% ${APP_DIR}%g" ${APP_DIR}/cron_tasks \
     && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
