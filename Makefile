@@ -11,16 +11,10 @@ dev:
 	make dev-down
 	make dev-up
 
-pipeline-test:
+pipeline:
 	git pull
 	make pipeline-down
-	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab.test docker-compose -f docker-compose-pipeline.yml up --build
-
-pipeline-prod:
-	git pull
-	make pipeline-down
-	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab docker-compose -f docker-compose-pipeline.yml up --build
-
+	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
 ########################################################################################################################
 # Base Commands

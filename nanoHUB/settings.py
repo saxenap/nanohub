@@ -33,20 +33,10 @@ class SalesforceSettings(BaseSettings):
 
 class GoogleApiSettings(BaseSettings):
 
-    type: str = Field(env='google_account_type')
-    project_id: str = Field(env='google_project_id')
-    private_key_id: str = Field(env='google_private_key_id')
-    private_key: str = Field(env='google_private_key')
-    client_email: str = Field(env='google_client_email')
-    client_id: str = Field(env='google_client_id')
-    auth_uri: str = Field(env='google_auth_uri')
-    token_uri: str = Field(env='google_token_uri')
-    auth_provider_x509_cert_url: str = Field(env='google_auth_provider_x509_cert_url')
-    client_x509_cert_url: str = Field(env='google_client_x509_cert_url')
+    credentials_file_path: str = Field(env='google_credentials_file_path')
     scopes: str = Field(env='google_scopes')
     service_type: str = Field(env='google_api_service_type')
     service_version: str = Field(env='google_api_service_version')
-
 
 
 class PathSettings(BaseSettings):
