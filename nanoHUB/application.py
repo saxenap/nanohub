@@ -22,12 +22,12 @@ class Application:
 
         return self.container.googleapi.googleapi_service().create_new_service()
 
-    def execute(self, file_path: str):
-
-        self.container.config.set('pipeline.executor_file_path', file_path)
-        self.container.config.set('pipeline.executor_type', os.path.splitext(file_path)[1].lstrip('.'))
-        executor = self.container.get_executor()
-        executor()
+    def execute(self, file_paths: [str]):
+        for file_path in file_paths:
+            self.container.config.set('pipeline.executor_file_path', file_path)
+            self.container.config.set('pipeline.executor_type', os.path.splitext(file_path)[1].lstrip('.'))
+            executor = self.container.get_executor()
+            executor()
 
     default_instance: 'Application' = None
 
