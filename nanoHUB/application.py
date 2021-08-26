@@ -18,6 +18,10 @@ class Application:
 
         return self.container.salesforce()
 
+    def new_google_api_engine(self):
+
+        return self.container.googleapi.googleapi_service().create_new_service()
+
     def execute(self, file_path: str):
 
         self.container.config.set('pipeline.executor_file_path', file_path)
