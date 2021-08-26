@@ -12,16 +12,15 @@ import json
 
 
 class GoogleApiFactory:
-    def __init__(self, credentials: dict, scopes: str, service_type: str, version: str):
-        self.credentials = credentials
+    def __init__(self, credentials_file_path: str, scopes: str, service_type: str, version: str):
+        self.credentials_file_path = credentials_file_path
         self.scopes = scopes
         self.service_type = service_type
         self.version = version
 
     def create_new_service(self):
-        json_key = json.loads(
-            json.dumps(self.credentials), strict=False
-        )
+        with open(self.credentials_file_path) as f:
+            json_key = json.load(f)
 
         credentials = Credentials.from_service_account_info(
             json_key, scopes=self.scopes.split(",")
@@ -34,22 +33,9 @@ class GoogleApiContainer(containers.DeclarativeContainer):
 
     config = providers.Configuration()
 
-    credentials_dict = providers.Dict({
-        'type': config.googleapi.type,
-        'project_id': config.googleapi.project_id,
-        'private_key_id': config.googleapi.private_key_id,
-        'private_key': config.googleapi.private_key,
-        'client_email': config.googleapi.client_email,
-        'client_id': config.googleapi.client_id,
-        'auth_uri': config.googleapi.auth_uri,
-        'token_uri': config.googleapi.token_uri,
-        'auth_provider_x509_cert_url': config.googleapi.auth_provider_x509_cert_url,
-        'client_x509_cert_url': config.googleapi.client_x509_cert_url
-    })
-
     googleapi_service = providers.Factory(
         GoogleApiFactory,
-        credentials_dict,
+        config.googleapi.credentials_file_path,
         config.googleapi.scopes,
         config.googleapi.service_type,
         config.googleapi.service_version
