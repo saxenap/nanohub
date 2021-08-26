@@ -111,35 +111,35 @@ RUN . ${VIRTUAL_ENV}/bin/activate
 FROM copied-packages-image AS jupyter-image
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
-#ARG JUPYTER_PORT=80
-#ENV JUPYTER_PORT=${JUPYTER_PORT}
-#ARG ORIGIN_IP_ADDRESS
-#ENV ORIGIN_IP_ADDRESS=${ORIGIN_IP_ADDRESS}
-#ARG JUPYTER_IP_ADDRESS
-#ENV JUPYTER_IP_ADDRESS=${JUPYTER_IP_ADDRESS}
-#ARG JUPYTER_DISPLAY_IP_ADDRESS
-#ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
-#ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
-#ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
-#RUN jupyter contrib nbextension install --user \
-#    && jupyter nbextensions_configurator enable --user \
-#    && jupyter-nbextension install rise --py --sys-prefix \
-#    && jupyter-nbextension enable rise --py --sys-prefix \
-#    && jupyter nbextension enable splitcell/splitcell \
-#    && jupyter notebook --generate-config \
-#    && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py \
-#    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-#    && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-#RUN jupyter labextension install jupyterlab-topbar-extension
-#RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
+ARG JUPYTER_PORT=80
+ENV JUPYTER_PORT=${JUPYTER_PORT}
+ARG ORIGIN_IP_ADDRESS
+ENV ORIGIN_IP_ADDRESS=${ORIGIN_IP_ADDRESS}
+ARG JUPYTER_IP_ADDRESS
+ENV JUPYTER_IP_ADDRESS=${JUPYTER_IP_ADDRESS}
+ARG JUPYTER_DISPLAY_IP_ADDRESS
+ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
+ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
+ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
+RUN jupyter contrib nbextension install --user \
+    && jupyter nbextensions_configurator enable --user \
+    && jupyter-nbextension install rise --py --sys-prefix \
+    && jupyter-nbextension enable rise --py --sys-prefix \
+    && jupyter nbextension enable splitcell/splitcell \
+    && jupyter notebook --generate-.config \
+    && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py \
+    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
+RUN jupyter labextension install jupyterlab-topbar-extension
+RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
 #RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable execute_time/main
 #    jupyter nbextension enable codefolding/main && \
@@ -168,7 +168,7 @@ WORKDIR ${APP_DIR}
 #    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
 #    jupyter labextension install --no-build @jupyterlab/debugger && \
 #    jupyter lab build --dev-build=False;
-#EXPOSE ${JUPYTER_PORT}
+EXPOSE ${JUPYTER_PORT}
 
 
 FROM base-image AS src-image
