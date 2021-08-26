@@ -29,6 +29,5 @@ services:
       - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
     env_file:
       - ./nanoHUB/.env
-      - ./nanoHUB/.config
     command: [jupyter, lab]
 #    command: bash -c "tail -f /dev/stdout"
