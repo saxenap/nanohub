@@ -96,10 +96,14 @@ chart-studio = "*"
 sklearn = "*"
 yellowbrick = "*"
 
+nltk = "*"
+XlsxWriter = "*"
+
 portray = "*"
 icecream="*"
 
 ## Google API stuff
+PyDrive = "*"
 google-api-python-client = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
