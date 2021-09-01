@@ -194,7 +194,9 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
-RUN echo "*/15 * * * *  echo Heartbeat - Cron is running - next heartbeat in 15mins" >> ${APP_DIR}/cron_tasks \
+RUN touch ${APP_DIR}/cron_tasks \
+    && chmod a+rwx -R ${APP_DIR}/cron_tasks \
+    && echo "*/15 * * * *  echo Heartbeat - Cron is running - next heartbeat in 15mins" >> ${APP_DIR}/cron_tasks \
     && echo "0 */12 * * *  make -f tasks.mk execute" >> ${APP_DIR}/cron_tasks \
     && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
 RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
