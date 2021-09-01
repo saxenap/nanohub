@@ -19,10 +19,14 @@ ENV NB_UID=${NB_UID}
 ENV NB_GID=${NB_GID}
 ARG HOME_DIR_NAME
 ENV NB_USER_DIR="/${HOME_DIR_NAME}/${NB_USER}"
+RUN echo "NB_USER_DIR=${NB_USER_DIR}" >> /etc/environment
 ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
+RUN echo "APP_DIR=${APP_DIR}" >> /etc/environment
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
+RUN echo "VIRTUAL_ENV=${VIRTUAL_ENV}" >> /etc/environment
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
+RUN echo "PATH=${PATH}" >> /etc/environment
 ARG LANG
 ENV LANG=${LANG}
 ARG LC_ALL
@@ -190,12 +194,9 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
-ARG CRONTAB_FILE
-COPY ${CRONTAB_FILE} ${APP_DIR}/temp
-ARG CRON_LOG_FILE
-ENV CRON_LOG_FILE=${CRON_LOG_FILE}
-RUN sed -i "s%$% ${CRON_LOG_FILE}%" ${APP_DIR}/temp \
-    && echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
-    && echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks \
-    && cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks \
+RUN touch ${APP_DIR}/cron_tasks \
+    && chmod a+rwx -R ${APP_DIR}/cron_tasks \
+    && echo "*/15 * * * *  echo Heartbeat - Cron is running - next heartbeat in 15mins" >> ${APP_DIR}/cron_tasks \
+    && echo "0 */12 * * *  make -f tasks.mk execute" >> ${APP_DIR}/cron_tasks \
     && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
+RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment

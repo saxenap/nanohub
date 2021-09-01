@@ -31,6 +31,14 @@ class SalesforceSettings(BaseSettings):
     password: str = Field(env='salesforce_password')
 
 
+class GoogleApiSettings(BaseSettings):
+
+    credentials_file_path: str = Field(env='google_credentials_file_path')
+    scopes: str = Field(env='google_scopes')
+    service_type: str = Field(env='google_api_service_type')
+    service_version: str = Field(env='google_api_service_version')
+
+
 class PathSettings(BaseSettings):
 
     outfile_dir: str = Field(env='pipeline_outfile_dir')
@@ -51,6 +59,7 @@ class Settings(BaseSettings):
     database: DatabaseSettings = DatabaseSettings()
     sshtunnel: SshTunnel = SshTunnel()
     salesforce: SalesforceSettings = SalesforceSettings()
+    googleapi: GoogleApiSettings = GoogleApiSettings()
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
 #     remoteservicessettings: RemoteServicesSettings = RemoteServicesSettings()

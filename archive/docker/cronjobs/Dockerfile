@@ -16,7 +16,7 @@ RUN mkdir -pv /etc/rsyslog.d/keys/ca.d && \
 
 RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 COPY ./config/rsyslog.conf /etc/rsyslog.d/console.conf
-#COPY ./config/rsyslog/* /etc/rsyslog.d/
+#COPY ./.config/rsyslog/* /etc/rsyslog.d/
 
 COPY ./docker/cronjobs/Makefile ./app/
 

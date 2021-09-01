@@ -4,6 +4,7 @@
 **/Thumbs.db
 *.iml
 *.egg-info
+*.egg-info/
 .git
 .idea
 *.py[cod]

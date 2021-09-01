@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 from nanoHUB.logger import logger
 from nanoHUB.containers.logging import LoggingContainer
 from nanoHUB.containers.dataaccess import DatabaseContainer
+from nanoHUB.containers.googleapi import GoogleApiContainer
 from nanoHUB.task.executors import JupyterExecutor, PythonFileExecutor, RFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator, TimeProfilingDecorator, MemoryProfilingDecorator
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
 
@@ -31,6 +32,11 @@ class TasksContainer(containers.DeclarativeContainer):
     salesforce = providers.Factory(
         DB2SalesforceAPI,
         sf_login_params=sf_login_params
+    )
+
+    googleapi = providers.Container(
+        GoogleApiContainer,
+        config=config,
     )
 
     jupyter_executor = providers.Factory(

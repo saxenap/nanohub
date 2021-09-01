@@ -102,6 +102,8 @@ fabric.properties
 .idea/**/markdown-navigator-enh.xml
 .idea/**/markdown-navigator/
 
+.virtual_documents/
+
 # Cache file creation bug
 # See https://youtrack.jetbrains.com/issue/JBR-2257
 .idea/$CACHE_FILE$
@@ -169,7 +171,6 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *.cover

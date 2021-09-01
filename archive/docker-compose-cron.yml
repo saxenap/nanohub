@@ -54,12 +54,12 @@ services:
     ports:
       - "12201:12201/udp"
     volumes:
-      - ./config/logstash.conf:/etc/logstash.conf
+      - ./.config/logstash.conf:/etc/logstash.conf
     command: bash -c "
         rm -f /usr/share/logstash/pipeline/logstash.conf &&
-        rm -f /usr/share/logstash/config/logstash.yml &&
-        touch /usr/share/logstash/config/logstash.yml &&
-        rm -f /usr/share/logstash/config/logstash-sample.conf &&
+        rm -f /usr/share/logstash/.config/logstash.yml &&
+        touch /usr/share/logstash/.config/logstash.yml &&
+        rm -f /usr/share/logstash/.config/logstash-sample.conf &&
         bin/logstash-plugin install logstash-output-newrelic &&
         bin/logstash-plugin install logstash-output-loggly &&
         bin/logstash-plugin install logstash-input-gelf &&
