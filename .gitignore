@@ -260,5 +260,12 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.xlsx
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.csv
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.zip
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/airflow
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/ts_predict
+
+
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,python,jupyternotebooks

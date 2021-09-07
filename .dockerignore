@@ -22,6 +22,7 @@ LICENSE.md
 #**/*.env
 **/*.github
 archive/
+**/ARCHIVE/
 
 **/.ipynb_checkpoints
 **/.virtual_documents
