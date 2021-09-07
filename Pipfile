@@ -114,5 +114,10 @@ python-Levenshtein = "*"
 scholarly = "*"
 google = "*"
 
+# charset detection
+chardet = "*"
+cchardet = "*"
+charset-normalizer = "*"
+
 [pipenv]
 allow_prereleases = true
