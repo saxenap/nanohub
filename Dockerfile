@@ -58,6 +58,12 @@ RUN set -x \
         texlive-latex-extra \
         pandoc \
     ' \
+    && python_deps=' \
+        python3-dev \
+        python3-venv \
+        python3-pip \
+        python3-wheel \
+    ' \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         $build_deps \
@@ -67,7 +73,7 @@ RUN set -x \
         sudo \
         locales \
         $pipeline_deps \
-        python3-dev python3-venv python3-pip python3-wheel \
+        $python_deps \
     \
     && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
@@ -85,10 +91,18 @@ RUN set -x \
     && cp /root/.bashrc ${NB_USER_DIR}/ \
     && chown -R --from=root ${NB_USER} ${NB_USER_DIR} \
     \
-    && pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
+    && pip3 install --upgrade pip setuptools wheel \
     && pip3 install --no-cache-dir pipenv \
     \
     && rm -r /var/lib/apt/lists/*
+
+
+FROM base-image AS nltk-image
+WORKDIR ${APP_DIR}
+RUN pip3 install wheel \
+    && pip3 install --upgrade pip setuptools wheel \
+    && pip3 install nltk \
+    && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data all
 
 
 FROM base-image AS packages-image
@@ -96,15 +110,16 @@ WORKDIR ${APP_DIR}
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip3 install wheel
-RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel
-RUN pipenv lock -r > requirements.txt \
+RUN pip3 install wheel \
+    && pip3 install --upgrade pip setuptools wheel \
+    && pipenv lock -r > requirements.txt \
     && pip3 install --no-cache-dir -r requirements.txt
 
 
 FROM packages-image AS copied-packages-image
 WORKDIR ${APP_DIR}
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${NB_USER_DIR}/nltk_data
 RUN . ${VIRTUAL_ENV}/bin/activate
 
 
