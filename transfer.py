@@ -72,10 +72,10 @@ def tool_counts(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame) -> pd
     return df.groupby(['user', 'toolname'])['toolname'].count().to_frame(name='tools_used_count').reset_index()
 
 
-def max_min_simulation_datetimes(df: pd.DataFrame) -> pd.DataFrame:
+def max_min_simulation_datetimes(df: pd.DataFrame, default_min_datetime = '2000-01-01 00:10:10') -> pd.DataFrame:
     df = filter_nulls(df, 'user')
     df = df.groupby(['user']).agg(min_datetime=('datetime', np.min), max_datetime=('datetime', np.max)).reset_index()
-    df.loc[df.min_datetime == '0000-00-00 00:00:00', 'min_datetime'] = '2000-01-01 00:10:10'
+    df.loc[df.min_datetime == '0000-00-00 00:00:00', 'min_datetime'] = default_min_datetime
     return df
 
 
@@ -103,9 +103,11 @@ def tools_used(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame, delimi
 
 
 def simulations_run_count(toolstart_df: pd.DataFrame, tool_version_df: pd.DataFrame) -> pd.DataFrame:
-    df = tool_counts(toolstart_df, tool_version_df)
-    df = df.rename({'tools_used_count': 'sims_count'}, axis=1)
-    return df.groupby(['user']).sum().reset_index()
+    df = map_tool_instance(toolstart_df, tool_version_df)
+    return df.groupby(['user']).size().to_frame(name='tools_used_count').reset_index()
+    # df = tool_counts(toolstart_df, tool_version_df)
+    # df = df.rename({'tools_used_count': 'sims_count'}, axis=1)
+    # return df.groupby(['user']).sum().reset_index()
 
 
 def sims_activity_days(df: pd.DataFrame) -> pd.DataFrame:
@@ -216,8 +218,9 @@ def execute(engine, use_cache=True):
 
         tool_version_df = get_tool_version_df()
 
-        update_user_info(engine)
-        update_tool_info(engine, toolstart_df, tool_version_df)
+        simulations_run_count(toolstart_df, tool_version_df)
+        # update_user_info(engine)
+        # update_tool_info(engine, toolstart_df, tool_version_df)
 
     except:
         raise
@@ -225,4 +228,4 @@ def execute(engine, use_cache=True):
         session.close()
 
 
-execute(rfm_engine, use_cache=False)
+execute(rfm_engine, use_cache=True)
