@@ -43,19 +43,19 @@ class TasksContainer(containers.DeclarativeContainer):
         JupyterExecutor,
         notebook_path=config.pipeline.executor_file_path,
         outfile_path=config.pathsettings.outfile_dir,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     python_executor = providers.Factory(
         PythonFileExecutor,
         file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     r_executor = providers.Factory(
         RFileExecutor,
         file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     task_executor = providers.Selector(
@@ -71,26 +71,26 @@ class TasksContainer(containers.DeclarativeContainer):
         LoggingExecutorDecorator,
         executor=task_executor,
         file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     retrying_executor = providers.Factory(
         RetryingExecutorDecorator,
         executor=logging_executor,
         retries_max_count=config.executorsettings.max_retries_on_failure,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     time_profiling_executor = providers.Factory(
         TimeProfilingDecorator,
         executor=retrying_executor,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     memory_profiling_executor = providers.Factory(
         MemoryProfilingDecorator,
         executor=time_profiling_executor,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     get_executor = memory_profiling_executor

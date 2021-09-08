@@ -1,4 +1,5 @@
 import logging, logging.config
+from sshtunnel import SSHTunnelForwarder
 
 
 logging_conf = dict(
@@ -6,7 +7,7 @@ logging_conf = dict(
     disable_existing_loggers = False,
     formatters = dict(
         simple = dict(
-            format = "%(asctime)s - [%(levelname)s] %(name)s [%(module)s.%(funcName)s:%(lineno)d]: %(message)s",
+            format = "%(asctime)s - [%(module)s - %(name)s] [%(levelname)s] [%(module)s.%(funcName)s:%(lineno)d]: %(message)s",
         )
     ),
     handlers = dict(
@@ -33,7 +34,7 @@ logging_conf = dict(
             propagate = True
         ),
         paramiko = dict(
-            level = logging.WARNING,
+            level = logging.ERROR,
             handlers = [
                 'console',
                 'syslog'
@@ -41,7 +42,23 @@ logging_conf = dict(
             propagate = True
         ),
         sshtunnel = dict(
-            level = logging.CRITICAL,
+            level = logging.ERROR,
+            handlers = [
+                'console',
+                'syslog'
+            ],
+            propagate = False
+        ),
+        SSHTunnelForwarder = dict(
+            level = logging.ERROR,
+            handlers = [
+                'console',
+                'syslog'
+            ],
+            propagate = False
+        ),
+        papermill = dict(
+            level = logging.ERROR,
             handlers = [
                 'console',
                 'syslog'
@@ -66,3 +83,4 @@ def logger(name: str = None):
         logger = logging.getLogger().getChild(name)
 
     return logger
+

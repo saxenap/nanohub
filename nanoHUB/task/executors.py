@@ -122,7 +122,7 @@ class RetryingExecutorDecorator(IExecutor):
                 self.executor()
                 return
             except Exception as excep:
-                self.logger.info("Task failed with exception %s." % excep)
+                self.logger.error("Task failed with exception %s." % excep)
                 continue
 
 
