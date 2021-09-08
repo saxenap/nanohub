@@ -26,7 +26,8 @@ RUN echo "APP_DIR=${APP_DIR}" >> /etc/environment
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
 RUN echo "VIRTUAL_ENV=${VIRTUAL_ENV}" >> /etc/environment
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
-RUN echo "PATH=${PATH}" >> /etc/environment
+RUN sed -i '/PATH/c\' /etc/environment \
+    && echo "PATH=${PATH}" >> /etc/environment
 ARG LANG
 ENV LANG=${LANG}
 ARG LC_ALL
@@ -118,9 +119,11 @@ RUN pip3 install wheel \
 
 FROM packages-image AS copied-packages-image
 WORKDIR ${APP_DIR}
+USER root
+RUN chown -R ${NB_UID}:${NB_GID} ${APP_DIR}
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${NB_USER_DIR}/nltk_data
-RUN . ${VIRTUAL_ENV}/bin/activate
+#RUN . ${VIRTUAL_ENV}/bin/activate
 
 
 FROM copied-packages-image AS jupyter-image
@@ -188,15 +191,15 @@ EXPOSE ${JUPYTER_PORT}
 
 FROM base-image AS src-image
 WORKDIR ${APP_DIR}
+VOLUME ${APP_DIR}
 COPY . .
 
 
 FROM jupyter-image AS dev-image
+USER ${NB_USER}
 WORKDIR ${APP_DIR}
 COPY --from=src-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
-USER ${NB_USER}
-RUN pip3 install .
-VOLUME ${APP_DIR}
+RUN pip3 install --editable .
 
 
 FROM dev-image AS scheduler-image
@@ -209,9 +212,7 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
-RUN touch ${APP_DIR}/cron_tasks \
-    && chmod a+rwx -R ${APP_DIR}/cron_tasks \
-    && echo "*/15 * * * *  echo Heartbeat - Cron is running - next heartbeat in 15mins" >> ${APP_DIR}/cron_tasks \
-    && echo "0 */12 * * *  make -f tasks.mk execute" >> ${APP_DIR}/cron_tasks \
-    && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
-RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment \
+    && (crontab -u ${NB_USER} -l ; echo "PATH=${PATH}\n* * * * *  make -f ${APP_DIR}/tasks.mk test") | crontab -u ${NB_USER} -
+
+#    0 */12 * * *  make -f tasks.mk execute
