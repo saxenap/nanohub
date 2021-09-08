@@ -2,34 +2,35 @@
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
-
-# If getting errors regarding BLAS & LAPACK libraries, use:
-# export SYSTEM_VERSION_COMPAT=1
+##########################################
+# pipenv errors:
+####
+# 1. If getting errors regarding BLAS & LAPACK libraries, try:
+# 1.a. export SYSTEM_VERSION_COMPAT=1
+# 1.b. Delete Pipenv.lock file and then run pipenv install again
+# 1.c. Make sure python version is as listed above (3.9 as of now)
+####
+# 2. numpy.distutils.system_info.NotFoundError: No BLAS/LAPACK libraries found. Note: Accelerate is no longer supported.
+# 2.a. export SYSTEM_VERSION_COMPAT=1
+##########################################
 
 [requires]
-# If using directly in your
-# local python installation (outside of Docker)
-# and you do not have python 3.9 installed, then:
-# 1. install pyenv
-# 2. pyenv install 3.9.0
-# 3. cd nanohub
-# 4. pyenv local 3.9.0
-# 5. pipenv install --python 3.9.
 python_version = "3.9"
 
 [dev-packages]
 pytest = "6.2"
 
 [packages]
-# need to define exact (pre) version for black
-# delete Pipenv.lock file and then run pipenv install again
-cython = "*"
+##########################################
+# Need to define exact (pre) version for black or allow_prereleases = true
+black = "*"
+##########################################
 sqlalchemy = "*"
 alembic = "*"
-sqlalchemy-migrate = "*"
-black = "*"
+
 isort = "*"
 typer = "*"
+
 google-cloud-storage = "*"
 gcsfs = "*"
 fsspec = "*"
@@ -50,6 +51,10 @@ jupyterlab = "*"
 nbconvert = "*"
 dask = "*"
 ##########################################
+# Natural Language Toolkit
+# Don't forget to install the nltk_data
+nltk = "*"
+##########################################
 # Jupyter Extensions
 nodeenv = "*"
 jupyterlab_templates = "*"
@@ -61,28 +66,20 @@ jupyterlab_code_formatter = "*"
 jupyter-resource-usage = "*" # Required by jupyterlab-system-monitor
 jupyterlab-topbar = "*" # Required by jupyterlab-system-monitor
 jupyterlab-system-monitor = "*"
-#jupyterlab_sql = "*"
 jupyterlab-quickopen = "*"
 jupyterlab_executor = "*"
 RISE = "*"
 jupyter_helpers = "*"
-#jupyterlab-kite = ">=2.0.2"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
-#qgrid = "*"
-#ipywidgets = "*"
-#lckr-jupyterlab-variableinspector = "*"
 jupyterlab-lsp = "*"
 python-lsp-server = {extras = ["all"],version = "*"}
-#jupyterlab_voyager = "*"
 ##########################################
 #jupyterlab-git = "*"
 #pipenv-setup = "*"
 #mycli = "*"
 #pyinstaller = "*"
-#notifiers = "*"
-#XlsxWriter = "1.4.3"
 matplotlib = "*"
 # Installing seaborn can give errors, such as:
 # 1. To build Scipy from sources, BLAS & LAPACK libraries need to be installed.
@@ -95,29 +92,24 @@ plotly = "*"
 chart-studio = "*"
 sklearn = "*"
 yellowbrick = "*"
-
-nltk = "*"
 XlsxWriter = "*"
-
 portray = "*"
-icecream="*"
-
 ## Google API stuff
 PyDrive = "*"
 google-api-python-client = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
 oauth2client = "3.0.0"
-
 ## researcher scraping
 python-Levenshtein = "*"
 scholarly = "*"
 google = "*"
-
+##########################################
 # charset detection
 chardet = "*"
 cchardet = "*"
 charset-normalizer = "*"
+##########################################
 
 [pipenv]
 allow_prereleases = true
