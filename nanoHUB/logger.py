@@ -7,7 +7,7 @@ logging_conf = dict(
     disable_existing_loggers = False,
     formatters = dict(
         simple = dict(
-            format = "%(asctime)s - [%(module)s - %(name)s] [%(levelname)s] [%(module)s.%(funcName)s:%(lineno)d]: %(message)s",
+            format = "[%(module)s - %(name)s] [%(levelname)s] [%(module)s.%(funcName)s:%(lineno)d]: %(message)s",
         )
     ),
     handlers = dict(

@@ -664,11 +664,11 @@
         },
         "google-api-python-client": {
             "hashes": [
-                "sha256:1f2657d1be246bc3d4bd1f0642f498653ce5fba507e6a05bbc405ed65bf10377",
-                "sha256:c89b345615188fbd525f52d59013156ad3bfd1023af27041f2dec3d7877ba112"
+                "sha256:102dfe41455ac017796b2da2ec144ac7d66c55c369cb7cbc9480e29c046b055f",
+                "sha256:b2721b2f78dc974573345c04347bcf5a461fb437575288e3be47583a4cadc0d5"
             ],
             "index": "pypi",
-            "version": "==2.19.1"
+            "version": "==2.20.0"
         },
         "google-auth": {
             "hashes": [
@@ -704,11 +704,11 @@
         },
         "google-cloud-storage": {
             "hashes": [
-                "sha256:92a9c8b1a6a278c5c12877fe1a966ecd0cae327cf98c6ae50deedf1a32d6cf2b",
-                "sha256:c1dd3d09198edcf24ec6803dd4545e867d82b998f06a68ead3b6857b1840bdae"
+                "sha256:b37ec5b0cd69aacb09270674c4c14873898cbc77624d17fef41ec0cb08004866",
+                "sha256:b701c1bbfa14d3e2bb6417908f456d7147ca201a8953347eea9c2327f1be4719"
             ],
             "index": "pypi",
-            "version": "==1.42.0"
+            "version": "==1.42.1"
         },
         "google-crc32c": {
             "hashes": [
@@ -1050,11 +1050,11 @@
         },
         "jupyterlab": {
             "hashes": [
-                "sha256:1c561f1487666e659bf391d2b0d744e53a89567ed314c450bc986127de562254",
-                "sha256:8442b87f5715a7110b5afefe2e00effa6d6bb09818c81ca3501ba573bffa4b8d"
+                "sha256:329b41d6d99bf4e40ab210b37387d32033ea9227e776aa1baf7817bf55423156",
+                "sha256:a2117c159baae40db09c34edf0659df5ff767d0ffc7ae2d74ab0b08d5663156b"
             ],
             "index": "pypi",
-            "version": "==3.1.10"
+            "version": "==3.1.11"
         },
         "jupyterlab-code-formatter": {
             "hashes": [

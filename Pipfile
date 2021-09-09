@@ -27,10 +27,8 @@ black = "*"
 ##########################################
 sqlalchemy = "*"
 alembic = "*"
-
 isort = "*"
 typer = "*"
-
 google-cloud-storage = "*"
 gcsfs = "*"
 fsspec = "*"

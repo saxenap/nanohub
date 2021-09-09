@@ -28,6 +28,8 @@ RUN echo "VIRTUAL_ENV=${VIRTUAL_ENV}" >> /etc/environment
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 RUN sed -i '/PATH/c\' /etc/environment \
     && echo "PATH=${PATH}" >> /etc/environment
+ENV PYTHONPATH="${APP_DIR}:$PYTHONPATH"
+RUN echo "PYTHONPATH=${PYTHONPATH}" >> /etc/environment
 ARG LANG
 ENV LANG=${LANG}
 ARG LC_ALL
@@ -90,7 +92,10 @@ RUN set -x \
     && sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
     && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
     && cp /root/.bashrc ${NB_USER_DIR}/ \
-    && chown -R --from=root ${NB_USER} ${NB_USER_DIR} \
+    && mkdir ${APP_DIR} \
+    && chown -R --from=root ${NB_USER} ${APP_DIR} \
+    && mkdir ${VIRTUAL_ENV} \
+    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV} \
     \
     && pip3 install --upgrade pip setuptools wheel \
     && pip3 install --no-cache-dir pipenv \
@@ -108,27 +113,26 @@ RUN pip3 install wheel \
 
 FROM base-image AS packages-image
 WORKDIR ${APP_DIR}
-RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip3 install wheel \
+RUN python3 -m venv ${VIRTUAL_ENV} \
+    && pip3 install wheel \
     && pip3 install --upgrade pip setuptools wheel \
     && pipenv lock -r > requirements.txt \
-    && pip3 install --no-cache-dir -r requirements.txt
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
 
 
 FROM packages-image AS copied-packages-image
 WORKDIR ${APP_DIR}
-USER root
-RUN chown -R ${NB_UID}:${NB_GID} ${APP_DIR}
+COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${NB_USER_DIR}/nltk_data
-#RUN . ${VIRTUAL_ENV}/bin/activate
 
 
 FROM copied-packages-image AS jupyter-image
-USER ${NB_USER}
 WORKDIR ${APP_DIR}
+USER ${NB_USER}
+ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 ARG JUPYTER_PORT=80
 ENV JUPYTER_PORT=${JUPYTER_PORT}
 ARG ORIGIN_IP_ADDRESS
@@ -140,24 +144,24 @@ ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
 ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
 ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
 RUN jupyter contrib nbextension install --user \
+    && jupyter labextension install jupyterlab-topbar-extension \
     && jupyter nbextensions_configurator enable --user \
     && jupyter-nbextension install rise --py --sys-prefix \
     && jupyter-nbextension enable rise --py --sys-prefix \
     && jupyter nbextension enable splitcell/splitcell \
     && jupyter notebook --generate-config \
-    && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py \
-    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
-    && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-RUN jupyter labextension install jupyterlab-topbar-extension
-RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
+    && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
+    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
+    && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
+    && echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
 #RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable execute_time/main
 #    jupyter nbextension enable codefolding/main && \
@@ -191,19 +195,24 @@ EXPOSE ${JUPYTER_PORT}
 
 FROM base-image AS src-image
 WORKDIR ${APP_DIR}
-VOLUME ${APP_DIR}
 COPY . .
 
 
 FROM jupyter-image AS dev-image
-USER ${NB_USER}
-WORKDIR ${APP_DIR}
+WORKDIR ${NB_USER_DIR}
 COPY --from=src-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
-RUN pip3 install --editable .
+RUN pip3 install ${APP_DIR}
+USER root
+RUN ln -s ${VIRTUAL_ENV}/bin/nanoHUB /usr/local/bin/nanoHUB \
+    && ln -s ${VIRTUAL_ENV}/bin/nanohub /usr/local/bin/nanohub
+USER ${NB_USER}
+RUN . ${VIRTUAL_ENV}/bin/activate
+VOLUME ${APP_DIR}
 
 
 FROM dev-image AS scheduler-image
 USER root
+WORKDIR ${APP_DIR}
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
@@ -212,7 +221,12 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
-RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment \
-    && (crontab -u ${NB_USER} -l ; echo "PATH=${PATH}\n* * * * *  make -f ${APP_DIR}/tasks.mk test") | crontab -u ${NB_USER} -
+RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+#RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
+#    && echo "* * * * *  echo Heartbeat Check" >> ${APP_DIR}/cron_tasks \
+#    && echo "* * * * *  make -f ${APP_DIR}/tasks.mk test" >> ${APP_DIR}/cron_tasks \
+#    && echo "0 */12 * * *  make -f ${APP_DIR}/tasks.mk execute" >> ${APP_DIR}/cron_tasks \
+#    && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
+
 
 #    0 */12 * * *  make -f tasks.mk execute
