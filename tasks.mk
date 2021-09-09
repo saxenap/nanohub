@@ -17,7 +17,6 @@ execute:
 	python3 $(ROOT_DIR)/nanoHUB/__main__.py task execute \
 		$(SALESFORCE_DIR)/_task_test.ipynb  \
 		$(SALESFORCE_DIR)/task_citations.ipynb  \
-		$(SALESFORCE_DIR)/task_citations_map_contacts.ipynb  \
 		$(SALESFORCE_DIR)/task_citations_map_leads.ipynb   \
 		$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \
 		$(SALESFORCE_DIR)/task_issue_url.ipynb  \

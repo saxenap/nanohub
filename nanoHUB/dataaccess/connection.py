@@ -106,7 +106,7 @@ class TunneledConnectionFactory(IDbConnectionFactory):
             ),
             logger=logger
         )
-        self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
+        # self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
         tunnel.start()
 
         self.db_factory.set_port(tunnel.local_bind_port)
