@@ -8,6 +8,9 @@ logging_conf = dict(
     formatters = dict(
         simple = dict(
             format = "[%(levelname)s] [%(module)s - %(name)s]: %(message)s [%(module)s.%(funcName)s:%(lineno)d]",
+        ),
+        remote = dict(
+            format = "%(message)s [%(module)s - %(name)s]: [%(module)s.%(funcName)s:%(lineno)d]",
         )
     ),
     handlers = dict(
@@ -20,7 +23,7 @@ logging_conf = dict(
         syslog = dict(
             **{'class': 'logging.handlers.SysLogHandler'},
             level = logging.INFO,
-            formatter = 'simple',
+            formatter = 'remote',
             address = ('logs.papertrailapp.com', 19303)
         )
     ),
