@@ -2,11 +2,13 @@ import warnings
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore")
     import papermill
-
+from memory_profiler import memory_usage
 import logging
 from pathlib import Path
 import subprocess
 import os
+import json
+import time
 
 
 class IExecutor:
@@ -37,8 +39,7 @@ class JupyterExecutor(IExecutor):
             self.notebook_path,
             output_file_path,
             log_output=True,
-            report_mode=True,
-            request_save_on_cell_execute=True
+            report_mode=True
         )
         self.logger.info('Saved output file - %s' % output_file_path)
 
@@ -88,23 +89,6 @@ Decorating Executors
 ##################################################################################################
 '''
 
-class LoggingExecutorDecorator(IExecutor):
-
-    def __init__(self, executor: IExecutor, logger: logging.Logger):
-        self.executor = executor
-        self.logger = logger
-        # self.test = 0
-
-    def __call__(self):
-        self.executor()
-        # self.test += 1
-        # if self.test == 1:
-        #     raise RuntimeError
-        self.logger.info("Task [%s] Executed." % (self.get_name()))
-
-    def get_name(self) -> str:
-        return self.executor.get_name()
-
 
 class RetryingExecutorDecorator(IExecutor):
 
@@ -117,16 +101,17 @@ class RetryingExecutorDecorator(IExecutor):
     def __call__(self):
         for i in range(0, self.retries_max_count):
             try:
-                self.retries_current_count += 1
-                self.logger.info("Executing task [%s] - number of tries left: %d." % (
-                    self.get_name(), self.retries_max_count - self.retries_current_count
+                self.logger.info("Attempt %d of %d [%s]." % (
+                    i+1, self.retries_max_count, self.get_name()
                 ))
                 self.executor()
                 return
             except Exception as excep:
-                self.logger.error("Task [%s] Failed with exception %s." % (
+                self.logger.error("FAILURE [%s] - %s." % (
                     self.get_name(), excep
                 ))
+                if i < self.retries_max_count:
+                    self.logger.info("RETRYING [%s]" % self.get_name())
                 continue
 
 
@@ -134,35 +119,40 @@ class RetryingExecutorDecorator(IExecutor):
         return self.executor.get_name()
 
 
-import time
+class IMetricsReporter:
 
-class TimeProfilingDecorator(IExecutor):
+    def report(self, executor: IExecutor) -> dict:
+        raise NotImplemented
 
-    def __init__(self, executor: IExecutor, logger: logging.Logger):
-        self.executor = executor
-        self.logger = logger
 
-    def __call__(self):
+class TimingProfileReporter(IMetricsReporter):
+
+    def report(self, executor: IExecutor) -> dict:
         start_time = time.time()
-        self.executor()
-        stop_time = time.time() - start_time
-        self.logger.info("Task [%s] Time Take - %ss" % (self.get_name(), stop_time))
-
-    def get_name(self) -> str:
-        return self.executor.get_name()
+        executor()
+        return {"ExecutionTime (s)": time.time() - start_time}
 
 
-from memory_profiler import memory_usage
+class MemoryProfileReporter(IMetricsReporter):
 
-class MemoryProfilingDecorator(IExecutor):
+    def report(self, executor: IExecutor) -> dict:
+        mem_usage = memory_usage(executor, max_usage=True, include_children=True)
+        return {"MemoryUsed (MiB)": mem_usage}
 
-    def __init__(self, executor: IExecutor, logger: logging.Logger):
+
+class MetricsReporterDecorator(IExecutor):
+
+    def __init__(self, executor: IExecutor, metrics_reporters: [IMetricsReporter], logger: logging.Logger):
         self.executor = executor
+        self.metrics_reporters = metrics_reporters
         self.logger = logger
 
     def __call__(self):
-        mem_usage = memory_usage((self.executor), max_usage=True, include_children=True)
-        self.logger.info("Task [%s] Memory Used - %.2fMB" % (self.get_name(), mem_usage))
+        result = {'task': self.get_name(), 'metrics': {}}
+        for reporter in self.metrics_reporters:
+            result['metrics'].update(reporter.report(self.executor))
+
+        self.logger.info(json.dumps(result))
 
     def get_name(self) -> str:
         return self.executor.get_name()
