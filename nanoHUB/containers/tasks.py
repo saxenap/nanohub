@@ -70,7 +70,6 @@ class TasksContainer(containers.DeclarativeContainer):
     logging_executor = providers.Factory(
         LoggingExecutorDecorator,
         executor=task_executor,
-        file_path=config.pipeline.executor_file_path,
         logger=logger()
     )
 

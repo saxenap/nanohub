@@ -9,12 +9,12 @@ heartbeat:
 	/usr/bin/logger -t PIPELINE -p user.info "Heart Beat Check."
 
 test:
-	nanoHUB task execute \
+	python3 $(ROOT_DIR)/nanoHUB/__main__.py task execute \
 		$(SALESFORCE_DIR)/_task_test.ipynb \
 	--log-level=INFO 2>&1 | /usr/bin/logger -t PIPELINE
 
 execute:
-	nanoHUB task execute \
+	python3 $(ROOT_DIR)/nanoHUB/__main__.py task execute \
 		$(SALESFORCE_DIR)/_task_test.ipynb  \
 		$(SALESFORCE_DIR)/task_citations.ipynb  \
 		$(SALESFORCE_DIR)/task_citations_map_contacts.ipynb  \

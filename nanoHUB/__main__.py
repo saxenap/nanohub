@@ -27,7 +27,6 @@ def execute(
 
     application = Application.get_instance(loglevel)
     application.execute(file_paths)
-    logger(__name__).info("Task called")
 
 
 if __name__ == '__main__':
