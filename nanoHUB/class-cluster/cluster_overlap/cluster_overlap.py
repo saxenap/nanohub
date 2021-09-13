@@ -1,17 +1,14 @@
 def get_cluster_overlap(year, semester):
     if semester == "f":
         semester_full = "fall"
-        semester_month_start = "7"
-        semester_month_end = "12"
     else:
         semester_full = "spring"
-        semester_month_start = "1"
-        semester_month_end = "6"
 
     import pandas as pd
     with open("../mike_V1_clust_files/" + str(year) + semester_full + "/mi_v1_" + str(year) + semester_full + ".csv",
-                "r") as m_input, open("../xufeng_V1_clust_files/" + str(year) + semester_full + "/xu_v1_" + str(year) + semester_full + ".csv",
-                "r") as x_input:
+              "r") as m_input, open(
+        "../xufeng_V1_clust_files/" + str(year) + semester_full + "/xu_v1_" + str(year) + semester_full + ".csv",
+        "r") as x_input:
         m_csv = list(csv.reader(m_input))
         x_csv = list(csv.reader(x_input))
 
@@ -28,7 +25,9 @@ def get_cluster_overlap(year, semester):
                 m_only = m_set - x_set
                 x_only = x_set - m_set
                 if len(both) > 0:
-                    overlap_list.append([m_id, x_id, len(m_line), len(both), list(m_only), list(x_only), list(combined)])
+                    overlap_list.append(
+                        [m_id, x_id, len(m_line), len(x_line), len(both), list(both), len(m_only), list(m_only),
+                         len(x_only), list(x_only), len(combined), list(combined)])
                 x_id += 1
             x_id = 1
             m_id += 1
@@ -38,17 +37,13 @@ def get_cluster_overlap(year, semester):
         with open('cluster_overlap.csv', 'a') as f:
             writer = csv.writer(f)
             writer.writerows(overlap_list)
-    # x_df = pd.read_csv("../xufeng_V1_clust_files/" + str(year) + semester_full + "/xu_v1_" + str(year) + semester_full + ".csv")
-    # x_df = pd.read_csv("")
-
-    # for _, line in m_df.iterrows():
-    #     print(type(line))
 
 
 if __name__ == '__main__':
     import csv
 
-    header = ['MClusterID', 'XClusterID', 'MClusterSize', 'OverlapSize', 'MOnlyMembers', 'XOnlyMembers', 'CombinedMembers']
+    header = ['MClusterID', 'XClusterID', 'MClusterSize', 'XClusterSize', 'OverlapSize', 'OverlapMembers', 'MOnlySize',
+              'MOnlyMembers', 'XOnlySize', 'XOnlyMembers', 'CombinedSize', 'CombinedMembers']
     with open('cluster_overlap.csv', 'w+') as f:
         writer = csv.writer(f)
         writer.writerow(header)
