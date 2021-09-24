@@ -1,5 +1,6 @@
 from pydantic import BaseSettings, Field
 from dotenv import load_dotenv
+from typing import Optional
 
 
 load_dotenv()
@@ -24,19 +25,19 @@ class SshTunnel(BaseSettings):
 
 class SalesforceSettings(BaseSettings):
 
-    grant_type: str = Field(env='salesforce_grant_type')
-    client_id: str = Field(env='salesforce_client_id')
-    client_secret: str = Field(env='salesforce_client_secret')
-    username: str = Field(env='salesforce_username')
-    password: str = Field(env='salesforce_password')
+    grant_type: Optional[str] = Field(env='salesforce_grant_type')
+    client_id: Optional[str] = Field(env='salesforce_client_id')
+    client_secret: Optional[str] = Field(env='salesforce_client_secret')
+    username: Optional[str] = Field(env='salesforce_username')
+    password: Optional[str] = Field(env='salesforce_password')
 
 
 class GoogleApiSettings(BaseSettings):
 
-    credentials_file_path: str = Field(env='google_credentials_file_path')
-    scopes: str = Field(env='google_scopes')
-    service_type: str = Field(env='google_api_service_type')
-    service_version: str = Field(env='google_api_service_version')
+    credentials_file_path: Optional[str] = Field(env='google_credentials_file_path')
+    scopes: Optional[str] = Field(env='google_scopes')
+    service_type: Optional[str] = Field(env='google_api_service_type')
+    service_version: Optional[str] = Field(env='google_api_service_version')
 
 
 class PathSettings(BaseSettings):
