@@ -30,7 +30,7 @@ TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/db2users_remap_sf.ipynb  \
 	$(SALESFORCE_DIR)/task_nh_usage_survey.ipynb  \
 	$(SALESFORCE_DIR)/task_nh_groups.ipynb  \
-	$(SALESFORCE_DIR)/simulation_user_lifetimes.ipynb   \
+	$(SALESFORCE_DIR)/simulation_user_lifetimes-2.ipynb   \
 	$(SALESFORCE_DIR)/task_user_contribution_update.ipynb  \
 	$(PIPELINE_DIR)/researcher_scraping/main_file.py  \
 	$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
