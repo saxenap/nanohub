@@ -70,7 +70,7 @@ RUN set -x \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         $build_deps \
-        wget curl git \
+        wget curl git libproj-dev proj-data proj-bin libgeos-dev ffmpeg \
         openssh-server \
         $editors \
         sudo \
