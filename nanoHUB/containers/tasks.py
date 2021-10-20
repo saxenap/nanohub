@@ -3,7 +3,9 @@ from nanoHUB.logger import logger
 from nanoHUB.containers.logging import LoggingContainer
 from nanoHUB.containers.dataaccess import DatabaseContainer
 from nanoHUB.containers.googleapi import GoogleApiContainer
-from nanoHUB.task.executors import JupyterExecutor, PythonFileExecutor, RFileExecutor, LoggingExecutorDecorator, RetryingExecutorDecorator, TimeProfilingDecorator, MemoryProfilingDecorator
+from nanoHUB.task.executors import JupyterExecutor, PythonFileExecutor, RFileExecutor, MetricsReporterDecorator, RetryingExecutorDecorator
+from nanoHUB.task.executors import TimingProfileReporter, MemoryProfileReporter
+
 from nanoHUB.pipeline.salesforce.DB2SalesforceAPI import DB2SalesforceAPI
 
 
@@ -43,19 +45,19 @@ class TasksContainer(containers.DeclarativeContainer):
         JupyterExecutor,
         notebook_path=config.pipeline.executor_file_path,
         outfile_path=config.pathsettings.outfile_dir,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     python_executor = providers.Factory(
         PythonFileExecutor,
         file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     r_executor = providers.Factory(
         RFileExecutor,
         file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        logger=logger()
     )
 
     task_executor = providers.Selector(
@@ -67,30 +69,18 @@ class TasksContainer(containers.DeclarativeContainer):
         r=r_executor
     )
 
-    logging_executor = providers.Factory(
-        LoggingExecutorDecorator,
+    metrics_executor = providers.Factory(
+        MetricsReporterDecorator,
         executor=task_executor,
-        file_path=config.pipeline.executor_file_path,
-        logger=logger(__name__)
+        metrics_reporters = [MemoryProfileReporter(), TimingProfileReporter()],
+        logger=logger()
     )
 
     retrying_executor = providers.Factory(
         RetryingExecutorDecorator,
-        executor=logging_executor,
+        executor=metrics_executor,
         retries_max_count=config.executorsettings.max_retries_on_failure,
-        logger=logger(__name__)
+        logger=logger()
     )
 
-    time_profiling_executor = providers.Factory(
-        TimeProfilingDecorator,
-        executor=retrying_executor,
-        logger=logger(__name__)
-    )
-
-    memory_profiling_executor = providers.Factory(
-        MemoryProfilingDecorator,
-        executor=time_profiling_executor,
-        logger=logger(__name__)
-    )
-
-    get_executor = memory_profiling_executor
+    get_executor = retrying_executor

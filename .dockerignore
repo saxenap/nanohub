@@ -1,14 +1,24 @@
 #IDE setup folders/files etc
 **/*~
 **/*.DS_Store
+.idea
 **/Thumbs.db
 *.iml
 *.egg-info
-*.egg-info/
+
+docker-compose.yml
+.docker
+Dockerfile
+
+*.so
+
 .git
-.idea
-*.py[cod]
-__pycache__
+.gitignore
+
+
+__pycache__/
+
+
 .virtual_documents
 .ipynb_checkpoints
 
@@ -22,8 +32,8 @@ LICENSE.md
 #**/*.env
 **/*.github
 archive/
+**/ARCHIVE/
 
-**/.ipynb_checkpoints
-**/.virtual_documents
 
 **/venv
+

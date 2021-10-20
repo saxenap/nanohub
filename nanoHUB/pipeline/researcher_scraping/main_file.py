@@ -11,7 +11,7 @@ from Levenshtein import distance as levenshtein_distance
 
 import sys
 #sys.path.append('/home/users/wang2506/nanohub_salesforce_integ/salesforce')
-
+import os
 import pandas as pd
 import time
 import datetime
@@ -45,6 +45,7 @@ db_s = salesforce
 
 
 cwd = os.getcwd()
+APP_DIR =  os.getenv('APP_DIR')
 
 # %% logging dir make
 try:
@@ -97,13 +98,15 @@ query = 'Select ID, firstname, lastname, Email, nanoHUB_user_ID__c, \
     Organization_composite__c, Active_duration__c \
     from Contact' #import everyone # limit 10'
 
+cwd = APP_DIR + '/nanoHUB/pipeline/researcher_scraping'
+c_sample_file_path = cwd + '/scrape_results/c_sample.csv'
 try:
-    c_sample = pd.read_csv(cwd+'/scrape_results/c_sample.csv')
+    c_sample = pd.read_csv(c_sample_file_path)
     c_sample = c_sample.drop(columns='Unnamed: 0')
 except:
     # raise TypeError('temp error msg')
     c_sample = db_1.query_data(query)
-    c_sample.to_csv(cwd+'/scrape_results/c_sample.csv')
+    c_sample.to_csv(c_sample_file_path)
 
 display(c_sample.head(2))
 display(c_sample.tail(2))

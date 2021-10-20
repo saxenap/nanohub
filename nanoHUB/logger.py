@@ -1,4 +1,5 @@
 import logging, logging.config
+from sshtunnel import SSHTunnelForwarder
 
 
 logging_conf = dict(
@@ -6,7 +7,10 @@ logging_conf = dict(
     disable_existing_loggers = False,
     formatters = dict(
         simple = dict(
-            format = "%(asctime)s - [%(levelname)s] %(name)s [%(module)s.%(funcName)s:%(lineno)d]: %(message)s",
+            format = "[%(levelname)s] [%(module)s - %(name)s]: %(message)s [%(module)s.%(funcName)s:%(lineno)d]",
+        ),
+        remote = dict(
+            format = "%(message)s [%(module)s - %(name)s]: [%(module)s.%(funcName)s:%(lineno)d]",
         )
     ),
     handlers = dict(
@@ -19,7 +23,7 @@ logging_conf = dict(
         syslog = dict(
             **{'class': 'logging.handlers.SysLogHandler'},
             level = logging.INFO,
-            formatter = 'simple',
+            formatter = 'remote',
             address = ('logs.papertrailapp.com', 19303)
         )
     ),
@@ -33,7 +37,7 @@ logging_conf = dict(
             propagate = True
         ),
         paramiko = dict(
-            level = logging.WARNING,
+            level = logging.ERROR,
             handlers = [
                 'console',
                 'syslog'
@@ -41,7 +45,23 @@ logging_conf = dict(
             propagate = True
         ),
         sshtunnel = dict(
-            level = logging.CRITICAL,
+            level = logging.ERROR,
+            handlers = [
+                'console',
+                'syslog'
+            ],
+            propagate = False
+        ),
+        SSHTunnelForwarder = dict(
+            level = logging.ERROR,
+            handlers = [
+                'console',
+                'syslog'
+            ],
+            propagate = False
+        ),
+        papermill = dict(
+            level = logging.ERROR,
             handlers = [
                 'console',
                 'syslog'
@@ -66,3 +86,4 @@ def logger(name: str = None):
         logger = logging.getLogger().getChild(name)
 
     return logger
+

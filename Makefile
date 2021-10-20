@@ -16,6 +16,10 @@ pipeline:
 	make pipeline-down
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
+clean:
+	docker volume rm $$(docker volume ls -q) 2>/dev/null; true
+	docker system prune --all -f
+
 ########################################################################################################################
 # Base Commands
 
@@ -37,6 +41,9 @@ cron-log:
 
 show-cron_tasks:
 	tail -f cron_tasks
+
+exec-pipeline:
+	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
 
 
 ########################################################################################################################

@@ -25,9 +25,8 @@ def execute(
         typer.echo("File path for file to be executed not provided.")
         raise typer.Abort()
 
-    application = Application.get_instance()
+    application = Application.get_instance(loglevel)
     application.execute(file_paths)
-    logger(__name__).info("Task called")
 
 
 if __name__ == '__main__':

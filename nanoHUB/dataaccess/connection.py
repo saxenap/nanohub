@@ -78,15 +78,23 @@ class TunneledConnectionParams:
 
 class TunneledConnectionFactory(IDbConnectionFactory):
 
-    def __init__(self, db_factory: IDbConnectionFactory, params: TunneledConnectionParams, logger: logging.Logger):
+    def __init__(
+            self, db_factory: IDbConnectionFactory,
+            params: TunneledConnectionParams,
+            logger,
+            loglevel: str = 'ERROR',
+            capture_warnings: bool = False
+    ):
 
         self.db_factory = db_factory
         self.params = params
         self.logger = logger
+        self.loglevel = loglevel
+        self.capture_warnings = capture_warnings
 
     def get_connection_for(self, db_name: str):
 
-        logger = create_logger(loglevel="INFO")
+        logger = create_logger(loglevel=self.loglevel, capture_warnings=self.capture_warnings)
         tunnel = SSHTunnelForwarder(
             (
                 self.params.ssh_host, int(self.params.ssh_port)
@@ -98,7 +106,7 @@ class TunneledConnectionFactory(IDbConnectionFactory):
             ),
             logger=logger
         )
-        self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
+        # self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
         tunnel.start()
 
         self.db_factory.set_port(tunnel.local_bind_port)
