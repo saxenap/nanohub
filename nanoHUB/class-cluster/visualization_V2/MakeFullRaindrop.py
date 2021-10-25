@@ -7,7 +7,7 @@ import csv
 import sys
 
 
-def call_func(startdate, enddate, geofilename, clusters, showcohort=True, showplopwords=True, white=False, rawfilename=None):
+def call_func(m_id, startdate, enddate, geofilename, clusters, showcohort=True, showplopwords=True, white=False, rawfilename=None):
     # sys.stdout = open(options.clusterfilename.replace(".csv", "_sequence.txt"), 'w')
 
     geocache = {}
@@ -47,7 +47,8 @@ def call_func(startdate, enddate, geofilename, clusters, showcohort=True, showpl
 
     # im.save(options.clusterfilename.replace('.csv', '.png'), 'PNG')
     # print(options.clusterfilename.replace('.csv', '.png'), 'PNG')
-    im.save('black.png')
+    # im.save('black.png')
+    im.save("../cluster_overlap_visualization/M_" + str(m_id) + ".png")
 
 
 if __name__ == '__main__':
