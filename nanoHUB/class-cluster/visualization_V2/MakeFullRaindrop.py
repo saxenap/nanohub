@@ -48,7 +48,7 @@ def call_func(m_id, startdate, enddate, geofilename, clusters, showcohort=True, 
     # im.save(options.clusterfilename.replace('.csv', '.png'), 'PNG')
     # print(options.clusterfilename.replace('.csv', '.png'), 'PNG')
     # im.save('black.png')
-    im.save("../cluster_overlap_visualization/M_" + str(m_id) + ".png")
+    im.save("../cluster_overlap_visualization/M_" + "{:03d}".format(m_id) + ".png")
 
 
 if __name__ == '__main__':
