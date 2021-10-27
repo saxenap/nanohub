@@ -50,6 +50,13 @@ RUN set -x \
         supervisor \
         systemd \
     ' \
+    && cartopy_deps=' \
+        pkg-config \
+        libtiff-dev libsqlite3-dev libproj-dev proj-data proj-bin \
+        libgeos-dev \
+        ffmpeg \
+        libgdal-dev \
+    ' \
     && jupyter_deps=' \
         nodejs \
         texlive-xetex \
@@ -70,12 +77,13 @@ RUN set -x \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         $build_deps \
-        wget curl git libproj-dev proj-data proj-bin libgeos-dev ffmpeg \
+        wget curl git \
         openssh-server \
         $editors \
         sudo \
         locales \
         $pipeline_deps \
+#        $cartopy_deps \
         $python_deps \
     \
     && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
@@ -103,7 +111,49 @@ RUN set -x \
     && rm -r /var/lib/apt/lists/*
 
 
-FROM base-image AS nltk-image
+FROM base-image AS cartopy-image
+WORKDIR ${NB_USER_DIR}
+RUN curl https://download.osgeo.org/geos/geos-3.9.1.tar.bz2 --output geos.tar.bz2 \
+    && mkdir geos \
+    && tar xjf geos.tar.bz2 -C geos --strip-components=1 \
+    && cd geos \
+    && ./configure && make \
+    && make install
+RUN cd ${NB_USER_DIR} \
+    && curl https://pkgconfig.freedesktop.org/releases/pkg-config-0.29.2.tar.gz --output pkgconfig.tgz \
+    && mkdir pkgconfig \
+    && tar -zxf pkgconfig.tgz -C pkgconfig --strip-components=1 \
+    && cd pkgconfig \
+    && ./configure --with-internal-glib && make  \
+    && make install
+RUN cd ${NB_USER_DIR} \
+    && curl http://download.osgeo.org/libtiff/tiff-4.0.9.tar.gz --output tiff.tar.gz \
+    && mkdir tiff \
+    && tar xvfz tiff.tar.gz -C tiff --strip-components=1 \
+    && cd tiff \
+    && ./configure && make \
+    &&  make install \
+    &&  ln -s /usr/local/libtiff/lib/pkgconfig/libtiff-4.pc /usr/local/lib/pkgconfig/
+RUN cd ${NB_USER_DIR} \
+    && curl https://download.osgeo.org/proj/proj-8.1.1.tar.gz --output proj.tar.gz \
+    && mkdir proj \
+    && tar xzf proj.tar.gz -C proj --strip-components=1 \
+    && cd proj/data \
+    && curl https://download.osgeo.org/proj/proj-data-1.7.tar.gz --output proj-data.tar.gz \
+    && tar xzf proj-data.tar.gz \
+    && cd .. \
+    && ./configure SQLITE3_LIBS=-lsqlite3 && make \
+    && make install
+RUN cd ${NB_USER_DIR} \
+    && curl http://download.osgeo.org/gdal/CURRENT/gdal-3.3.2.tar.gz --output gdal.tar.gz \
+    && mkdir gdal \
+    && tar xzf gdal.tar.gz -C gdal --strip-components=1 \
+    && cd gdal \
+    && ./configure && make \
+    && make install
+
+
+FROM cartopy-image AS nltk-image
 WORKDIR ${APP_DIR}
 RUN pip3 install wheel \
     && pip3 install --upgrade pip setuptools wheel \
@@ -111,7 +161,7 @@ RUN pip3 install wheel \
     && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data all
 
 
-FROM base-image AS packages-image
+FROM cartopy-image AS packages-image
 WORKDIR ${APP_DIR}
 COPY Pipfile .
 COPY Pipfile.lock .
@@ -193,7 +243,7 @@ RUN jupyter contrib nbextension install --user \
 EXPOSE ${JUPYTER_PORT}
 
 
-FROM base-image AS src-image
+FROM cartopy-image AS src-image
 WORKDIR ${APP_DIR}
 COPY . .
 
