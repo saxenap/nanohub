@@ -29,7 +29,6 @@ black = "*"
 ffmpeg-python = "==0.2.0" #ffmpeg wraper to create videos from images
 shapely = "==1.7.1" #required by cartopy
 pyshp = "==2.1.3" #required by cartopy
-Cartopy = {extras = ["all"],version = "==0.19.0.post1"} #version compatible with the OS in the container
 mkdocs-material = "==7.2.8"
 ##########################################
 sqlalchemy = "*"
@@ -78,8 +77,8 @@ jupyter_helpers = "*"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
-jupyterlab-lsp = "*"
-python-lsp-server = {extras = ["all"],version = "*"}
+#jupyterlab-lsp = "*"
+#python-lsp-server = {extras = ["all"],version = "*"}
 ##########################################
 #jupyterlab-git = "*"
 #pipenv-setup = "*"
@@ -115,6 +114,7 @@ chardet = "*"
 cchardet = "*"
 charset-normalizer = "*"
 ##########################################
+boto3 = "*"
 
 [pipenv]
 allow_prereleases = true
