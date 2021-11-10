@@ -78,8 +78,8 @@ jupyter_helpers = "*"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
-jupyterlab-lsp = "*"
-python-lsp-server = {extras = ["all"],version = "*"}
+#jupyterlab-lsp = "*"
+#python-lsp-server = {extras = ["all"],version = "*"}
 ##########################################
 #jupyterlab-git = "*"
 #pipenv-setup = "*"
