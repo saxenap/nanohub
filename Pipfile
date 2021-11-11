@@ -82,11 +82,8 @@ jupyter_helpers = "*"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
-<<<<<<< HEAD
 #jupyterlab-lsp = "*"
 #python-lsp-server = {extras = ["all"],version = "*"}
-=======
->>>>>>> cartography
 ##########################################
 #jupyterlab-git = "*"
 #pipenv-setup = "*"
