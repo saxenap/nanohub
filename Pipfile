@@ -15,7 +15,7 @@ name = "pypi"
 ##########################################
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
 
 [dev-packages]
 pytest = "6.2"
@@ -25,17 +25,7 @@ pytest = "6.2"
 # Need to define exact (pre) version for black or set allow_prereleases = true
 black = "*"
 ##########################################
-#Cartography packages, activity map
-GDAL = "*"
-ffmpeg-python = "==0.2.0" #ffmpeg wraper to create videos from images
-shapely = "==1.7.1" #required by cartopy
-pyshp = "==2.1.3" #required by cartopy
-pykdtree = "*"
-Cython = "*" #required by cartopy
-# Manually install PIP_NO_BINARY=cartopy pipenv install cartopy
-#Cartopy = {extras = ["all"],version = "==0.19.0.post1"} #version compatible with the OS in the container
-Cartopy = "*"
-mkdocs-material = "==7.2.8"
+
 ##########################################
 sqlalchemy = "*"
 alembic = "*"
@@ -65,6 +55,15 @@ dask = "*"
 # Don't forget to install the nltk_data
 nltk = "*"
 ##########################################
+#Cartography packages, activity map
+cython = "*"
+ffmpeg-python = "*"
+shapely = "*"
+pyshp = "*"
+pyproj = "*"
+cartopy = "*"
+mkdocs-material = "*"
+##########################################
 # Jupyter Extensions
 nodeenv = "*"
 jupyterlab_templates = "*"
@@ -83,8 +82,6 @@ jupyter_helpers = "*"
 jupyterlab-tabular-data-editor = "*"
 jupyterlab-git = "*"
 jupyterlab_github = "*"
-jupyterlab-lsp = "*"
-python-lsp-server = {extras = ["all"],version = "*"}
 ##########################################
 #jupyterlab-git = "*"
 #pipenv-setup = "*"
@@ -103,7 +100,6 @@ chart-studio = "*"
 sklearn = "*"
 yellowbrick = "*"
 XlsxWriter = "*"
-portray = "*"
 ## Google API stuff
 PyDrive = "*"
 google-api-python-client = "*"
