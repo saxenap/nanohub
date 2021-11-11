@@ -66,9 +66,10 @@ last_id_file_path = Path(CACHE_DIR, 'toolevents_last_id')
 
 while True:
     last_id = get_last_id(last_id_file_path)
+
     df = new_toolevents_df(last_id, chunksize)
     if df.empty: break
-    save_df(df, 'nanohub_metrics', 'toolevents')
+    save_df(df, 'nanohub_metrics', 'toolevents_nov21')
     next_id = df['entryID'].iloc[-1]
     save_last_id(last_id_file_path, next_id)
 

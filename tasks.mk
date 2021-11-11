@@ -12,7 +12,6 @@ logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t PIPELINE
 
 TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/task_citations.ipynb  \
-	$(SALESFORCE_DIR)/task_citations_map_contacts.ipynb  \
 	$(SALESFORCE_DIR)/task_citations_map_leads.ipynb   \
 	$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \
 	$(SALESFORCE_DIR)/task_issue_url.ipynb  \
@@ -35,6 +34,9 @@ TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(PIPELINE_DIR)/researcher_scraping/main_file.py  \
 	$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
 
+TASKS_ERRORS=\
+	$(SALESFORCE_DIR)/task_citations_map_contacts.ipynb
+
 .PHONY: task
 
 env_vars:
@@ -48,3 +50,5 @@ execute:
 
 test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
+
+
