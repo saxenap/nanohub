@@ -40,6 +40,14 @@ class GoogleApiSettings(BaseSettings):
     service_version: Optional[str] = Field(env='google_api_service_version')
 
 
+class GeddesApiSettings(BaseSettings):
+
+    endpoint: Optional[str] = Field(env='geddes_endpoint')
+    username: Optional[str] = Field(env='geddes_user')
+    access_key: Optional[str] = Field(env='geddes_access_key')
+    secret_key: Optional[str] = Field(env='geddes_secret_key')
+
+
 class PathSettings(BaseSettings):
 
     outfile_dir: str = Field(env='pipeline_outfile_dir')
@@ -61,6 +69,7 @@ class Settings(BaseSettings):
     sshtunnel: SshTunnel = SshTunnel()
     salesforce: SalesforceSettings = SalesforceSettings()
     googleapi: GoogleApiSettings = GoogleApiSettings()
+    geddesapi: GeddesApiSettings = GeddesApiSettings()
     pathsettings: PathSettings = PathSettings()
     executorsettings: ExecutorSettings = ExecutorSettings()
 #     remoteservicessettings: RemoteServicesSettings = RemoteServicesSettings()
