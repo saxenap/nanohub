@@ -55,6 +55,11 @@ def get_last_id(path: Path) -> int:
     return last_id
 
 
+def get_last_id_by_datetime_file(directory_path: Path) -> int:
+    df = pd.read_parquet(full_path, storage_options={"token": "nanohub-320518-a9f4878b9ea2.json"})
+    next_id = df['entryID'].iloc[-1]
+
+
 def save_last_id(path: Path, last_id: int):
     print("Saving last id (%d)" % (last_id))
     with open(path, 'w') as f:
