@@ -18,6 +18,10 @@ services:
         LANG: "${LANG}"
         LC_ALL: "${LC_ALL}"
         LOCALE: "${LOCALE}"
+        CPUS: "${CPUS}"
+        GDAL_VERSION: "${GDAL_VERSION}"
+        GEOS_VERSION: "${GEOS_VERSION}"
+        PROJ_VERSION: "${PROJ_VERSION}"
     restart: always
 #    logging:
 #      driver: syslog
