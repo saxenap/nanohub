@@ -1,11 +1,18 @@
-FROM ubuntu:latest as base-image
+FROM ubuntu:latest AS vars-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
+ENV CPUS=4
+ENV GDAL_VERSION=3.4.0
+ENV GEOS_VERSION=3.10.1
+ENV PROJ_VERSION=8.1.1
+
+
+FROM vars-image AS base-image
 ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONFAULTHANDLER 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONFAULTHANDLER=1
 ARG TZ
 ENV TZ=${TZ}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -37,19 +44,103 @@ ENV LC_ALL=${LC_ALL}
 ARG LOCALE
 ENV LOCALE=${LOCALE}
 ARG DEBIAN_FRONTEND=noninteractive
-RUN set -x \
+RUN apt-get update -y \
+    && set -x \
     && build_deps=' \
+        cmake \
         build-essential \
-    ' \
-    && editors=' \
+        ca-certificates \
+        pkg-config \
+        wget curl git \
         nano vim \
     ' \
-    && pipeline_deps=' \
-        cron \
-        rsyslog \
-        supervisor \
-        systemd \
+    && apt-get install -y --no-install-recommends \
+        $build_deps \
+    \
+    && apt-get install -y --no-install-recommends \
+        locales \
+    && locale-gen en_US \
+    && locale-gen ${LOCALE} \
+    && update-locale \
+    \
+    && useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" \
+    && cp /root/.bashrc ${NB_USER_DIR}/ \
+    \
+    && mkdir ${APP_DIR} \
+    && chown -R --from=root ${NB_USER} ${APP_DIR} \
+    && mkdir ${VIRTUAL_ENV} \
+    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV} \
+    \
+    && apt-get install -y --no-install-recommends \
+        sudo \
+    && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    \
+    && apt-get install -y --no-install-recommends \
+        openssh-server \
+    && sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config
+
+
+FROM base-image AS python-image
+RUN set -x \
+    && python_deps=' \
+        python3-dev \
+        python3-venv \
+        python3-pip \
+        python3-wheel \
     ' \
+    && pip_deps=' \
+        setuptools \
+        wheel \
+    ' \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+        $python_deps \
+    && pip3 install wheel \
+    && pip3 install --upgrade pip \
+        $pip_deps
+
+
+FROM python-image AS cartopy-image
+RUN set -x \
+    && cartopy_deps=' \
+        libcurl4-openssl-dev \
+        libtiff-dev \
+        sqlite3 libsqlite3-dev \
+    ' \
+    && apt-get install -y --no-install-recommends \
+        $cartopy_deps \
+    && wget http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
+    && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
+    && cd geos-${GEOS_VERSION} || exit \
+    && ./configure --prefix=/usr/local &&  make -j${CPUS} &&  sudo make install && sudo ldconfig \
+    \
+    && wget https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
+    && tar -xvzf proj-${PROJ_VERSION}.tar.gz \
+    && cd proj-${PROJ_VERSION} || exit \
+    && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig \
+    \
+    && wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
+    && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
+    && cd gdal-${GDAL_VERSION} || exit \
+    && ./configure --with-proj=/usr/local --with-python=/usr/bin/python3 --with-local=/usr/local --with-cpp14 --with-geos=yes \
+    && make -j${CPUS}  &&  sudo make install  &&  sudo ldconfig
+    \
+ENV CPLUS_INCLUDE_PATH="/usr/include/gdal:$CPLUS_INCLUDE_PATH"
+ENV C_INCLUDE_PATH="/usr/include/gdal:$C_INCLUDE_PATH"
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+RUN pip3 install --no-cache-dir \
+    GDAL==${GDAL_VERSION}
+
+
+FROM python-image AS nltk-image
+WORKDIR ${APP_DIR}
+RUN pip3 install nltk \
+    && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data popular
+
+
+FROM cartopy-image as jupyter-deps-image
+RUN set -x \
     && jupyter_deps=' \
         nodejs \
         texlive-xetex \
@@ -61,75 +152,41 @@ RUN set -x \
         texlive-latex-extra \
         pandoc \
     ' \
-    && python_deps=' \
-        python3-dev \
-        python3-venv \
-        python3-pip \
-        python3-wheel \
-    ' \
-    && apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-        $build_deps \
-        wget curl git libproj-dev proj-data proj-bin libgeos-dev ffmpeg \
-        openssh-server \
-        $editors \
-        sudo \
-        locales \
-        $pipeline_deps \
-        $python_deps \
-    \
     && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
+    && apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        $jupyter_deps \
-    \
-    && locale-gen en_US \
-    && locale-gen ${LOCALE} \
-    && update-locale \
-    \
-    && useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" \
-    && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
-    && sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
-    && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
-    && cp /root/.bashrc ${NB_USER_DIR}/ \
-    && mkdir ${APP_DIR} \
-    && chown -R --from=root ${NB_USER} ${APP_DIR} \
-    && mkdir ${VIRTUAL_ENV} \
-    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV} \
-    \
-    && pip3 install --upgrade pip setuptools wheel \
-    && pip3 install --no-cache-dir pipenv \
-    \
-    && rm -r /var/lib/apt/lists/*
+        $jupyter_deps
 
 
-FROM base-image AS nltk-image
+FROM jupyter-deps-image AS platform-image
 WORKDIR ${APP_DIR}
-RUN pip3 install wheel \
-    && pip3 install --upgrade pip setuptools wheel \
-    && pip3 install nltk \
-    && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data all
+RUN rm -rf /var/lib/apt/lists/*
 
 
-FROM base-image AS packages-image
+FROM python-image AS pip-deps-image
 WORKDIR ${APP_DIR}
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN python3 -m venv ${VIRTUAL_ENV} \
-    && pip3 install wheel \
-    && pip3 install --upgrade pip setuptools wheel \
-    && pipenv lock -r > requirements.txt \
-    && pip3 install --no-cache-dir -r requirements.txt \
-    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
+RUN pip3 install --no-cache-dir pipenv \
+    && pipenv lock --keep-outdated --pre -v -r > requirements.txt
 
 
-FROM packages-image AS copied-packages-image
+FROM platform-image AS copied-packages-image
 WORKDIR ${APP_DIR}
 COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
-COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+COPY --from=pip-deps-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/requirements.txt ${APP_DIR}/requirements.txt
+RUN python3 -m venv ${VIRTUAL_ENV} \
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
+COPY nanoHUB .
+COPY setup.py .
+COPY pyproject.toml .
+RUN pip3 install . \
+    && chown -R --from=root ${NB_USER} ${APP_DIR}
 
 
-FROM copied-packages-image AS jupyter-image
+FROM copied-packages-image as jupyter-config-image
 WORKDIR ${APP_DIR}
 USER ${NB_USER}
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
@@ -144,8 +201,8 @@ ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
 ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
 ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
 RUN jupyter contrib nbextension install --user \
-    && jupyter labextension install jupyterlab-topbar-extension \
     && jupyter nbextensions_configurator enable --user \
+    && jupyter labextension install jupyterlab-topbar-extension \
     && jupyter-nbextension install rise --py --sys-prefix \
     && jupyter-nbextension enable rise --py --sys-prefix \
     && jupyter nbextension enable splitcell/splitcell \
@@ -162,51 +219,11 @@ RUN jupyter contrib nbextension install --user \
     && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
     && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
     && echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
-#RUN jupyter contrib nbextension install --user && \
-#    jupyter nbextension enable execute_time/main
-#    jupyter nbextension enable codefolding/main && \
-#    jupyter nbextension enable table_beautifier/main && \
-#    jupyter nbextension enable toc2/main && \
-#    jupyter nbextension enable init_cell/main && \
-#    jupyter nbextension enable tree-filter/main && \
-#    jupyter nbextension enable jupyter_boilerplate/main && \
-#    jupyter nbextension enable scroll_down/main && \
-#    jupyter nbextension enable notify/main && \
-#    jupyter nbextension enable skip-traceback/main && \
-#    jupyter nbextension enable move_selected_cells/main && \
-#    jupyter nbextension enable livemdpreview/main && \
-#    jupyter nbextension enable highlighter/main && \
-#    jupyter nbextension enable go_to_current_running_cell/main && \
-#    jupyter nbextension enable execute_time/main && \
-#    jupyter nbextension enable datestamper/main && \
-#    jupyter nbextension enable addbefore/main && \
-#    jupyter nbextension enable Hinterland/main && \
-#    jupyter nbextension enable snippets/main && \
-##    jupyter nbextension enable --py --sys-prefix qgrid && \
-##    jupyter serverextension enable jupyterlab_sql --py --sys-prefix && \
-#    jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
-#    jupyter labextension install --no-build jupyterlab-topbar-text && \
-#    jupyter labextension install --no-build @jupyterlab/toc && \
-#    jupyter labextension install --no-build @krassowski/jupyterlab_go_to_definition && \
-#    jupyter labextension install --no-build @jupyterlab/debugger && \
-#    jupyter lab build --dev-build=False;
 EXPOSE ${JUPYTER_PORT}
 
 
-FROM base-image AS src-image
-WORKDIR ${APP_DIR}
-COPY . .
-
-
-FROM jupyter-image AS dev-image
+FROM jupyter-config-image AS dev-image
 WORKDIR ${NB_USER_DIR}
-COPY --from=src-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
-RUN pip3 install ${APP_DIR}
-USER root
-RUN ln -s ${VIRTUAL_ENV}/bin/nanoHUB /usr/local/bin/nanoHUB \
-    && ln -s ${VIRTUAL_ENV}/bin/nanohub /usr/local/bin/nanohub
-USER ${NB_USER}
-RUN . ${VIRTUAL_ENV}/bin/activate
 VOLUME ${APP_DIR}
 
 
