@@ -187,7 +187,7 @@ COPY --from=pip-deps-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/requirements.t
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
-COPY nanoHUB .
+COPY nanoHUB nanoHUB/
 COPY setup.py .
 COPY pyproject.toml .
 RUN pip3 install . \
