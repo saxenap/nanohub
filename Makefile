@@ -1,5 +1,6 @@
 env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
 
+log-level=INFO
 ########################################################################################################################
 #These run on the host
 
@@ -44,6 +45,9 @@ show-cron_tasks:
 
 exec-pipeline:
 	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
+
+run-tasks:
+	docker exec -it `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute
 
 
 ########################################################################################################################
