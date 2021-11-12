@@ -230,6 +230,7 @@ RUN pip3 install . \
 FROM copied-packages-image as dev-image
 VOLUME ${APP_DIR}
 EXPOSE ${JUPYTER_PORT}
+USER ${NB_USER}
 
 
 FROM dev-image AS scheduler-image
