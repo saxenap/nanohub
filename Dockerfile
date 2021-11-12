@@ -238,7 +238,8 @@ VOLUME ${APP_DIR}
 FROM dev-image AS scheduler-image
 USER root
 WORKDIR ${APP_DIR}
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends \
         cron \
         rsyslog \
         supervisor
