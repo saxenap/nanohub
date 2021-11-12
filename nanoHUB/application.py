@@ -9,6 +9,9 @@ class Application:
 
     def __init__(self, container: TasksContainer):
         self.container = container
+        if os.environ.get('APP_DIR') is not None:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            os.environ['APP_DIR'] = dir_path
 
     def new_db_engine(self, db_name: str) -> IDbConnectionFactory:
 
@@ -20,7 +23,7 @@ class Application:
 
     def new_google_api_engine(self):
 
-        return self.container.googleapi.googleapi_service().create_new_service()
+        return self.container.googleapi.googleapi_service().create_new_service(os.environ["APP_DIR"])
 
     def get_configuration(self):
         return self.container.config

@@ -18,8 +18,9 @@ class GoogleApiFactory:
         self.service_type = service_type
         self.version = version
 
-    def create_new_service(self):
-        with open(self.credentials_file_path) as f:
+    def create_new_service(self, root_dir: str):
+        credentials_file_path = root_dir + '/' + self.credentials_file_path
+        with open(credentials_file_path) as f:
             json_key = json.load(f)
 
         credentials = Credentials.from_service_account_info(
