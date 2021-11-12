@@ -3,8 +3,9 @@
 **/*.DS_Store
 .idea
 **/Thumbs.db
-*.iml
-*.egg-info
+**/*.iml
+**/*.egg-info
+
 
 docker-compose.yml
 .docker
@@ -19,11 +20,13 @@ Dockerfile
 __pycache__/
 
 
+**/*.virtual_documents
 .virtual_documents
 .ipynb_checkpoints
+**/*.ipynb_checkpoints
 
 MANIFEST.in
-LICENSE.md
+**/LICENSE.md
 
 #General
 
