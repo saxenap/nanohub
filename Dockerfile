@@ -181,13 +181,13 @@ RUN pip3 install --no-cache-dir pipenv \
 
 
 FROM platform-image AS copied-packages-image
+USER root
 WORKDIR ${APP_DIR}
 COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
 COPY --from=pip-deps-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/requirements.txt ${APP_DIR}/requirements.txt
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
-WORKDIR ${APP_DIR}
 USER ${NB_USER}
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 ARG JUPYTER_PORT=80
@@ -228,9 +228,9 @@ RUN pip3 install . \
 
 
 FROM copied-packages-image as dev-image
+USER ${NB_USER}
 VOLUME ${APP_DIR}
 EXPOSE ${JUPYTER_PORT}
-USER ${NB_USER}
 
 
 FROM dev-image AS scheduler-image
