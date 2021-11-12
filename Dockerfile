@@ -250,8 +250,9 @@ RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
-WORKDIR ${APP_DIR}
 RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+WORKDIR ${APP_DIR}
+COPY tasks.mk .
 #RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
 #    && echo "* * * * *  echo Heartbeat Check" >> ${APP_DIR}/cron_tasks \
 #    && echo "* * * * *  make -f ${APP_DIR}/tasks.mk test" >> ${APP_DIR}/cron_tasks \
