@@ -1,4 +1,4 @@
-env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g)
+env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
 
 ########################################################################################################################
 #These run on the host
