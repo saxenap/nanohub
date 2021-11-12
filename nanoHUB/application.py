@@ -22,6 +22,12 @@ class Application:
 
         return self.container.googleapi.googleapi_service().create_new_service()
 
+    def get_configuration(self):
+        return self.container.config
+
+    def get_config_value(self, key_name: str):
+        return self.get_configuration().get(key_name)
+
     def execute(self, file_paths: [str]):
         for file_path in file_paths:
             self.container.config.set('pipeline.executor_file_path', file_path)
