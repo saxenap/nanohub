@@ -113,18 +113,19 @@ RUN set -x \
         sqlite3 libsqlite3-dev \
     ' \
     && apt-get install -y --no-install-recommends \
-        $cartopy_deps \
-    && wget http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
+        $cartopy_deps
+RUN wget \
+    http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
     && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
     && cd geos-${GEOS_VERSION} || exit \
-    && ./configure --prefix=/usr/local &&  make -j${CPUS} &&  sudo make install && sudo ldconfig \
-    \
-    && wget https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
+    && ./configure --prefix=/usr/local &&  make -j${CPUS} &&  sudo make install && sudo ldconfig
+RUN wget \
+    https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
     && tar -xvzf proj-${PROJ_VERSION}.tar.gz \
     && cd proj-${PROJ_VERSION} || exit \
-    && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig \
-    \
-    && wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
+    && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig
+RUN wget \
+    http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
     && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
     && cd gdal-${GDAL_VERSION} || exit \
     && ./configure --with-proj=/usr/local --with-python=/usr/bin/python3 --with-local=/usr/local --with-cpp14 --with-geos=yes \
@@ -234,6 +235,11 @@ VOLUME ${APP_DIR}
 FROM dev-image AS scheduler-image
 USER root
 WORKDIR ${APP_DIR}
+RUN apt-get install -y --no-install-recommends \
+        cron \
+        rsyslog \
+        supervisor \
+        systemd \
 RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
