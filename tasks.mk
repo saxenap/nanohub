@@ -31,10 +31,10 @@ TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/task_nh_groups.ipynb  \
 	$(SALESFORCE_DIR)/simulation_user_lifetimes-2.ipynb   \
 	$(SALESFORCE_DIR)/task_user_contribution_update.ipynb  \
-	$(PIPELINE_DIR)/researcher_scraping/main_file.py  \
 	$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
 
 TASKS_ERRORS=\
+	$(PIPELINE_DIR)/researcher_scraping/main_file.py  \
 	$(SALESFORCE_DIR)/task_citations_map_contacts.ipynb
 
 .PHONY: task
