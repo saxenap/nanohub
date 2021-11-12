@@ -222,6 +222,7 @@ RUN jupyter contrib nbextension install --user \
 COPY nanoHUB nanoHUB/
 COPY setup.py .
 COPY pyproject.toml .
+USER root
 RUN pip3 install . \
     && chown -R --from=root ${NB_USER} ${APP_DIR}
 
