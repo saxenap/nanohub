@@ -10,8 +10,9 @@ class Application:
     def __init__(self, container: TasksContainer):
         self.container = container
         if os.environ.get('APP_DIR') is not None:
-            dir_path = os.path.dirname(os.path.realpath(__file__))
+            dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
             os.environ['APP_DIR'] = dir_path
+            os.environ['APP_DIR_TEST'] = dir_path
 
     def new_db_engine(self, db_name: str) -> IDbConnectionFactory:
 
