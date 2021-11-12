@@ -187,14 +187,6 @@ COPY --from=pip-deps-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/requirements.t
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
-COPY nanoHUB nanoHUB/
-COPY setup.py .
-COPY pyproject.toml .
-RUN pip3 install . \
-    && chown -R --from=root ${NB_USER} ${APP_DIR}
-
-
-FROM copied-packages-image as jupyter-config-image
 WORKDIR ${APP_DIR}
 USER ${NB_USER}
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
@@ -227,12 +219,16 @@ RUN jupyter contrib nbextension install --user \
     && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
     && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
     && echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
-EXPOSE ${JUPYTER_PORT}
+COPY nanoHUB nanoHUB/
+COPY setup.py .
+COPY pyproject.toml .
+RUN pip3 install . \
+    && chown -R --from=root ${NB_USER} ${APP_DIR}
 
 
-FROM jupyter-config-image AS dev-image
-WORKDIR ${NB_USER_DIR}
+FROM copied-packages-image as dev-image
 VOLUME ${APP_DIR}
+EXPOSE ${JUPYTER_PORT}
 
 
 FROM dev-image AS scheduler-image
