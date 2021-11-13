@@ -46,7 +46,10 @@ heartbeat:
 	/usr/bin/logger -t PIPELINE -p user.info "Heart Beat Check."
 
 execute:
-	$(EXECUTE_TASK) $(TASKS) $(logger)
+	$(EXECUTE_TASK) $(TASKS) $(logger) log-level=ERROR
+
+debug:
+	$(EXECUTE_TASK) $(TASKS) $(logger) log-level=DEBUG
 
 test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
