@@ -6,7 +6,7 @@ import datetime
 application = Application.get_instance()
 nanohub_metrics_db = application.new_db_engine('nanohub_metrics')
 
-s3_client = get_default_s3_client()
+s3_client = get_default_s3_client(application)
 
 query = QueryString(
     'nanohub_metrics',
