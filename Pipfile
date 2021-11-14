@@ -25,7 +25,6 @@ pytest = "6.2"
 # Need to define exact (pre) version for black or set allow_prereleases = true
 black = "*"
 ##########################################
-
 ##########################################
 sqlalchemy = "*"
 alembic = "*"
@@ -118,6 +117,7 @@ chardet = "*"
 cchardet = "*"
 charset-normalizer = "*"
 ##########################################
+boto3 = "*"
 
 [pipenv]
 allow_prereleases = true
