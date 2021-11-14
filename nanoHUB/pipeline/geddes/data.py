@@ -4,6 +4,7 @@ import time, datetime
 from io import BytesIO
 import boto3
 from nanoHUB.application import Application
+import os
 
 @dataclass
 class QueryString:
@@ -43,12 +44,11 @@ def new_df(query: QueryString, from_date: datetime, to_date: datetime, engine):
     return df
 
 
-def get_default_s3_client(application):
-    application = Application.get_instance()
+def get_default_s3_client():
     return get_s3_client(
-        'https://' + application.get_config_value('geddesapi.endpoint') + ':443',
-        application.get_config_value('geddesapi.access_key'),
-        application.get_config_value('geddesapi.secret_key')
+        'https://' + os.environ['geddesapi.endpoint'] + ':443',
+        os.environ['geddesapi.access_key'],
+        os.environ['geddesapi.secret_key']
     )
 
 
