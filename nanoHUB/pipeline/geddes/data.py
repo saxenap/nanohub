@@ -12,8 +12,8 @@ class QueryString:
     table_name: str
     from_col_name: str
     to_col_name: str
-    col_names: [] = field(default_factory=lambda: ['*'])
-    datetime_cols = []
+    col_names: []
+    datetime_cols: []
 
     def make_query(self, from_date: datetime, to_date: datetime) -> str:
         sql = '''
@@ -44,11 +44,12 @@ def new_df(query: QueryString, from_date: datetime, to_date: datetime, engine):
     return df
 
 
-def get_default_s3_client():
+def get_default_s3_client(application):
+
     return get_s3_client(
-        'https://' + os.environ['geddesapi.endpoint'] + ':443',
-        os.environ['geddesapi.access_key'],
-        os.environ['geddesapi.secret_key']
+        'https://' + application.get_config_value('geddesapi.endpoint') + ':443',
+        application.get_config_value('geddesapi.access_key'),
+        application.get_config_value('geddesapi.secret_key')
     )
 
 

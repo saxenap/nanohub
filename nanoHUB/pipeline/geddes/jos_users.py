@@ -4,20 +4,20 @@ import datetime
 
 
 application = Application.get_instance()
-nanohub_metrics_db = application.new_db_engine('nanohub_metrics')
+nanohub_metrics_db = application.new_db_engine('nanohub')
 
 s3_client = get_default_s3_client(application)
 
 query = QueryString(
-    'nanohub_metrics',
-    'toolevents',
-    'start',
-    'start',
-    ['*'],
-    ['start', 'finish']
+    'nanohub',
+    'jos_users',
+    'registerDate',
+    'registerDate',
+    ['name', 'username', 'email', 'approved', 'registerDate', 'lastvisitDate', 'activation'],
+    ['registerDate', 'lastvisitDate']
 )
 bucket_name = 'nanohub.raw'
-from_date = datetime.date(2012,1,1)
+from_date = datetime.date(2005,1,1)
 end = datetime.date.today()
 
 map(
