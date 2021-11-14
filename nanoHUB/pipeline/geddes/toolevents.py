@@ -17,7 +17,6 @@ query = QueryString(
 bucket_name = 'nanohub.raw'
 from_date = datetime.date(2012,1,1)
 end = datetime.date.today()
-end = datetime.date(2012,1,2)
 
 map(
     query, nanohub_metrics_db, s3_client, bucket_name, from_date
