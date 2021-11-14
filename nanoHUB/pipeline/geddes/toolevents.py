@@ -17,7 +17,7 @@ query = QueryString(
     ['start', 'finish']
 )
 bucket_name = 'nanohub.raw'
-from_date = datetime.date(2012,1,1)
+from_date = datetime.date(2002,7,3)
 end = datetime.date.today()
 
 map(
