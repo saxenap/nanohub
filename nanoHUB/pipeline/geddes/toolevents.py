@@ -1,5 +1,5 @@
 from nanoHUB.application import Application
-from nanoHUB.pipeline.geddes.data import QueryString, new_df, get_default_s3_client, save_df
+from nanoHUB.pipeline.geddes.data import map, QueryString, new_df, get_default_s3_client, save_df
 import datetime
 
 
@@ -17,13 +17,10 @@ query = QueryString(
 bucket_name = 'nanohub.raw'
 from_date = datetime.date(2012,1,1)
 end = datetime.date.today()
+end = datetime.date(2012,1,2)
 
-while from_date < end:
-    nextday = from_date + datetime.timedelta(days = 1)
-    df = new_df(query, from_date, nextday, nanohub_metrics_db)
-    from_date = nextday
-    save_df(s3_client, df, bucket_name, '%s/%s/%s' % (query.db_name, query.table_name, nextday))
-
-
+map(
+    query, nanohub_metrics_db, s3_client, bucket_name, from_date
+)
 
 

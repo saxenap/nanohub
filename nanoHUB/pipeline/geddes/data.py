@@ -73,3 +73,24 @@ def save_df(s3_client, df, bucket_name: str, file_path: str) -> None:
     df.to_parquet(_buf, index=False)
     _buf.seek(0)
     s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
+
+
+def map(
+        query,
+        db_engine,
+        s3_client,
+        bucket_name,
+        from_date: datetime,
+        to_date: datetime = None
+):
+    end = to_date
+    if to_date is None:
+        end = datetime.date.today()
+
+    while from_date < end:
+        nextday = from_date + datetime.timedelta(days = 1)
+        df = new_df(query, from_date, nextday, db_engine)
+        from_date = nextday
+        save_df(s3_client, df, bucket_name, '%s/%s/%s' % (query.db_name, query.table_name, nextday))
+
+
