@@ -52,7 +52,8 @@ run-tasks:
 debug-tasks:
 	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute log-level=DEBUG
 
-
+run_command:
+	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
 ########################################################################################################################
 # Others
 
