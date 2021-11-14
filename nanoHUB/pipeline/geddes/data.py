@@ -44,7 +44,7 @@ def new_df(query: QueryString, from_date: datetime, to_date: datetime, engine):
 
 
 def get_default_s3_client(application):
-
+    application = Application.get_instance()
     return get_s3_client(
         'https://' + application.get_config_value('geddesapi.endpoint') + ':443',
         application.get_config_value('geddesapi.access_key'),
