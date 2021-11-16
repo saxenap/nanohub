@@ -5,7 +5,10 @@ import time
 import sys
 from nanoHUB.logger import logger as log
 from pathlib import Path
+import boto3
 
+
+######################################################################################################
 
 class Repository:
     def get_all(self) -> pandas.DataFrame:
@@ -13,7 +16,78 @@ class Repository:
         
     def get_name(self) -> str:
         raise NotImplemented
-        
+
+
+######################################################################################################
+
+class Storage:
+    def save(self, df: pandas.DataFrame):
+        raise NotImplemented
+
+    def get_name(self) -> str:
+        raise NotImplemented
+
+
+######################################################################################################
+
+class ClientFactory:
+
+    def get_client(
+            endpoint_url: str, access_key: str, secret: str, service_name: str = 's3'
+    ) -> boto3.session.Session.client:
+
+        boto_session = boto3.session.Session(
+            aws_access_key_id = access_key,
+            aws_secret_access_key = secret
+        )
+
+        return boto_session.client(
+            service_name=service_name,
+            endpoint_url = endpoint_url
+        )
+
+    def init_from_config(self, application):
+        return self.get_client(
+            'https://' + application.get_config_value('geddesapi.endpoint') + ':443',
+            application.get_config_value('geddesapi.access_key'),
+            application.get_config_value('geddesapi.secret_key')
+        )
+
+
+class GeddesConnection:
+
+    def __init__(self, client: boto3.session.Session.client):
+        self.client = client
+
+    def save(self, bucket_name: str, file_path: str, body: str):
+        self.client.put_object(Bucket=bucket_name, Key=file_path, Body=body)
+
+    def read(self, bucket_name: str, file_path: str):
+        return self.client.get_object(Bucket=bucket_name, Key=file_path)
+
+
+# class GeddesRepository(Repository):
+
+
+
+# class Geddes(Repository, Storage):
+#
+#     def __init__(self, client: GeddesClient, file_path: str, format: str = 'parquet'):
+#         self.client = client
+#         self.file_path = file_path
+#         self.format = format
+#
+#     def get_all(self) -> pandas.DataFrame:
+#         return super().get_all()
+#
+#     def get_name(self) -> str:
+#         return super().get_name()
+#
+#     def save(self, df: pandas.DataFrame):
+#         return super().save(df)
+
+
+######################################################################################################
 
 class SalesforceRepository(Repository):
     def __init__(self, engine: DB2SalesforceAPI):
@@ -38,6 +112,32 @@ class ToolsRepository(SalesforceRepository):
     
     def get_name(self) -> str:
         return 'Tools_From_Salesforce'
+
+
+class UnclassifiedUsers(SalesforceRepository):
+    def get_all(self) -> pandas.DataFrame:
+        query = '''
+        SELECT Id, nanoHUB_user_ID__c
+        FROM Contact
+        WHERE Id NOT IN (Select Contact__c from ContactToolClusterAssociation__c)
+        '''
+        return self.engine.query_data(query)
+
+    def get_name(self) -> str:
+        return 'Unclassified_Users_From_Salesforce'
+
+
+class ClassroomUsers(SalesforceRepository):
+    def get_all(self) -> pandas.DataFrame:
+        query = '''
+        SELECT Id, nanoHUB_user_ID__c
+        FROM Contact
+        WHERE Id IN (Select Contact__c from ContactToolClusterAssociation__c)
+        '''
+        return self.engine.query_data(query)
+
+    def get_name(self) -> str:
+        return 'Classroom_Users_From_Salesforce'
         
     
 class PandasRepository(Repository):
