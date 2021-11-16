@@ -25,8 +25,11 @@ pytest = "6.2"
 # Need to define exact (pre) version for black or set allow_prereleases = true
 black = "*"
 ##########################################
-##########################################
 sqlalchemy = "*"
+##########################################
+SQLAlchemy-Utils = "*"
+geoip2 = "*"
+##########################################
 alembic = "*"
 isort = "*"
 typer = "*"
