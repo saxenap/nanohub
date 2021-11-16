@@ -174,17 +174,14 @@ RUN rm -rf /var/lib/apt/lists/*
 
 FROM python-image AS pip-deps-image
 WORKDIR ${APP_DIR}
-COPY Pipfile .
-COPY Pipfile.lock .
-RUN pip3 install --no-cache-dir pipenv \
-    && pipenv lock --keep-outdated --pre -v -r > requirements.txt
 
 
 FROM platform-image AS copied-packages-image
 USER root
 WORKDIR ${APP_DIR}
+RUN pip3 install --upgrade pip
 COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
-COPY --from=pip-deps-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/requirements.txt ${APP_DIR}/requirements.txt
+COPY requirements.txt .
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
