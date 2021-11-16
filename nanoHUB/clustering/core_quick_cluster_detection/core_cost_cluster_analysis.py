@@ -2,7 +2,7 @@ from pprint import pprint
 import logging
 import pandas as pd
 import os
-
+from io import StringIO
 from .class_CommonToolUsagePair import ToolUsagePattern, CommonToolUsagePair
 from .form_cluster import form_cluster_new
 from .merge_clusters import merge_clusters
@@ -21,7 +21,8 @@ import pickle
 
 import code
 import time
-
+from nanoHUB.pipeline.geddes.data import get_default_s3_client
+from nanoHUB.application import Application
 
 
 
@@ -178,6 +179,21 @@ def core_cost_cluster_analysis(inparams):
     outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[1].strftime("%Y_%m_%d") + '.csv'
     outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
     logging.info('Saving output files to '+outfile_filepath)
+
+
+    final_clusters_df = pd.DataFrame(final_clusters)
+    if inparams.save_to_geddes == True:
+        full_path = 'core_cost_clustered_users.csv'
+        bucket_name = 'nanohub.processed'
+
+        s3_client = get_default_s3_client(Application.get_instance())
+
+        _buf = StringIO()
+        final_clusters_df.to_csv(_buf, index=False)
+        _buf.seek(0)
+        s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
+
+    print(final_clusters_df)
 
     with open(outfile_filepath, 'w') as f:
         for this_row in final_clusters:

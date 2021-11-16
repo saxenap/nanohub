@@ -19,16 +19,6 @@ def main_online_users_TS_analysis():
     # task options
     parser.add_argument('--task', help='specific task', 
                                   action='store', default='classroom_detection')
-                                             
-    # SQL connection
-    parser.add_argument('--SQL_username', help='SQL database username', 
-                                         action='store', default='wang2506_ro')
-    parser.add_argument('--SQL_password', help='SQL password', 
-                                         action='store', default='fnVnwcCS7iT45EsA')
-    parser.add_argument('--SQL_addr', help='SQL address', 
-                                         action='store', default='127.0.0.1')
-    parser.add_argument('--SQL_port', help='SQL port', 
-                                         action='store', default='3306')
 
     # data
     parser.add_argument('--geoip2_mmdb_filepath', help='full file path of mmdb file from GeoIP2',
@@ -41,6 +31,17 @@ def main_online_users_TS_analysis():
                         action='store', default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))
     parser.add_argument('--name_prefix', help='prefix to all output files', 
                                          action='store', default='users_analysis')
+
+    parser.add_argument('--save_to_geddes', dest='save_to_geddes', help='should save resulting csv to data lake in geddes',
+                        action='store_true')
+
+    parser.add_argument('--no-save_to_geddes', dest='save_to_geddes', help='should not save resulting csv to data lake in geddes',
+                        action='store_false')
+
+    parser.add_argument('--bucket_name', help='bucket name in Geddes', action='store', default='nanohub.processed')
+    parser.add_argument('--object_path', help='object path inside the bucket in Geddes', action='store', default='core_cost_clustered_users.csv')
+
+    parser.set_defaults(save_to_geddes=False)
 
     # class room detection behavior
     parser.add_argument('--class_probe_range', help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1', 
@@ -82,6 +83,7 @@ def main_online_users_TS_analysis():
     parser.add_argument('--use_old_data', help='use feature data from previous run', 
                                     action='store_true')                                                   
     inparams = parser.parse_args()
+    print(inparams)
     
     # redefine inparams for cronjob smoothness - since we use this setting anyway    
     inparams.generate_notebook_checkpoints = True #so outputs are saved
@@ -105,6 +107,12 @@ def main_online_users_TS_analysis():
         logging.basicConfig(level=logging.INFO, format='%(message)s')
         pass
 
+    if inparams.save_to_geddes:
+        if inparams.bucket_name is None or inparams.bucket_name == '':
+            raise ValueError("A bucket name is necessary in order to save results to Geddes")
+        if inparams.object_path is None or inparams.object_path == '':
+            raise ValueError("An object path is necessary in order to save results to Geddes")
+
     if inparams.class_probe_range == 'latest':
         # probes only the latest (today - 2 STD of Gaussian attention window function)
         # Each user simulation run action is expanded to 1 STD, and therefore the resulting cluster has max width of 2 STD
@@ -117,16 +125,9 @@ def main_online_users_TS_analysis():
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
         inparams.class_probe_range = inparams.class_probe_range.split(':')
         inparams.data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in inparams.class_probe_range]
-    
 
-    # display parameters but censor password
-    if 'SQL_password' in inparams:
-        temp_real_password = inparams.SQL_password   
-        inparams.SQL_password = ''.join(['*' for x in inparams.SQL_password])
                  
     logging.info(pformat(vars(inparams)))
-    inparams.SQL_password = temp_real_password
-    del temp_real_password
     
     #
     # Preparations
