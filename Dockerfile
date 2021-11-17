@@ -134,7 +134,7 @@ RUN wget \
     && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
     && cd gdal-${GDAL_VERSION} || exit \
     && ./configure --with-proj=/usr/local --with-python=/usr/bin/python3 --with-local=/usr/local --with-cpp14 --with-geos=yes \
-        --disable-shared --without-libtool --with-libtiff --with-curl --with-openjpeg=internal --with-png \
+        --with-libtiff --with-curl --with-openjpeg=internal  \
     && make -j${CPUS}  &&  sudo make install  &&  sudo ldconfig \
     && cd .. && rm -rf gdal-${GDAL_VERSION}
     \
