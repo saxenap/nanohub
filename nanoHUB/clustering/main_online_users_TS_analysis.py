@@ -10,7 +10,7 @@ import datetime
 
 from preprocessing.gather_data import gather_data
 from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
-from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis
+from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis, get_scratch_dir
 
 
 def main_online_users_TS_analysis():
@@ -102,6 +102,9 @@ def main_online_users_TS_analysis():
     parser.add_argument('--use_old_data', help='use feature data from previous run',
                         action='store_true')
 
+    parser.add_argument('--gather_data_only', help='exit after gather data without analysing clusters',
+                        action='store_true')
+
     parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
                         action='store', default='INFO')
 
@@ -172,9 +175,9 @@ def main_online_users_TS_analysis():
             raise ValueError("An object path is necessary in order to save results to Geddes")
 
     # create scratch directory if it does not exist
-    if not os.path.exists(inparams.scratch_dir):
-        logging.info('Creating new scratch directory: ' + inparams.scratch_dir)
-        os.mkdir(inparams.scratch_dir)
+    if not os.path.exists(get_scratch_dir(inparams)):
+        logging.info('Creating new scratch directory: ' + get_scratch_dir(inparams))
+        os.mkdir(get_scratch_dir(inparams))
 
     if inparams.no_save_output:
         logging.info("Skipping saving output locally ...")
@@ -185,10 +188,12 @@ def main_online_users_TS_analysis():
     if not inparams.use_old_data:
         logging.info('Gathering data  ......')
         gather_data(inparams)
+        if inparams.gather_data_only:
+            return
     else:
         logging.info('Option "--user_old_data" enabled. Using data from previous run ......')
 
-    logging.info(pformat(vars(inparams)))
+    logging.debug(pformat(vars(inparams)))
 
     func(inparams)
 

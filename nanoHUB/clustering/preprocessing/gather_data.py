@@ -45,7 +45,12 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
                 sql_table.c.datetime >= (inparams.class_probe_range[0] + ' 00:00:00'), sql_table.c.datetime <= (
                             inparams.class_probe_range[1] + ' 23:59:59')))
 
-        logging.info("Retrieving data range: %s - %s" % (inparams.class_probe_range[0], inparams.class_probe_range[1]))
+        logging.info("Retrieving data from %s.%s range: %s - %s" % (
+            db_name,
+            sql_table.name,
+            inparams.class_probe_range[0],
+            inparams.class_probe_range[1]
+        ))
         # load table into DF
         df = pd.read_sql(sql_select, db_engine)
 
@@ -64,7 +69,9 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
         print("DB time:", end_time - start_time)
 
         # save DF using Feather
-        df.reset_index(drop=True).to_feather(os.path.join(inparams.scratch_dir, sql_table.name + '.feather'))
+        df.reset_index(drop=True).to_feather(
+            os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1] + '/' + sql_table.name + '.feather')
+        )
 
         # display a small part of DF
         logging.debug(df)
