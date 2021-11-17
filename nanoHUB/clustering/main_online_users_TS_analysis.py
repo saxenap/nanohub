@@ -101,16 +101,21 @@ def main_online_users_TS_analysis():
                         action='store_true')
     parser.add_argument('--use_old_data', help='use feature data from previous run',
                         action='store_true')
+
+    parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
+                        action='store', default='INFO')
+
     inparams = parser.parse_args()
 
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
 
-    logging.info(pformat(vars(inparams)))
-
     #
     # Analysis:
     #
+
+    inparams.class_probe_range = inparams.class_probe_range.replace('_', ':')
+    inparams.cost_probe_range = inparams.cost_probe_range.replace('_', ':')
 
     if 'classroom_detection' in inparams.task:
         # classroom detection
@@ -127,12 +132,14 @@ def main_online_users_TS_analysis():
     else:
         raise ValueError("A task must be assigned using --task option. See help (-h) for more information.")
 
+    numeric_level = getattr(logging, inparams.log_level.upper(), 10)
+    logging.basicConfig(level=numeric_level, format='%(message)s')
         # summarize input options
     if inparams.CI:
         # CI/Test runs
         # The only difference here should be CI/Test runs use sample,
         # cleaned data instead of live SQL data
-        logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+
 
         logging.info('GitLab CI runs')
 
@@ -140,10 +147,6 @@ def main_online_users_TS_analysis():
         inparams.class_probe_range = '2018-1-1:2018-5-1'
         logging.info('Setting analysis time range to CI default: ' + inparams.class_probe_range)
 
-    else:
-        # Production runs
-        logging.basicConfig(level=logging.INFO, format='%(message)s')
-        pass
 
     if inparams.class_probe_range == 'latest':
         # probes only the latest (today - 2 STD of Gaussian attention window function)
@@ -184,6 +187,8 @@ def main_online_users_TS_analysis():
         gather_data(inparams)
     else:
         logging.info('Option "--user_old_data" enabled. Using data from previous run ......')
+
+    logging.info(pformat(vars(inparams)))
 
     func(inparams)
 
