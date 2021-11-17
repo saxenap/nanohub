@@ -110,6 +110,7 @@ RUN set -x \
     && cartopy_deps=' \
         libcurl4-openssl-dev \
         libtiff-dev \
+        libjpeg-dev \
         sqlite3 libsqlite3-dev \
     ' \
     && apt-get install -y --no-install-recommends \
