@@ -1,5 +1,5 @@
 CPUS=$(shell getconf _NPROCESSORS_ONLN)
-
+other_flags=''
 #MAKEFLAGS += -j$(CPUS)
 
 log-level = INFO
@@ -22,5 +22,4 @@ ${JOBS}: job%:
     	--save_to_geddes \
     		--bucket_name nanohub.processed \
     		--object_path cost_cluster_analysis/by_semester \
-    	--log_level $(log-level) \
-    	--use_old_data
+    	--log_level $(log-level) $(other_flags)
