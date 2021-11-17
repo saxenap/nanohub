@@ -51,7 +51,7 @@ ipykernel = "*"
 jupyter = "*"
 jupyterlab = "*"
 nbconvert = "*"
-dask = "*"
+#dask = "*"
 ##########################################
 # Natural Language Toolkit
 # Don't forget to install the nltk_data
