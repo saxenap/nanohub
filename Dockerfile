@@ -127,19 +127,17 @@ RUN wget \
     && cd proj-${PROJ_VERSION} || exit \
     && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig \
     && cd .. && rm -rf proj-${PROJ_VERSION}
-ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-ENV CPPFLAGS="/usr/local/include:$CPPFLAGS"
 RUN wget \
     http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
     && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
     && cd gdal-${GDAL_VERSION} || exit \
     && ./configure --with-proj=/usr/local --with-python=/usr/bin/python3 --with-local=/usr/local --with-cpp14 --with-geos=yes \
-        --disable-shared --without-libtool   \
     && make -j${CPUS}  &&  sudo make install  &&  sudo ldconfig \
     && cd .. && rm -rf gdal-${GDAL_VERSION}
     \
 ENV CPLUS_INCLUDE_PATH="/usr/include/gdal:$CPLUS_INCLUDE_PATH"
 ENV C_INCLUDE_PATH="/usr/include/gdal:$C_INCLUDE_PATH"
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 RUN pip3 install --no-cache-dir \
     GDAL==${GDAL_VERSION}
 
