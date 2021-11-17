@@ -121,6 +121,7 @@ cchardet = "*"
 charset-normalizer = "*"
 ##########################################
 boto3 = "*"
+s4cmd = "*"
 
 [pipenv]
 allow_prereleases = true
