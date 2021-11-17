@@ -1,6 +1,6 @@
 CPUS=$(shell getconf _NPROCESSORS_ONLN)
 
-MAKEFLAGS += -j$(CPUS)
+#MAKEFLAGS += -j$(CPUS)
 
 log-level = INFO
 years = {2006..2021}
@@ -22,4 +22,5 @@ ${JOBS}: job%:
     	--save_to_geddes \
     		--bucket_name nanohub.processed \
     		--object_path cost_cluster_analysis/by_semester \
-    	--log_level $(log-level)
+    	--log_level $(log-level) \
+    	--use_old_data
