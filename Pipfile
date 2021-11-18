@@ -122,6 +122,7 @@ charset-normalizer = "*"
 ##########################################
 boto3 = "*"
 s4cmd = "*"
+awswrangler = "*"
 
 [pipenv]
 allow_prereleases = true
