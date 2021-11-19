@@ -1,0 +1,7 @@
+{
+  "name": "nanohub/analytics",
+  "require": {
+    "php": ">=7.3.0"
+  },
+  "minimum-stability": "dev"
+}

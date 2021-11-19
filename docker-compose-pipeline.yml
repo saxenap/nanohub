@@ -19,6 +19,7 @@ services:
         LC_ALL: "${LC_ALL}"
         LOCALE: "${LOCALE}"
         CPUS: "${CPUS}"
+        PHP_VERSION: "${PHP_VERSION}"
         GDAL_VERSION: "${GDAL_VERSION}"
         GEOS_VERSION: "${GEOS_VERSION}"
         PROJ_VERSION: "${PROJ_VERSION}"

@@ -85,7 +85,52 @@ RUN apt-get update -y \
     && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config
 
 
-FROM base-image AS python-image
+FROM base-image AS php-image
+ARG PHP_VERSION
+ENV PHP_VERSION=${PHP_VERSION}
+RUN set -x \
+    && php_deps=" \
+        libfreetype6-dev \
+        libpng-dev \
+        libmcrypt-dev \
+        php${PHP_VERSION}-dev \
+        php${PHP_VERSION}-bcmath \
+        php${PHP_VERSION}-common \
+        php${PHP_VERSION}-curl \
+        php${PHP_VERSION}-gd \
+        php${PHP_VERSION}-imagick \
+        php${PHP_VERSION}-json \
+        php${PHP_VERSION}-mbstring \
+        php${PHP_VERSION}-mysql \
+        php${PHP_VERSION}-opcache \
+        php${PHP_VERSION}-zip \
+        php-zmq \
+    " \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+        $php_deps \
+    && echo "extension=zmq.so" > /etc/php/${PHP_VERSION}/mods-available/zmq.ini
+WORKDIR ${APP_DIR}
+COPY composer.json .
+COPY composer.lock .
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer \
+    && ln -s /usr/local/bin/composer /usr/bin/composer \
+    && composer install
+RUN sed -i -e 's/^error_reporting\s*=.*/error_reporting = E_ALL/' /etc/php/${PHP_VERSION}/cli/php.ini \
+    && sed -i -e 's/^display_errors\s*=.*/display_errors = On/' /etc/php/${PHP_VERSION}/cli/php.ini \
+    && sed -i -e 's/^zlib.output_compression\s*=.*/zlib.output_compression = Off/' /etc/php/${PHP_VERSION}/cli/php.ini
+WORKDIR ${NB_USER_DIR}
+RUN curl -s -L -O "https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar" \
+    && curl -s -L -O "https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar.sha512" \
+    && shasum -s -a 512 -c jupyter-php-installer.phar.sha512
+
+
+FROM php-image AS python-image
+USER root
 RUN set -x \
     && python_deps=' \
         python3-dev \
@@ -147,7 +192,10 @@ RUN pip3 install nltk \
     && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data popular
 
 
-FROM cartopy-image as jupyter-deps-image
+FROM cartopy-image as jupyter-image
+RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt-get update -y
 RUN set -x \
     && jupyter_deps=' \
         nodejs \
@@ -160,31 +208,22 @@ RUN set -x \
         texlive-latex-extra \
         pandoc \
     ' \
-    && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         $jupyter_deps
 
 
-FROM jupyter-deps-image AS platform-image
-WORKDIR ${APP_DIR}
-RUN rm -rf /var/lib/apt/lists/*
-
-
-FROM python-image AS pip-deps-image
-WORKDIR ${APP_DIR}
-
-
-FROM platform-image AS copied-packages-image
+FROM jupyter-image as platform-image
 USER root
 WORKDIR ${APP_DIR}
 RUN pip3 install --upgrade pip
-COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
 COPY requirements.txt .
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
+COPY --from=php-image --chown=${NB_UID}:${NB_GID} /usr/local/bin/composer /usr/local/bin/composer
+COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUAL_ENV}/nltk_data
+COPY --from=php-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/vendor ${APP_DIR}/vendor
+RUN composer self-update 1.9.3
 USER ${NB_USER}
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 ARG JUPYTER_PORT=80
@@ -198,12 +237,12 @@ ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
 ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
 ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
 RUN jupyter contrib nbextension install --user \
-    && jupyter nbextensions_configurator enable --user \
-    && jupyter labextension install jupyterlab-topbar-extension \
+    && jupyter nbextensions_configurator enable --user
+RUN jupyter labextension install jupyterlab-topbar-extension \
     && jupyter-nbextension install rise --py --sys-prefix \
     && jupyter-nbextension enable rise --py --sys-prefix \
-    && jupyter nbextension enable splitcell/splitcell \
-    && jupyter notebook --generate-config \
+    && jupyter nbextension enable splitcell/splitcell
+RUN jupyter notebook --generate-config \
     && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
     && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
     && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
@@ -216,6 +255,8 @@ RUN jupyter contrib nbextension install --user \
     && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  \
     && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py \
     && echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
+COPY --from=php-image --chown=${NB_UID}:${NB_GID} ${NB_USER_DIR}/jupyter-php-installer.phar ${NB_USER_DIR}/jupyter-php-installer.phar
+RUN php ${NB_USER_DIR}/jupyter-php-installer.phar install -n -vvv
 COPY nanoHUB nanoHUB/
 COPY setup.py .
 COPY pyproject.toml .
@@ -224,10 +265,11 @@ RUN pip3 install . \
     && chown -R --from=root ${NB_USER} ${APP_DIR}
 
 
-FROM copied-packages-image as dev-image
+FROM platform-image as dev-image
 USER ${NB_USER}
 VOLUME ${APP_DIR}
 EXPOSE ${JUPYTER_PORT}
+
 
 
 FROM dev-image AS scheduler-image
@@ -248,6 +290,7 @@ RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
 WORKDIR ${APP_DIR}
 COPY tasks.mk .
+RUN rm -rf /var/lib/apt/lists/*
 #RUN echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
 #    && echo "* * * * *  echo Heartbeat Check" >> ${APP_DIR}/cron_tasks \
 #    && echo "* * * * *  make -f ${APP_DIR}/tasks.mk test" >> ${APP_DIR}/cron_tasks \

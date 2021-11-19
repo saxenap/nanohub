@@ -11,6 +11,10 @@ docker-compose.yml
 .docker
 Dockerfile
 
+##### Composer
+composer.phar
+/vendor/
+
 *.so
 
 .git
