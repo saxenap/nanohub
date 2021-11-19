@@ -10,13 +10,21 @@ RUN apt-get update -y \
     && cartopy_deps=' \
         cmake build-essential ca-certificates pkg-config \
         wget \
+        sudo \
+        openssh-server \
         libcurl4-openssl-dev \
         libtiff-dev \
         libjpeg-dev \
         sqlite3 libsqlite3-dev \
+        python3-dev \
+        python3-pip \
     ' \
     && apt-get install -y --no-install-recommends \
-        $cartopy_deps
+            $cartopy_deps
+RUN echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && pip3 install wheel setuptools \
+    && pip3 install --upgrade pip \
+        $pip_deps
 RUN wget \
     http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
     && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
