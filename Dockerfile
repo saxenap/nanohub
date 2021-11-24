@@ -88,7 +88,8 @@ RUN apt-get update -y \
 FROM base-image AS php-image
 ARG PHP_VERSION
 ENV PHP_VERSION=${PHP_VERSION}
-RUN set -x \
+RUN apt-get update -y \
+    && set -x \
     && php_deps=" \
         libfreetype6-dev \
         libpng-dev \
@@ -131,7 +132,8 @@ RUN curl -s -L -O "https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-p
 
 FROM php-image AS python-image
 USER root
-RUN set -x \
+RUN apt-get update -y \
+    && set -x \
     && python_deps=' \
         python3-dev \
         python3-venv \
@@ -151,7 +153,8 @@ RUN set -x \
 
 
 FROM python-image AS cartopy-image
-RUN set -x \
+RUN apt-get update -y \
+    && set -x \
     && cartopy_deps=' \
         libcurl4-openssl-dev \
         libtiff-dev \
@@ -196,7 +199,8 @@ FROM cartopy-image as jupyter-image
 RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt-get update -y
-RUN set -x \
+RUN apt-get update -y \
+    && set -x \
     && jupyter_deps=' \
         nodejs \
         texlive-xetex \
@@ -215,7 +219,8 @@ RUN set -x \
 FROM jupyter-image as platform-image
 USER root
 WORKDIR ${APP_DIR}
-RUN pip3 install --upgrade pip
+RUN apt-get update -y \
+    && pip3 install --upgrade pip
 COPY requirements.txt .
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
