@@ -8,7 +8,7 @@ setup:
 	cp nanoHUB/.env.dev nanoHUB/.env
 
 dev:
-	git pull
+	git pull origin `git rev-parse --abbrev-ref HEAD`
 	make dev-down
 	make dev-up
 
@@ -47,13 +47,16 @@ exec-pipeline:
 	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
 
 run-tasks:
-	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute log-level=ERROR
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute
 
 debug-tasks:
 	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute log-level=DEBUG
 
 run_command:
 	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
+
+run-clustering:
+	docker exec `docker ps -q --filter name=nanohub_dev` make -C -j$(getconf _NPROCESSORS_ONLN) nanoHUB/clustering
 ########################################################################################################################
 # Others
 
