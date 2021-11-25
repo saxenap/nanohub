@@ -58,13 +58,13 @@ dask = "*"
 nltk = "*"
 ##########################################
 #Cartography packages, activity map
-#cython = "*"
-#ffmpeg-python = "*"
-#shapely = "*"
-#pyshp = "*"
-#pyproj = "*"
-#cartopy = "*"
-#mkdocs-material = "*"
+cython = "*"
+ffmpeg-python = "*"
+shapely = "*"
+pyshp = "*"
+pyproj = "*"
+cartopy = "*"
+mkdocs-material = "*"
 ##########################################
 # Jupyter Extensions
 nodeenv = "*"
