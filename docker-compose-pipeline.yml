@@ -20,6 +20,7 @@ services:
         LOCALE: "${LOCALE}"
         CPUS: "${CPUS}"
         PHP_VERSION: "${PHP_VERSION}"
+        BUILD_CARTOPY: "${BUILD_CARTOPY}"
         GDAL_VERSION: "${GDAL_VERSION}"
         GEOS_VERSION: "${GEOS_VERSION}"
         PROJ_VERSION: "${PROJ_VERSION}"

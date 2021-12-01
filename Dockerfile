@@ -1,16 +1,7 @@
 FROM ubuntu:latest AS vars-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
-ARG BUILD_CARTOPY
-ENV BUILD_CARTOPY=False
 ARG CPUS
-ENV CPUS=${CPUS}
-ARG GDAL_VERSION
-ENV GDAL_VERSION=${GDAL_VERSION}
-ARG GEOS_VERSION
-ENV GEOS_VERSION=${GEOS_VERSION}
-ARG PROJ_VERSION
-ENV PROJ_VERSION=${PROJ_VERSION}
 
 
 FROM vars-image AS base-image
@@ -22,8 +13,6 @@ ENV PYTHONFAULTHANDLER=1
 ARG TZ
 ENV TZ=${TZ}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ARG BUILD_WITH_JUPYTER=1
-ENV BUILD_WITH_JUPYTER=${BUILD_WITH_JUPYTER}
 ARG NB_USER
 ARG NB_UID
 ARG NB_GID
@@ -154,70 +143,15 @@ RUN apt-get update -y \
         $pip_deps
 
 
-FROM python-image AS cartopy-image
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    apt-get update -y \
-    && set -x \
-    && cartopy_deps=' \
-        libcurl4-openssl-dev \
-        libtiff-dev \
-        libjpeg-dev \
-        sqlite3 libsqlite3-dev \
-    ' \
-    && cartopy_pip_deps=' \
-        cython \
-        ffmpeg-python \
-        shapely \
-        pyshp \
-        pyproj \
-        cartopy \
-        mkdocs-material \
-    ' \
-    && apt-get install -y --no-install-recommends \
-        $cartopy_deps ; \
-    fi
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    wget http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
-    && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
-    && cd geos-${GEOS_VERSION} || exit \
-    && ./configure --prefix=/usr/local &&  make -j${CPUS} &&  sudo make install && sudo ldconfig \
-    && cd .. && rm -rf geos-${GEOS_VERSION} ; \
-    fi
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    wget https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
-    && tar -xvzf proj-${PROJ_VERSION}.tar.gz \
-    && cd proj-${PROJ_VERSION} || exit \
-    && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig \
-    && cd .. && rm -rf proj-${PROJ_VERSION} ; \
-    fi
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
-    && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
-    && cd gdal-${GDAL_VERSION} || exit \
-    && ./configure --with-proj=/usr/local --with-python=/usr/bin/python3 --with-local=/usr/local --with-cpp14 --with-geos=yes \
-    && make -j${CPUS}  &&  sudo make install  &&  sudo ldconfig \
-    && cd .. && rm -rf gdal-${GDAL_VERSION} ; \
-    fi
-ENV CPLUS_INCLUDE_PATH="/usr/include/gdal:$CPLUS_INCLUDE_PATH"
-ENV C_INCLUDE_PATH="/usr/include/gdal:$C_INCLUDE_PATH"
-ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    pip3 install --no-cache-dir \
-        GDAL==${GDAL_VERSION} ; \
-    fi
-RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
-    pip3 install $cartopy_pip_deps ; \
-    fi
-
-
 FROM python-image AS nltk-image
 WORKDIR ${APP_DIR}
 RUN pip3 install nltk \
     && python3 -m nltk.downloader -d ${APP_DIR}/nltk_data popular
 
 
-FROM cartopy-image as jupyter-image
-RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+FROM python-image as jupyter-image
+RUN apt-get update -y
+RUN curl -sL https://deb.nodesource.com/setup_17.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt-get update -y
 RUN apt-get update -y \
@@ -251,7 +185,6 @@ COPY --from=nltk-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/nltk_data ${VIRTUA
 COPY --from=php-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/vendor ${APP_DIR}/vendor
 RUN composer self-update 1.9.3
 USER ${NB_USER}
-ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 ARG JUPYTER_PORT=80
 ENV JUPYTER_PORT=${JUPYTER_PORT}
 ARG ORIGIN_IP_ADDRESS
@@ -268,18 +201,19 @@ RUN jupyter labextension install jupyterlab-topbar-extension \
     && jupyter-nbextension install rise --py --sys-prefix \
     && jupyter-nbextension enable rise --py --sys-prefix \
     && jupyter nbextension enable splitcell/splitcell
-RUN jupyter notebook --generate-config 
-RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py 
+ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
+RUN jupyter notebook --generate-config
+RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
-RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py  
-RUN sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py 
+RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
 COPY --from=php-image --chown=${NB_UID}:${NB_GID} ${NB_USER_DIR}/jupyter-php-installer.phar ${NB_USER_DIR}/jupyter-php-installer.phar
 RUN php ${NB_USER_DIR}/jupyter-php-installer.phar install -n -vvv
@@ -296,7 +230,6 @@ FROM platform-image as dev-image
 USER ${NB_USER}
 VOLUME ${APP_DIR}
 EXPOSE ${JUPYTER_PORT}
-
 
 
 FROM dev-image AS scheduler-image
@@ -326,3 +259,76 @@ RUN rm -rf /var/lib/apt/lists/*
 
 
 #    0 */12 * * *  make -f tasks.mk execute
+
+
+
+FROM dev-image as dev-image-with-cartopy
+ARG GDAL_VERSION
+ARG GEOS_VERSION
+ARG PROJ_VERSION
+USER root
+RUN apt-get update -y \
+    && pip3 install --upgrade pip
+WORKDIR ${NB_USER_DIR}
+RUN \
+        apt-get update -y \
+        && set -x \
+        && cartopy_deps=' \
+            libcurl4-openssl-dev \
+            libtiff-dev \
+            libjpeg-dev \
+            sqlite3 libsqlite3-dev \
+        ' \
+        && set -x \
+        && cartopy_pip_deps=' \
+            cython \
+            ffmpeg-python \
+            shapely \
+            pyshp \
+            pyproj \
+            cartopy \
+            mkdocs-material \
+        ' \
+        && apt-get install -y --no-install-recommends \
+            $cartopy_deps
+RUN  \
+        wget http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
+        && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
+        && cd geos-${GEOS_VERSION} || exit \
+        && ./configure \
+            --prefix=/usr/local \
+        &&  make -j${CPUS} &&  sudo make install \
+        && sudo ldconfig \
+        && cd .. && rm -rf geos-${GEOS_VERSION}
+RUN  \
+        wget https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
+        && tar -xvzf proj-${PROJ_VERSION}.tar.gz \
+        && cd proj-${PROJ_VERSION} || exit \
+        && ./configure \
+            --prefix=/usr/local \
+        && make -j${CPUS} && sudo make install \
+        && make check \
+        && sudo ldconfig \
+        && cd .. && rm -rf proj-${PROJ_VERSION}
+RUN  \
+        wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
+        && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
+        && cd gdal-${GDAL_VERSION} || exit \
+        && ./configure \
+            --with-proj=/usr/local \
+            --with-python=/usr/bin/python3 \
+            --with-local=/usr/local \
+            --with-cpp14 \
+            --with-geos=yes \
+        && make -j${CPUS}  &&  sudo make install  \
+        &&  sudo ldconfig \
+        && cd .. && rm -rf gdal-${GDAL_VERSION}
+ENV CPLUS_INCLUDE_PATH="/usr/include/gdal:$CPLUS_INCLUDE_PATH"
+ENV C_INCLUDE_PATH="/usr/include/gdal:$C_INCLUDE_PATH"
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+WORKDIR ${APP_DIR}
+USER ${NB_USER}
+RUN pip3 install --no-cache-dir GDAL==${GDAL_VERSION}
+RUN pip3 install $cartopy_pip_deps
+VOLUME ${APP_DIR}
+EXPOSE ${JUPYTER_PORT}

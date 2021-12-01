@@ -12,8 +12,13 @@ dev:
 	make dev-down
 	make dev-up
 
+cartopy:
+	git pull origin `git rev-parse --abbrev-ref HEAD`
+	make cartopy-down
+	make cartopy-up
+
 pipeline:
-	git pull
+	git pull origin `git rev-parse --abbrev-ref HEAD`
 	make pipeline-down
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
@@ -29,6 +34,12 @@ dev-down:
 
 dev-up:
 	$(env-vars) docker-compose up --build
+
+cartopy-down:
+	docker-compose -f docker-compose-cartopy.yml down
+
+cartopy-up:
+	$(env-vars) docker-compose -f docker-compose-cartopy.yml up --build
 
 pipeline-down:
 	docker-compose -f docker-compose-pipeline.yml down
