@@ -20,7 +20,7 @@ TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/task_tool_basic_updates.ipynb  \
 	$(SALESFORCE_DIR)/task_tools_map_authors.ipynb   \
 	$(SALESFORCE_DIR)/task_tools_map_contacts.ipynb  \
-	$(SALESFORCE_DIR)/task_user_basic_updates.ipynb  \
+	$(SALESFORCE_DIR)/task_user_basic_updates-2.ipynb  \
 	$(SALESFORCE_DIR)/delete_spam_users.ipynb  \
 	$(SALESFORCE_DIR)/task_update_email_preferences.ipynb  \
 	$(SALESFORCE_DIR)/task_nh_survey_urls.ipynb  \
