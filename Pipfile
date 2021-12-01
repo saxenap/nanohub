@@ -68,6 +68,9 @@ nltk = "*"
 ##########################################
 # Jupyter Extensions
 nodeenv = "*"
+# Got error - ValueError: Can't patch loop of type <class 'NoneType'>
+# When installed latest jupyter-client without a specific version
+jupyter-client = "7.0.6"
 jupyterlab_templates = "*"
 jupyterthemes = "*"
 jupyter_contrib_nbextensions = "*"

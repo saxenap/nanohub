@@ -87,7 +87,7 @@ joblib==1.1.0; python_version >= '3.6'
 json5==0.9.6
 jsonpath-ng==1.5.3
 jsonschema==4.2.1; python_version >= '3.7'
-jupyter-client==7.1.0; python_full_version >= '3.6.1'
+jupyter-client==7.1.0
 jupyter-console==6.4.0; python_version >= '3.6'
 jupyter-contrib-core==0.3.3
 jupyter-contrib-nbextensions==0.5.1
