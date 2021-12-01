@@ -2,7 +2,7 @@ FROM ubuntu:latest AS vars-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
 ARG BUILD_CARTOPY
-ENV BUILD_CARTOPY=FALSE
+ENV BUILD_CARTOPY=False
 ARG CPUS
 ENV CPUS=${CPUS}
 ARG GDAL_VERSION
@@ -155,7 +155,7 @@ RUN apt-get update -y \
 
 
 FROM python-image AS cartopy-image
-RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     apt-get update -y \
     && set -x \
     && cartopy_deps=' \
@@ -176,21 +176,21 @@ RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
     && apt-get install -y --no-install-recommends \
         $cartopy_deps ; \
     fi
-RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     wget http://download.osgeo.org/geos/geos-${GEOS_VERSION}.tar.bz2 \
     && tar xjf geos-${GEOS_VERSION}.tar.bz2 \
     && cd geos-${GEOS_VERSION} || exit \
     && ./configure --prefix=/usr/local &&  make -j${CPUS} &&  sudo make install && sudo ldconfig \
     && cd .. && rm -rf geos-${GEOS_VERSION} ; \
     fi
-RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     wget https://github.com/OSGeo/PROJ/releases/download/${PROJ_VERSION}/proj-${PROJ_VERSION}.tar.gz \
     && tar -xvzf proj-${PROJ_VERSION}.tar.gz \
     && cd proj-${PROJ_VERSION} || exit \
     && ./configure --prefix=/usr/local && make -j${CPUS} && sudo make install && make check && sudo ldconfig \
     && cd .. && rm -rf proj-${PROJ_VERSION} ; \
     fi
-RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
     && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \
     && cd gdal-${GDAL_VERSION} || exit \
@@ -201,11 +201,11 @@ RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
 ENV CPLUS_INCLUDE_PATH="/usr/include/gdal:$CPLUS_INCLUDE_PATH"
 ENV C_INCLUDE_PATH="/usr/include/gdal:$C_INCLUDE_PATH"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-RUN RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     pip3 install --no-cache-dir \
         GDAL==${GDAL_VERSION} ; \
     fi
-RUN RUN if [[ -z "$BUILD_CARTOPY"]] ; then \
+RUN if [ "$BUILD_CARTOPY" = "True" ]; then \
     pip3 install $cartopy_pip_deps ; \
     fi
 
