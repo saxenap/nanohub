@@ -139,6 +139,8 @@ class ClassroomUsers(SalesforceRepository):
     def get_name(self) -> str:
         return 'Classroom_Users_From_Salesforce'
         
+######################################################################################################
+    
     
 class PandasRepository(Repository):
     def __init__(self, sql_string: str, engine, name: str):
@@ -182,4 +184,31 @@ class CachedRepository(Repository):
         
         return df
 
-    
+            
+######################################################################################################
+
+
+class RegisteredUsers(PandasRepository):
+    def __init__(self, engine, name: str = 'registered_users'):
+        self.engine = engine
+        self.sql_string = '''
+          SELECT 
+      user_info.name
+    , user_info.id 
+    , user_info.email      
+    , orcid.profile_value AS orcid
+    , organization.profile_value AS organization
+    , orgtype.profile_value AS orgtype
+  FROM nanohub.jos_users user_info
+LEFT JOIN nanohub.jos_user_profiles orgtype
+  ON orgtype.user_id = user_info.id AND orgtype.profile_key = 'orgtype'
+LEFT JOIN nanohub.jos_user_profiles organization
+  ON organization.user_id = user_info.id AND organization.profile_key = 'organization'
+LEFT JOIN nanohub.jos_user_profiles orcid
+  ON orcid.user_id = user_info.id AND orcid.profile_key = 'orcid'
+;
+        '''
+        self.name = name
+        
+    def get_all(self) -> pandas.DataFrame:
+        return pandas.read_sql_query(self.sql_string, self.engine)  
