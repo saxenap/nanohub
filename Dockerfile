@@ -94,6 +94,7 @@ RUN apt-get update -y \
         php${PHP_VERSION}-json \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-mysql \
+        php-ssh2 \
         php${PHP_VERSION}-opcache \
         php${PHP_VERSION}-zip \
         php-zmq \
