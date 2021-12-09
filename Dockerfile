@@ -46,7 +46,7 @@ RUN apt-get update -y \
         build-essential \
         ca-certificates \
         pkg-config \
-        wget curl git \
+        wget curl git sshpass \
         nano vim \
     ' \
     && apt-get install -y --no-install-recommends \
