@@ -1,0 +1,290 @@
+
+2007spring:
+both:
+854
+xu only:
+227
+mi only:
+151
+neither:
+2166
+
+2007fall:
+both:
+485
+xu only:
+238
+mi only:
+121
+neither:
+2064
+
+2008spring:
+both:
+864
+xu only:
+415
+mi only:
+211
+neither:
+2307
+
+2008fall:
+both:
+588
+xu only:
+293
+mi only:
+136
+neither:
+2552
+
+2009spring:
+both:
+833
+xu only:
+424
+mi only:
+144
+neither:
+2757
+
+2009fall:
+both:
+1002
+xu only:
+545
+mi only:
+179
+neither:
+2457
+
+2010spring:
+both:
+1371
+xu only:
+472
+mi only:
+382
+neither:
+3267
+
+2010fall:
+both:
+1047
+xu only:
+544
+mi only:
+389
+neither:
+3641
+
+2011spring:
+both:
+1314
+xu only:
+690
+mi only:
+509
+neither:
+3777
+
+2011fall:
+both:
+1231
+xu only:
+523
+mi only:
+454
+neither:
+3858
+
+2012spring:
+both:
+1617
+xu only:
+696
+mi only:
+593
+neither:
+4367
+
+2012fall:
+both:
+1368
+xu only:
+495
+mi only:
+496
+neither:
+4023
+
+2013spring:
+both:
+1552
+xu only:
+690
+mi only:
+640
+neither:
+4647
+
+2013fall:
+both:
+1638
+xu only:
+539
+mi only:
+618
+neither:
+4269
+
+2014spring:
+both:
+1492
+xu only:
+653
+mi only:
+482
+neither:
+1870
+
+2014fall:
+both:
+1499
+xu only:
+614
+mi only:
+436
+neither:
+1324
+
+2015spring:
+both:
+1722
+xu only:
+624
+mi only:
+585
+neither:
+1107
+
+2015fall:
+both:
+2068
+xu only:
+842
+mi only:
+554
+neither:
+901
+
+2016spring:
+both:
+1831
+xu only:
+816
+mi only:
+617
+neither:
+838
+
+2016fall:
+both:
+2741
+xu only:
+915
+mi only:
+672
+neither:
+695
+
+2017spring:
+both:
+2074
+xu only:
+987
+mi only:
+660
+neither:
+662
+
+2017fall:
+both:
+2355
+xu only:
+1036
+mi only:
+779
+neither:
+572
+
+2018spring:
+both:
+2207
+xu only:
+795
+mi only:
+816
+neither:
+525
+
+2018fall:
+both:
+2506
+xu only:
+1351
+mi only:
+759
+neither:
+430
+
+2019spring:
+both:
+2595
+xu only:
+838
+mi only:
+901
+neither:
+435
+
+2019fall:
+both:
+2055
+xu only:
+1042
+mi only:
+778
+neither:
+389
+
+2020spring:
+both:
+2695
+xu only:
+997
+mi only:
+1843
+neither:
+432
+
+2020fall:
+both:
+2676
+xu only:
+1231
+mi only:
+1848
+neither:
+370
+
+2021spring:
+both:
+2802
+xu only:
+1224
+mi only:
+1937
+neither:
+364

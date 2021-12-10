@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     for i in range(2007, 2010):
         # for s in ["s"]:
-        for s in ["s"]:
+        for s in ["f"]:
             if i != 2021 or s != "f":
                 overlap_list = get_cluster_overlap(i, s)
                 combined_columns = []
