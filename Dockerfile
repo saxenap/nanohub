@@ -1,8 +1,9 @@
 FROM ubuntu:latest as base-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 ARG TZ
@@ -21,70 +22,83 @@ ENV NB_USER_DIR="/${HOME_DIR_NAME}/${NB_USER}"
 ARG APP_DIR_NAME
 ENV APP_DIR="${NB_USER_DIR}/${APP_DIR_NAME}"
 ENV VIRTUAL_ENV=${NB_USER_DIR}/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN apt-get update -y
-
-
-FROM base-image AS user-image
-RUN apt-get install -y --no-install-recommends sudo
-RUN useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" && \
-    usermod -aG sudo ${NB_USER} && \
-    echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
-    cp /root/.bashrc ${NB_USER_DIR}/ && \
-    chown -R --from=root ${NB_USER} ${NB_USER_DIR}
-
-
-FROM user-image AS build-image
+ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
+ARG LANG
+ENV LANG=${LANG}
+ARG LC_ALL
+ENV LC_ALL=${LC_ALL}
+ARG LOCALE
+ENV LOCALE=${LOCALE}
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y --no-install-recommends \
+RUN set -x \
+    && build_deps=' \
         build-essential \
-        wget curl git \
-        openssh-server \
+    ' \
+    && editors=' \
         nano vim \
-        python3-dev python3-venv python3-pip \
+    ' \
+    && pipeline_deps=' \
         cron \
         rsyslog \
         supervisor \
+        systemd \
+    ' \
+    && jupyter_deps=' \
+        nodejs \
+        texlive-xetex \
         texlive-xetex \
         texlive-latex-base \
         texlive-fonts-recommended \
         texlive-latex-recommended \
         texlive-plain-generic \
         texlive-latex-extra \
-        pandoc
-RUN pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
-    && pip3 install --no-cache-dir pipenv
-RUN python3 -m venv ${VIRTUAL_ENV}
+        pandoc \
+    ' \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+        $build_deps \
+        wget curl git \
+        openssh-server \
+        $editors \
+        sudo \
+        locales \
+        $pipeline_deps \
+        python3-dev python3-venv python3-pip \
+        $jupyter_deps \
+    \
+    && locale-gen en_US \
+    && locale-gen ${LOCALE} \
+    && update-locale \
+    \
+    && useradd -l -m -s /bin/bash -N -u "${NB_UID}" "${NB_USER}" \
+    && echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && sed -i 's/#\?\(PerminRootLogin\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
+    && sed -i 's/#\?\(PermitEmptyPasswords\s*\).*$/\1 yes/' /etc/ssh/sshd_config \
+    && cp /root/.bashrc ${NB_USER_DIR}/ \
+    && chown -R --from=root ${NB_USER} ${NB_USER_DIR} \
+    \
+    && pip3 install --upgrade pip --upgrade setuptools --upgrade wheel \
+    && pip3 install --no-cache-dir pipenv \
+    \
+    && rm -r /var/lib/apt/lists/*
 
 
-FROM build-image AS packages-image
+FROM base-image AS packages-image
 WORKDIR ${APP_DIR}
 RUN python3 -m venv ${VIRTUAL_ENV}
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pipenv lock -r > requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pipenv lock -r > requirements.txt \
+    && pip3 install --no-cache-dir -r requirements.txt
 
 
-FROM build-image AS app-image
+FROM packages-image AS copied-packages-image
 WORKDIR ${APP_DIR}
-COPY . .
-COPY nanoHUB/.env ./nanoHUB/.env
-
-
-FROM build-image AS code-base-image
-USER root
 COPY --from=packages-image --chown=${NB_UID}:${NB_GID} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY --from=app-image --chown=${NB_UID}:${NB_GID} ${APP_DIR} ${APP_DIR}
-RUN chown -R ${NB_USER} ${APP_DIR}
-USER ${NB_USER}
-WORKDIR ${APP_DIR}
-RUN pip3 install .
+RUN . ${VIRTUAL_ENV}/bin/activate
 
 
-FROM code-base-image AS jupyter-image
-USER root
-RUN apt install -y nodejs
+FROM copied-packages-image AS jupyter-image
 USER ${NB_USER}
 WORKDIR ${APP_DIR}
 ARG JUPYTER_PORT=80
@@ -97,21 +111,23 @@ ARG JUPYTER_DISPLAY_IP_ADDRESS
 ENV JUPYTER_DISPLAY_IP_ADDRESS=${JUPYTER_DISPLAY_IP_ADDRESS}
 ARG JUPYTER_DISPLAY_URL="http://${JUPYTER_DISPLAY_IP_ADDRESS}:${JUPYTER_PORT}"
 ENV JUPYTER_DISPLAY_URL=${JUPYTER_DISPLAY_URL}
-RUN jupyter notebook --generate-config && \
-    sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
-RUN jupyter-nbextension install rise --py --sys-prefix && \
-    jupyter-nbextension enable rise --py --sys-prefix
-RUN jupyter nbextension enable splitcell/splitcell
+RUN jupyter contrib nbextension install --user \
+    && jupyter nbextensions_configurator enable --user \
+    && jupyter-nbextension install rise --py --sys-prefix \
+    && jupyter-nbextension enable rise --py --sys-prefix \
+    && jupyter nbextension enable splitcell/splitcell \
+    && jupyter notebook --generate-config \
+    && sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py \
+    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py  \
+    && sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${NB_USER_DIR}/.jupyter/jupyter_notebook_config.py
 #RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable codefolding/main && \
 #    jupyter nbextension enable table_beautifier/main && \
@@ -142,26 +158,35 @@ RUN jupyter nbextension enable splitcell/splitcell
 EXPOSE ${JUPYTER_PORT}
 
 
-FROM jupyter-image AS dev-image
-USER ${NB_USER}
+FROM base-image AS src-image
 WORKDIR ${APP_DIR}
+COPY . .
+
+
+FROM jupyter-image AS dev-image
+WORKDIR ${APP_DIR}
+COPY --from=src-image --chown=${NB_UID}:${NB_GID} ${APP_DIR}/ ${APP_DIR}/
+USER ${NB_USER}
+RUN pip3 install .
 VOLUME ${APP_DIR}
 
 
-FROM code-base-image AS scheduler-image
+FROM dev-image AS scheduler-image
 USER root
-COPY nanoHUB/scheduler/rsyslog.conf /etc/rsyslog.conf
-COPY nanoHUB/scheduler/syslog.conf /etc/syslog.conf
-RUN service rsyslog start
-RUN touch /var/log/cron.log
-RUN chown -R --from=root ${NB_USER} /var/log/cron.log
-USER ${NB_USER}
-ARG CRONTAB_FILE
-COPY ${CRONTAB_FILE} ${APP_DIR}/cron_tasks
-#RUN chown -R --from=root ${NB_USER} ${APP_DIR}/cron_tasks
-#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN chmod 0644 ${APP_DIR}/cron_tasks
-RUN crontab -u ${NB_USER} ${APP_DIR}/cron_tasks
-COPY nanoHUB/scheduler/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN printf '[supervisord] \nnodaemon=true \n\n\n' >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:cron] \ncommand = cron -f -L 2 \nstartsecs = 0 \nuser = root \nautostart=true \nautorestart=true \nstdout_logfile=/dev/stdout \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN printf "[program:rsyslog] \ncommand = service rsyslog start \nuser = root \nautostart=true \nautorestart=true \nredirect_stderr=true \n\n\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+ARG PAPERTRAIL_URL
+ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
+RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 WORKDIR ${APP_DIR}
-
+ARG CRONTAB_FILE
+COPY ${CRONTAB_FILE} ${APP_DIR}/temp
+ARG CRON_LOG_FILE
+ENV CRON_LOG_FILE=${CRON_LOG_FILE}
+RUN sed -i "s%$% ${CRON_LOG_FILE}%" ${APP_DIR}/temp \
+    && echo "PATH=${PATH}" >> ${APP_DIR}/cron_tasks \
+    && echo "HOME=${NB_USER_DIR}" >> ${APP_DIR}/cron_tasks \
+    && cat "${APP_DIR}/temp" >> ${APP_DIR}/cron_tasks \
+    && crontab -u ${NB_USER} ${APP_DIR}/cron_tasks

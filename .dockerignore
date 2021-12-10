@@ -3,12 +3,18 @@
 **/*.DS_Store
 **/Thumbs.db
 *.iml
-**/__pycache__/
-**/*.idea/
+*.egg-info
+.git
+.idea
+*.py[cod]
+__pycache__
+.virtual_documents
+.ipynb_checkpoints
+
+MANIFEST.in
+LICENSE.md
 
 #General
-README.md
-**/git*
 
 #App folders/files
 **/*.log
@@ -16,30 +22,7 @@ README.md
 **/*.github
 archive/
 
-**/*.ipynb_checkpoints/
-**/*.virtual_documents/
-
-Dockerfile
-docker-compose.yml
-.gitignore
-.dockerignore
+**/.ipynb_checkpoints
+**/.virtual_documents
 
 **/venv
-
-## Ignore everything
-#**
-#
-## ... except for dependencies and source
-#!Pipfile
-#!Pipfile.lock
-#!requirements.txt
-#!site-packages/
-#
-#!*.py
-#
-#!CI/
-#!core_classroom_detection/
-#!core_quick_cluster_detection/
-#!preprocessing/
-#!temp/
-

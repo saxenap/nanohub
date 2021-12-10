@@ -20,7 +20,11 @@ pytest = "6.2"
 [packages]
 # need to define exact (pre) version for black
 # delete Pipenv.lock file and then run pipenv install again
-black = "==19.10b0"
+sqlalchemy = "*"
+alembic = "*"
+sqlalchemy-migrate = "*"
+black = "*"
+isort = "*"
 typer = "*"
 google-cloud-storage = "*"
 gcsfs = "*"
@@ -39,7 +43,7 @@ memory-profiler = "*"
 ipykernel = "*"
 jupyter = "*"
 jupyterlab = "*"
-nbconvert = "5.6.1"
+nbconvert = "*"
 dask = "*"
 ##########################################
 # Jupyter Extensions
@@ -83,7 +87,6 @@ sklearn = "*"
 
 portray = "*"
 icecream="*"
-
 
 [pipenv]
 allow_prereleases = true

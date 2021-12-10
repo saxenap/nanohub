@@ -5,9 +5,9 @@ from optparse import OptionParser
 from . import UserToolDayPattern
 import csv
 import sys
+import os
 
-
-def call_func(m_id, startdate, enddate, geofilename, clusters, showcohort=True, showplopwords=True, white=False, rawfilename=None):
+def call_func(path, m_id, startdate, enddate, geofilename, clusters, showcohort=True, showplopwords=True, white=False, rawfilename=None):
     # sys.stdout = open(options.clusterfilename.replace(".csv", "_sequence.txt"), 'w')
 
     geocache = {}
@@ -48,7 +48,7 @@ def call_func(m_id, startdate, enddate, geofilename, clusters, showcohort=True, 
     # im.save(options.clusterfilename.replace('.csv', '.png'), 'PNG')
     # print(options.clusterfilename.replace('.csv', '.png'), 'PNG')
     # im.save('black.png')
-    im.save("../cluster_overlap_visualization/M_" + "{:03d}".format(m_id) + ".png")
+    im.save(os.path.join(path, "M_" + "{:03d}".format(m_id) + ".png"))
 
 
 if __name__ == '__main__':

@@ -116,5 +116,3 @@ def logger(name: str = None):
     # handler.setFormatter(CustomFormatter())
     logger.addFilter(ModuleNameFilter('nanoHUB'))
     return logger
-
-
