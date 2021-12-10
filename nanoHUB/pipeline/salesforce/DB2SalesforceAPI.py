@@ -19,7 +19,6 @@ class DB2SalesforceAPI:
         # login details
         self.sf_login_params = sf_login_params
         self.access_token = None
-
         # Obtain access token
         self.obtain_token()
 

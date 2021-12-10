@@ -1,9 +1,5 @@
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
-from alembic import context
+from alembic import context, command
 from nanoHUB.rfm import model
 from nanoHUB.application import Application
 
@@ -17,9 +13,25 @@ fileConfig(config.config_file_name)
 
 target_metadata = model.Base.metadata
 
-# other values from the config, defined by the needs of env.py,
+def exclude_tables_from_config(config_):
+    tables_ = config_.get("tables", None)
+    if tables_ is not None:
+        tables = tables_.split(",")
+    return tables
+
+exclude_tables = exclude_tables_from_config(config.get_section('alembic:exclude'))
+
+
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table" and name in exclude_tables:
+        return False
+    else:
+        return True
+
+
+# other values from the .config, defined by the needs of env.py,
 # can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
+# my_important_option = .config.get_main_option("my_important_option")
 # ... etc.
 
 
@@ -41,6 +53,7 @@ def run_migrations_offline():
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_object=include_object
     )
 
     with context.begin_transaction():
@@ -54,24 +67,23 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-
-    connection = App
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    connectable = get_connectable(config.get_main_option("mysql.database.name"))
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=include_object
         )
 
         with context.begin_transaction():
             context.run_migrations()
 
+    connection.close()
 
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
+def get_connectable(db_name: str):
+    application = Application.get_instance()
+    return application.new_db_engine(db_name)
+
+run_migrations_online()
+

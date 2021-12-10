@@ -1,5 +1,6 @@
-env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g)
+env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
 
+log-level=INFO
 ########################################################################################################################
 #These run on the host
 
@@ -7,20 +8,23 @@ setup:
 	cp nanoHUB/.env.dev nanoHUB/.env
 
 dev:
-	git pull
+	git pull origin `git rev-parse --abbrev-ref HEAD`
 	make dev-down
 	make dev-up
 
-pipeline-test:
-	git pull
-	make pipeline-down
-	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab.test docker-compose -f docker-compose-pipeline.yml up --build
+cartopy:
+	git pull origin `git rev-parse --abbrev-ref HEAD`
+	make cartopy-down
+	make cartopy-up
 
-pipeline-prod:
-	git pull
+pipeline:
+	git pull origin `git rev-parse --abbrev-ref HEAD`
 	make pipeline-down
-	$(env-vars) CRONTAB_FILE=nanoHUB/scheduler/crontab docker-compose -f docker-compose-pipeline.yml up --build
+	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
+clean:
+	docker volume rm $$(docker volume ls -q) 2>/dev/null; true
+	docker system prune --all -f
 
 ########################################################################################################################
 # Base Commands
@@ -30,6 +34,12 @@ dev-down:
 
 dev-up:
 	$(env-vars) docker-compose up --build
+
+cartopy-down:
+	docker-compose -f docker-compose-cartopy.yml down
+
+cartopy-up:
+	$(env-vars) docker-compose -f docker-compose-cartopy.yml up --build
 
 pipeline-down:
 	docker-compose -f docker-compose-pipeline.yml down
@@ -44,7 +54,20 @@ cron-log:
 show-cron_tasks:
 	tail -f cron_tasks
 
+exec-pipeline:
+	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
 
+run-tasks:
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute
+
+debug-tasks:
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute log-level=DEBUG
+
+run_command:
+	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
+
+run-clustering:
+	docker exec `docker ps -q --filter name=nanohub_dev` make -C -j$(getconf _NPROCESSORS_ONLN) nanoHUB/clustering
 ########################################################################################################################
 # Others
 

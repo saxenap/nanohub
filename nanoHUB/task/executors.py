@@ -2,11 +2,13 @@ import warnings
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore")
     import papermill
-
+from memory_profiler import memory_usage
 import logging
 from pathlib import Path
 import subprocess
 import os
+import json
+import time
 
 
 class IExecutor:
@@ -42,7 +44,7 @@ class JupyterExecutor(IExecutor):
         self.logger.info('Saved output file - %s' % output_file_path)
 
     def get_name(self) -> str:
-        return 'JupyterExecutor (file: %s)'% __file__
+        return '%s'% self.notebook_path
 
 
 class PythonFileExecutor(IExecutor):
@@ -62,7 +64,7 @@ class PythonFileExecutor(IExecutor):
             exec(compile(file.read(), self.file_path, 'exec'), globals, locals)
 
     def get_name(self) -> str:
-        return 'PythonFileExecutor (file: %s)'% __file__
+        return '%s'% self.file_path
 
 
 class RFileExecutor(IExecutor):
@@ -77,7 +79,7 @@ class RFileExecutor(IExecutor):
         subprocess.call([self.r_executable_path, "--vanilla", self.file_path])
 
     def get_name(self) -> str:
-        return 'RFileExecutor (file: %s)'% __file__
+        return '%s'% self.file_path
 
 '''
 ##################################################################################################
@@ -86,24 +88,6 @@ Decorating Executors
 
 ##################################################################################################
 '''
-
-class LoggingExecutorDecorator(IExecutor):
-
-    def __init__(self, executor: IExecutor, file_path: str, logger: logging.Logger):
-        self.executor = executor
-        self.file_path = file_path
-        self.logger = logger
-        # self.test = 0
-
-    def __call__(self):
-        self.executor()
-        # self.test += 1
-        # if self.test == 1:
-        #     raise RuntimeError
-        self.logger.info("%s executed file/task %s." % (self.executor.get_name(), self.file_path))
-
-    def get_name(self) -> str:
-        return 'LoggingExecutorDecorator (file: %s)'% __file__
 
 
 class RetryingExecutorDecorator(IExecutor):
@@ -117,42 +101,58 @@ class RetryingExecutorDecorator(IExecutor):
     def __call__(self):
         for i in range(0, self.retries_max_count):
             try:
-                self.retries_current_count += 1
-                self.logger.info("Executing task - number of tries left: %d." % (self.retries_max_count - self.retries_current_count))
+                self.logger.info("Attempt %d of %d [%s]." % (
+                    i+1, self.retries_max_count, self.get_name()
+                ))
                 self.executor()
                 return
             except Exception as excep:
-                self.logger.info("Task failed with exception %s." % excep)
+                self.logger.error("FAILURE [%s] - %s." % (
+                    self.get_name(), excep
+                ))
+                if i < self.retries_max_count:
+                    self.logger.info("RETRYING [%s]" % self.get_name())
                 continue
 
 
     def get_name(self) -> str:
-        return 'RetryingExecutorDecorator (file: %s)'% __file__
+        return self.executor.get_name()
 
 
-import time
+class IMetricsReporter:
 
-class TimeProfilingDecorator(IExecutor):
+    def report(self, executor: IExecutor) -> dict:
+        raise NotImplemented
 
-    def __init__(self, executor: IExecutor, logger: logging.Logger):
-        self.executor = executor
-        self.logger = logger
 
-    def __call__(self):
+class TimingProfileReporter(IMetricsReporter):
+
+    def report(self, executor: IExecutor) -> dict:
         start_time = time.time()
-        self.executor()
-        stop_time = time.time() - start_time
-        self.logger.info("Time Taken - %ss" % stop_time)
+        executor()
+        return {"ExecutionTime (s)": time.time() - start_time}
 
 
-from memory_profiler import memory_usage
+class MemoryProfileReporter(IMetricsReporter):
 
-class MemoryProfilingDecorator(IExecutor):
+    def report(self, executor: IExecutor) -> dict:
+        mem_usage = memory_usage(executor, max_usage=True, include_children=True)
+        return {"MemoryUsed (MiB)": mem_usage}
 
-    def __init__(self, executor: IExecutor, logger: logging.Logger):
+
+class MetricsReporterDecorator(IExecutor):
+
+    def __init__(self, executor: IExecutor, metrics_reporters: [IMetricsReporter], logger: logging.Logger):
         self.executor = executor
+        self.metrics_reporters = metrics_reporters
         self.logger = logger
 
     def __call__(self):
-        mem_usage = memory_usage((self.executor), max_usage=True, include_children=True)
-        self.logger.info("Memory Used - %.2fMB" % mem_usage)
+        result = {'task': self.get_name(), 'metrics': {}}
+        for reporter in self.metrics_reporters:
+            result['metrics'].update(reporter.report(self.executor))
+
+        self.logger.info(json.dumps(result))
+
+    def get_name(self) -> str:
+        return self.executor.get_name()

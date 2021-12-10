@@ -23,6 +23,6 @@ class LoggingContainer(containers.DeclarativeContainer):
     # )
     # log = logger()
     # log.addHandler(SysLogHandler(address=(
-    #     config.remoteservicessettings.papertrail_hostname,
-    #     config.remoteservicessettings.papertrail_port
+    #     .config.remoteservicessettings.papertrail_hostname,
+    #     .config.remoteservicessettings.papertrail_port
     # )))

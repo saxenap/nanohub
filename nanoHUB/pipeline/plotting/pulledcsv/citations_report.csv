@@ -1,0 +1,125 @@
+nanoHUB.org Citations Summary. Generated on: 2021-11-07
+Go to http://nanoHUB.org/citations for more information
+
+Table 1: Citations Authors by Organization Type
+Organization Type, Authors
+Education, 5413
+Industry, 405
+Government, 253
+Unknown, 101
+University, 40
+Military, 23
+Total, 6115
+
+Table 2: Secondary Citations
+h-Index, 82
+Total Secondary Citations, 30935
+
+Table 3: Citations by Topic Areas
+Topic, NCN Affiliated, Outside NCN, Total
+Research, 692, 1474, 2168
+  - Experimentalist + Data, 102, 308, 410
+  - Experimental Data Total, 291, 559, 851
+Research & Education, 31, 39, 70
+Education, 77, 128, 205
+Cyberinfrastructure, 57, 194, 251
+* Note: If a citation is classified as "Experimentalist and Experimental Data", it is also classified as "Experimental Data Total". Meaning, "Experimentalist and Experimental Data" is a subset of "Experimental Data Total"
+
+Table 4: Citations counts by Continent
+Continent, Citations
+North America, 1538
+Asia, 612
+Europe, 556
+Oceania, 61
+Africa, 46
+South America, 33
+
+Table 5: Top 15 Tools Ranked by Citations
+Rank, Tool, Total Citations, Tool URL
+1, Workspace, 304, http://nanohub.org/resources/1242
+2, NanoMOS, 137, http://nanohub.org/resources/1305
+3, Schred, 136, http://nanohub.org/resources/221
+4, FETToy, 90, http://nanohub.org/resources/220
+5, NanoTCAD ViDES, 47, http://nanohub.org/resources/5116
+6, PhotonicsDB: Optical Constants, 46, http://nanohub.org/resources/3692
+7, Band Structure Lab, 44, http://nanohub.org/resources/1308
+8, CNTbands, 19, http://nanohub.org/resources/1838
+9, Carbon Nanotubes Interconnect Analyzer (CNIA), 17, http://nanohub.org/resources/2464
+10, MuGFET, 17, http://nanohub.org/resources/3843
+11, Quantum Dot Lab, 17, http://nanohub.org/resources/450
+12, ADEPT 2.1, 15, http://nanohub.org/resources/10913
+13, Nanowire, 14, http://nanohub.org/resources/1307
+14, OMEN Nanowire, 14, http://nanohub.org/resources/5359
+15, PhotonicsSHA-2D: Modeling of Single-Period Multilayer Optical Gratings and Metamaterials, 13, http://nanohub.org/resources/6977
+
+Table 6: Citations per year
+Year, NCN Affiliated, Outside NCN, Total
+2020, 10, 60, 70
+2019, 34, 144, 179
+2018, 44, 161, 206
+2017, 50, 156, 206
+2016, 65, 170, 235
+2015, 92, 121, 213
+2014, 49, 124, 173
+2013, 57, 155, 212
+2012, 38, 131, 169
+2011, 75, 112, 187
+2010, 48, 79, 127
+2009, 59, 102, 161
+2008, 46, 45, 91
+2007, 44, 54, 98
+2006, 19, 40, 59
+2005, 23, 31, 54
+2004, 11, 18, 29
+2003, 8, 13, 21
+2002, 7, 9, 16
+2001, 2, 5, 7
+2000, 0, 1, 1
+Total, 781, 1734, 2517
+
+Table 7: Citations by type
+Type, Percent, Total
+Journal, 59.8%, 1506
+Proceedings, 22.6%, 570
+Conference, 3.1%, 77
+Phd Thesis, 2.6%, 66
+In Book, 2.3%, 59
+XArchive, 2.3%, 57
+Masters Thesis, 2.1%, 54
+Report, 1.4%, 35
+Article, 1.1%, 27
+Preprint, 0.8%, 21
+Invited Conference, 0.6%, 15
+Misc, 0.5%, 12
+Patent, 0.2%, 6
+Magazine, 0.2%, 5
+arXiv, 0.2%, 4
+Syllabus, 0.0%, 1
+Technical Briefing, 0.0%, 1
+Letter, 0.0%, 1
+Total, 100%, 2517
+
+Table 8: Citations by Year (Cumulative)
+Year, NCN Affiliated, Outside NCN, Total
+2000, 0, 4, 4
+2001, 2, 9, 11
+2002, 9, 18, 27
+2003, 17, 31, 48
+2004, 28, 49, 77
+2005, 51, 80, 131
+2006, 70, 120, 190
+2007, 114, 174, 288
+2008, 160, 219, 379
+2009, 219, 321, 540
+2010, 267, 400, 667
+2011, 342, 512, 854
+2012, 380, 643, 1023
+2013, 437, 798, 1235
+2014, 486, 922, 1408
+2015, 578, 1043, 1621
+2016, 643, 1213, 1856
+2017, 693, 1369, 2062
+2018, 737, 1530, 2268
+2019, 771, 1674, 2447
+2020, 781, 1734, 2517
+Total, 781, 1734, 2517

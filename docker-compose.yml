@@ -22,6 +22,8 @@ services:
         LANG: "${LANG}"
         LC_ALL: "${LC_ALL}"
         LOCALE: "${LOCALE}"
+        CPUS: "${CPUS}"
+        PHP_VERSION: "${PHP_VERSION}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"

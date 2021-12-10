@@ -15,6 +15,7 @@ import sqlalchemy as db
 from sqlalchemy import *
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.ext.declarative import declarative_base
+from nanoHUB.application import Application
 
 Base = declarative_base()
 from sqlalchemy.orm import sessionmaker
@@ -34,10 +35,9 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
     else:
         # Production: connect with live DB
         start_time = time.time()
-        db_engine = create_engine('mysql+pymysql://' + inparams.SQL_username + ':' + inparams.SQL_password \
-                                  + '@' + inparams.SQL_addr + ':' + inparams.SQL_port + '/' + db_name)
-        if not database_exists(db_engine.url):
-            logging.error('Database ' + str(db_engine.url) + ' does not exist! Please create it first.')
+
+        application = Application.get_instance()
+        db_engine = application.new_db_engine(db_name)
 
         sql_select = db.select([sql_table])
         if date_range:
@@ -45,6 +45,12 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
                 sql_table.c.datetime >= (inparams.class_probe_range[0] + ' 00:00:00'), sql_table.c.datetime <= (
                             inparams.class_probe_range[1] + ' 23:59:59')))
 
+        logging.info("Retrieving data from %s.%s range: %s - %s" % (
+            db_name,
+            sql_table.name,
+            inparams.class_probe_range[0],
+            inparams.class_probe_range[1]
+        ))
         # load table into DF
         df = pd.read_sql(sql_select, db_engine)
 
@@ -63,10 +69,12 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
         print("DB time:", end_time - start_time)
 
         # save DF using Feather
-        df.reset_index(drop=True).to_feather(os.path.join(inparams.scratch_dir, sql_table.name + '.feather'))
+        df.reset_index(drop=True).to_feather(
+            os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1] + '/' + sql_table.name + '.feather')
+        )
 
         # display a small part of DF
-        logging.info(df)
+        logging.debug(df)
 
     return
 

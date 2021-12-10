@@ -11,12 +11,12 @@ from Levenshtein import distance as levenshtein_distance
 
 import sys
 #sys.path.append('/home/users/wang2506/nanohub_salesforce_integ/salesforce')
-
+import os
 import pandas as pd
 import time
 import datetime
 
-from DB2SalesforceAPI import DB2SalesforceAPI
+#from DB2SalesforceAPI import DB2SalesforceAPI
 
 from IPython.display import display
 
@@ -33,7 +33,19 @@ from pprint import pprint
 import logging
 import os
 
+from nanoHUB.application import Application
+
+application = Application.get_instance()
+# nanohub_db = application.new_db_engine('nanohub')
+# nanohub_metrics_db = application.new_db_engine('nanohub_metrics')
+# wang159_myrmekes_db = application.new_db_engine('wang159_myrmekes')
+
+salesforce = application.new_salesforce_engine()
+db_s = salesforce
+
+
 cwd = os.getcwd()
+APP_DIR =  os.getenv('APP_DIR')
 
 # %% logging dir make
 try:
@@ -66,17 +78,18 @@ api_url = '/services/data/v43.0/sobjects'
 external_id = 'Name'
 object_id = 'ContactToolAssociation__c'
 
-# login parameters to be handled by Papermill
-sql_login_params = {"username": "wang2506_ro", "password": "fnVnwcCS7iT45EsA"}
-sf_login_params = {
-    "grant_type": "password",
-    "client_id": "3MVG95jctIhbyCppj0SNJ75IsZ1y8UPGZtSNF4j8FNVXz.De8Lu4jHm3rjRosAtsHy6qjHx3i4S_QbQzvBePG",
-    "client_secret": "D1623C6D3607D4FC8004B92C761DFB6C1F70CCD129C5501E357028DFA00F5764",
-    "username":"wang2506@purdue.edu",
-    "password":"sf2021shitOPmlIiFMLnrudgC6oSX0WV1T",   
-}
+# # login parameters to be handled by Papermill
+# sql_login_params = {"username": "wang2506_ro", "password": "fnVnwcCS7iT45EsA"}
+# sf_login_params = {
+#     "grant_type": "password",
+#     "client_id": "3MVG95jctIhbyCppj0SNJ75IsZ1y8UPGZtSNF4j8FNVXz.De8Lu4jHm3rjRosAtsHy6qjHx3i4S_QbQzvBePG",
+#     "client_secret": "D1623C6D3607D4FC8004B92C761DFB6C1F70CCD129C5501E357028DFA00F5764",
+#     "username":"wang2506@purdue.edu",
+#     "password":"npass2021HDfJLhBGDx11xWCKlEbHQKhF",   
+# }
 
-db_1 = DB2SalesforceAPI(sf_login_params)
+# db_1 = DB2SalesforceAPI(sf_login_params)
+db_1 = db_s
 
 query = 'Select ID, firstname, lastname, Email, nanoHUB_user_ID__c, \
     Google_Scholar_ID_sf__c, ORCID_sf__c, Research_ID_sf__c, ResearchGate_ID_sf__c, \
@@ -84,7 +97,16 @@ query = 'Select ID, firstname, lastname, Email, nanoHUB_user_ID__c, \
     Linkedin_Bio__c, Facebook_profile__c, Twitter_profile__c, Misc_URLs__c, \
     Organization_composite__c, Active_duration__c \
     from Contact' #import everyone # limit 10'
-c_sample = db_1.query_data(query)
+
+cwd = APP_DIR + '/nanoHUB/pipeline/researcher_scraping'
+c_sample_file_path = cwd + '/scrape_results/c_sample.csv'
+try:
+    c_sample = pd.read_csv(c_sample_file_path)
+    c_sample = c_sample.drop(columns='Unnamed: 0')
+except:
+    # raise TypeError('temp error msg')
+    c_sample = db_1.query_data(query)
+    c_sample.to_csv(c_sample_file_path)
 
 display(c_sample.head(2))
 display(c_sample.tail(2))
@@ -119,9 +141,12 @@ print(email_domains[:3])
 ##
 
 orgs_query = 'Select ID, Name, Domain__c from organization__c'
-orgs_all = db_1.query_data(orgs_query)
-
-orgs_all = orgs_all.rename(columns={'Id':'Organization_composite__c'})
+try:
+    orgs_all = pd.read_csv(cwd+'/scrape_results/orgs_all.csv')
+except:
+    orgs_all = db_1.query_data(orgs_query)
+    orgs_all = orgs_all.rename(columns={'Id':'Organization_composite__c'})
+    orgs_all.to_csv(cwd+'/scrape_results/orgs_all.csv')
 
 # left inner join
 c_sample2 = c_sample2.merge(orgs_all,how='left',on='Organization_composite__c',\
@@ -147,8 +172,22 @@ def batch(iterable, n=1):
 
 # split indexes into batches based on bs
 counter =  0
+
+# determine the batch number
 batch_no = 0
-for instance in batch(range(0,c_sample2.shape[0]),batch_size):
+batch_e_flag = False
+while batch_e_flag == False:
+    try:
+        tt_batch = pd.read_excel(cwd+'/scrape_results/batch_results_'\
+                                 +str(batch_no)+'.xlsx')
+        batch_no += 1
+    except:
+        batch_e_flag = True
+
+proxy_flag = False 
+
+start_t = time.time()
+for instance in batch(range(c_sample2.shape[0]),batch_size)[batch_no:]: ## TODO : debug flag, revert to 0
     instance = list(instance)
     temp_sample = c_sample2.iloc[instance,:]
 
@@ -163,8 +202,6 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     # 4. if exists, build google scholar url
     # 5. populate dataframe with the results
     ##
-    
-    proxy_flag = False 
     
     while proxy_flag == False:
         time.sleep(5)
@@ -207,40 +244,54 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     for ind,val in enumerate(fullnames):
         # print(gs_ids)
         author_gen = scholarly.search_author(val)
-        list_auth_gen = list(author_gen)
         
-        time.sleep(np.random.randint(5, 15)) # rng seconds of sleep
-        if len(list_auth_gen) != 0:
-            # iteratively perform name based levenshtein capping
-            counter = 0
-            for test_case in list_auth_gen:
-                if levenshtein_distance(test_case['name'],val) <= 5: #less than or equal to 5 edits
-                    if test_case['email_domain'] == email_domains[ind]:
-                        # .edu domains
-                        if email_domains[ind][-3:] == 'edu':
+        list_auth_gen = []
+        auth_gen_count = 0
+        auth_cap = 3
+        for temp_auth in author_gen:
+            if auth_gen_count >= auth_cap:
+                break
+            else:        
+                list_auth_gen.append(temp_auth)
+                auth_gen_count += 1
+        
+        # time.sleep(np.random.randint(5,15)) # rng seconds of sleep
+        
+        print(gs_ids)
+        
+        try:
+            if len(list_auth_gen) != 0:
+                # iteratively perform name based levenshtein capping
+                counter = 0
+                for test_case in list_auth_gen:
+                    if levenshtein_distance(test_case['name'],val) <= 5: #less than or equal to 5 edits
+                        if test_case['email_domain'] == email_domains[ind]:
+                            # .edu domains
+                            if email_domains[ind][-3:] == 'edu':
+                                gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+                                gs_ids.append(gs_url)
+                                break
+                            else: #hack
+                                gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+                                gs_ids.append(gs_url)
+                                break
+                        elif test_case['affiliation'] == org_names[ind]:
                             gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
                             gs_ids.append(gs_url)
                             break
-                        else: #hack
-                            gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
+                    
+                    counter += 1
+                    if counter == len(list_auth_gen):
+                        try:
+                            gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(list_auth_gen[0]['scholar_id'])
                             gs_ids.append(gs_url)
-                            break
-                    elif test_case['affiliation'] == org_names[ind]:
-                        gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(test_case['scholar_id'])
-                        gs_ids.append(gs_url)
+                        except:
+                            print('move on - no google scholar result')
                         break
-                
-                counter += 1
-                if counter == len(list_auth_gen):
-                    try:
-                        gs_url = 'https://scholar.google.com/citations?user={}&hl=en&oi=ao'.format(list_auth_gen[0]['scholar_id'])
-                        gs_ids.append(gs_url)
-                    except:
-                        print('move on - no google scholar result')
-                    break
-        else:
+            else:
+                gs_ids.append('')
+        except:
             gs_ids.append('')
-    
     # print(gs_ids)
     # print(len(gs_ids))
     
@@ -249,9 +300,9 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     temp_sample['Google_Scholar_ID_sf__c'] = gs_ids
     display(temp_sample.head(5))
 
-    time.sleep(np.random.randint(2, 10))
+    time.sleep(np.random.randint(2,10))
 
-    # %% ORCID search
+    ## %% ORCID search
     
     ## details: rely on the fullnames list created earlier
     # 1. design ORCID search URLs to find candidate ORCIDs
@@ -284,42 +335,9 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
                 
     temp_sample['ORCID_sf__c'] = ORCID_urls
-    time.sleep(np.random.randint(2, 10))
-    
-    # %% Research ID_sf
-    ## Do the same thing as ORCID ID search
-    # rather than web of science researcherID - use publons as the filter
-    
-    wos_researchers = [] #web of science researcherIDs
+    time.sleep(np.random.randint(2,10))
         
-    # populate researcherIDs
-    for i in fullnames:
-        temp_name = i.split(' ')
-        test = search('{} {} publons'.format(temp_name[0],temp_name[-1]),tld='com', lang='en', \
-                      num=5, start=0, stop=5, pause=np.random.randint(2,5))
-        list_test = [j for j in test]
-        if len(list_test) == 0:
-            wos_researchers.append('')
-        else:
-            for ind,j in enumerate(list_test):
-                wos_matches = re.findall(r'publons.com/researcher/\d+',j)
-                if len(wos_matches) > 0:
-                    # take the first match and move on
-                    temp_url = 'https://{}/{}-{}'.format(wos_matches[0],temp_name[0],temp_name[-1])
-                    wos_researchers.append(temp_url)
-                    break
-    
-                if ind == len(list_test)-1:
-                    wos_researchers.append('')
-                    break
-                
-    temp_sample['Research_ID_sf__c'] = wos_researchers
-    time.sleep(np.random.randint(2, 10))
-        
-    # %% SCOPUS - can't find results, blanked out for now
-    
-        
-    # %% reseach gate    
+    ## %% reseach gate    
     ## Follow procedure from ORCID + publons
     research_gate_ids = [] #web of science researcherIDs
     
@@ -345,10 +363,10 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
                     break
     
     temp_sample['ResearchGate_ID_sf__c'] = research_gate_ids
-    time.sleep(np.random.randint(2, 10))
+    time.sleep(np.random.randint(2,10))
     
     
-    # %% type adjustment for NH user ids and then upload to SF
+    ## %% type adjustment for NH user ids and then upload to SF
     temp_sample['nanoHUB_user_ID__c'] = \
         temp_sample['nanoHUB_user_ID__c'].apply(lambda x: int(x))
     
@@ -360,8 +378,8 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     # db_temp.external_id = external_id
     # db_temp.object_id = object_id
     
-    temp_sample = temp_sample.drop(columns=\
-        ['FirstName','LastName','Domain__c','org_name','Active_duration__c','Email']) #
+    # temp_sample = temp_sample.drop(columns=\
+        # ['FirstName','LastName','Domain__c','org_name','Active_duration__c','Email']) #
     
     # db_temp.send_data(temp_sample)
     
@@ -369,7 +387,8 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     # db_temp.check_bulk_status()
 
     #db_temp.check_bulk_failed_results()
-
+    
+    ###
     # logging.basicConfig(filename=cwd+'/logging/batch_'+str(batch_no)+'.log', \
     #     encoding='utf-8', level=logging.DEBUG)
     # logging.debug('Logging file header: \n')
@@ -395,14 +414,62 @@ for instance in batch(range(0,c_sample2.shape[0]),batch_size):
     except:
         print('directory exists - ignore this message')
     
-    temp_sample.to_csv(cwd+'/scrape_results/batch_result_'+str(batch_no))
+    # temp_sample.to_csv(cwd+'/scrape_results/batch_result_'+str(batch_no))
+    
+    ## build SF profile links
+    temp_sample['sf_urls'] = ['https://na172.lightning.force.com/lightning/r/Contact/{}/view'.format(i) \
+            for i in temp_sample['Id'].to_list()]
+    
+    temp_sample['gk_pls_check'] = -1
+    temp_sample['gscholar_check'] = -1
+    temp_sample['ORCID_check'] = -1
+    temp_sample['rs_gate_check'] = -1
+    
+    temp_sample.to_excel(cwd+'/scrape_results/batch_results_'+str(batch_no)+'.xlsx')
+    
+    ## validated checkbox; g_pls_verify
+    
     batch_no += 1
     
     # wait for next batch instance
-    time.sleep(np.random.randint(30, 121))
+    time.sleep(np.random.randint(30,121))
 
-
-
+    if start_t - time.time() >= 3*60*60: #3 hour run sessions
+        break
+# %% graveyard
+    
+    # %% Research ID_sf
+    ## Do the same thing as ORCID ID search
+    # rather than web of science researcherID - use publons as the filter
+    
+    # wos_researchers = [] #web of science researcherIDs
+        
+    # # populate researcherIDs
+    # for i in fullnames:
+    #     temp_name = i.split(' ')
+    #     test = search('{} {} publons'.format(temp_name[0],temp_name[-1]),tld='com', lang='en', \
+    #                   num=5, start=0, stop=5, pause=np.random.randint(2,5))
+    #     list_test = [j for j in test]
+    #     if len(list_test) == 0:
+    #         wos_researchers.append('')
+    #     else:
+    #         for ind,j in enumerate(list_test):
+    #             wos_matches = re.findall(r'publons.com/researcher/\d+',j)
+    #             if len(wos_matches) > 0:
+    #                 # take the first match and move on
+    #                 temp_url = 'https://{}/{}-{}'.format(wos_matches[0],temp_name[0],temp_name[-1])
+    #                 wos_researchers.append(temp_url)
+    #                 break
+    
+    #             if ind == len(list_test)-1:
+    #                 wos_researchers.append('')
+    #                 break
+                
+    # temp_sample['Research_ID_sf__c'] = wos_researchers
+    # time.sleep(np.random.randint(2,10))
+    
+    # %% SCOPUS - can't find results, blanked out for now
+    
 
 
 

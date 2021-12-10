@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev-image-with-cartopy
+      labels:
+        com.nanoHUB.description: "Development and Exploration service"
+      args:
+        NB_USER: "${NB_USER}"
+        NB_UID: "${NB_UID}"
+        NB_GID: "${NB_GID}"
+        APP_DIR_NAME: "${APP_DIR_NAME}"
+        HOME_DIR_NAME: "${HOME_DIR_NAME}"
+        JUPYTER_DISPLAY_IP_ADDRESS: "${JUPYTER_DISPLAY_IP_ADDRESS}"
+        ORIGIN_IP_ADDRESS: "${ORIGIN_IP_ADDRESS}"
+        JUPYTER_IP_ADDRESS: "${JUPYTER_IP_ADDRESS}"
+        JUPYTER_PORT: "${JUPYTER_PORT}"
+        BUILD_WITH_JUPYTER: "${BUILD_WITH_JUPYTER}"
+        LANG: "${LANG}"
+        LC_ALL: "${LC_ALL}"
+        LOCALE: "${LOCALE}"
+        CPUS: "${CPUS}"
+        PHP_VERSION: "${PHP_VERSION}"
+        GDAL_VERSION: "${GDAL_VERSION}"
+        GEOS_VERSION: "${GEOS_VERSION}"
+        PROJ_VERSION: "${PROJ_VERSION}"
+    restart: always
+    ports:
+      - "${JUPYTER_PORT}:${JUPYTER_PORT}"
+    volumes:
+      - ".:/${HOME_DIR_NAME}/${NB_USER}/${APP_DIR_NAME}"
+    env_file:
+      - ./nanoHUB/.env
+      - ./nanoHUB/.config
+    command: [jupyter, lab]

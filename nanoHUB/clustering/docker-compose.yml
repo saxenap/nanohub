@@ -19,7 +19,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./scheduler/config.ini:/etc/ofelia/config.ini
+      - ./scheduler/.config.ini:/etc/ofelia/.config.ini
     depends_on:
       - clustering
 #  elasticsearch:
@@ -29,7 +29,7 @@ services:
 #      - 9200:9200
 #      - 9300:9300
 #    volumes:
-#      - "./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+#      - "./.config/elasticsearch.yml:/usr/share/elasticsearch/.config/elasticsearch.yml"
 #    depends_on:
 #      - clustering
 #  kibana:
@@ -47,5 +47,5 @@ services:
 #      - elasticsearch:elasticsearch
 #    restart: on-failure
 #    volumes:
-#      - ./config/logstash.conf:/etc/logstash/conf.d/logstash.conf
+#      - ./.config/logstash.conf:/etc/logstash/conf.d/logstash.conf
 #      - ./.log:/tmp/logs

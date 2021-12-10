@@ -34,6 +34,10 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+##### Composer
+composer.phar
+/vendor/
+
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
@@ -102,6 +106,8 @@ fabric.properties
 .idea/**/markdown-navigator-enh.xml
 .idea/**/markdown-navigator/
 
+.virtual_documents/
+
 # Cache file creation bug
 # See https://youtrack.jetbrains.com/issue/JBR-2257
 .idea/$CACHE_FILE$
@@ -169,7 +175,6 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *.cover
@@ -212,11 +217,11 @@ target/
 # .python-version
 
 # pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   According to pypa/pipenv#598, it is recommended to include Pipfile-cartography.lock in version control.
 #   However, in case of collaboration, if having platform-specific dependencies or dependencies
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
-#Pipfile.lock
+#Pipfile-cartography.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
@@ -259,6 +264,13 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.xlsx
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.csv
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/institution_table_generation/*.zip
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/airflow
+**/pipeline/ARCHIVE/nanoHUB_ML_pipeline/ts_predict
+
+
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,python,jupyternotebooks
 .DS_Store

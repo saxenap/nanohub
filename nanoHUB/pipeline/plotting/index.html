@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <div>
-<h1 style = "text-align:center;"> NanoHUB Annual Report Data </h1>
+<h1 style = "text-align:center;"> nanoHUB Annual Report Data </h1>
 <img src = "nanoHUBlogo.png" style="display:block;margin-left:auto;margin-right:auto;">
 &nbsp;
     
 <h3 style="text-align:center;"> About </h3>
 <p> This webpage shows the latest information about nanoHUB's evolution in a variety of different areas.
-These different areas primarily include data on NanoHUB's users (physical location, usage pattern, simulation runs), 
+These different areas primarily include data on nanoHUB's users (physical location, usage pattern, simulation runs), 
     information about the types of universities using nanoHUB, citations using nanoHUB resources, simulation use 
     in structured classroom instruction, and content generation and cumulative growth.</p>
 
@@ -18,9 +18,9 @@ These different areas primarily include data on NanoHUB's users (physical locati
     
 <ul>
      <li> <a href="#Who are Our Users?"> Who are nanoHUB's Users? (Usage patterns, registration forms, and physical locations of usage) </a> </li>
-    <li> <a href="#Institution"> How NanoHUB's services are utilized in University Classrooms</a> </li> 
-    <li> <a href="#Citations"> How Common is NanoHUB used among NCN and non-NCN Researchers </a> </li>
-    <li><a href="#Classroom Usage"> How is NanoHUB used in classrooms </a> </li>
+    <li> <a href="#Institution"> How nanoHUB's services are utilized in University Classrooms</a> </li> 
+    <li> <a href="#Citations"> How Common is nanoHUB used among NCN and non-NCN Researchers </a> </li>
+    <li><a href="#Classroom Usage"> How is nanoHUB used in classrooms </a> </li>
     <li><a href="#Content Generation"> Where does the tools that Increase nanoHUB's Utility Come From </a> </li>
 
 </ul>
@@ -33,16 +33,31 @@ These different areas primarily include data on NanoHUB's users (physical locati
      usage patterns (whether nanoHUB is used for coordinated education, research or self-study), simulation run patterns,
      longevity and liftime on nanoHUB, and the different forms of registration (whether the user is a new user, an active 
      simulation user, or a visitor. </p>
-    <img src="plots_production/users_registrered_visitors_12_months.png" width="50%">
-    <img style="width:50%; float:right" src = "generatedImages/Locations.png">
-    <img style="width:50%;float:left" src = "generatedImages/UsagePurposes.png">
-    <img style="width:50%;float:right" src = "generatedImages/AdditionalUsageTrends.png">
+   <img width = "50%;"style="text-align:center" src="plots_production/users_registrered_visitors_12_months.png"/> 
+    <!--<img style="width:50%; float:right" src = "plots_production/simuser_lifetime_class.png">
+    <img style="width:50%;float:left" src = "plots_production/simuser_lifetime_research.png">
+    <img style="width:50%;float:right" src = "plots_production/simuser_lifetime_unclass.png"> !-->
+    <img style="width:50%;float:left" src = "plots_production/simusers_class_res_unclass_12months.png"/>
+    <img style="width:50%;float:right" src = "plots_production/simusers_class_res_unclass_12months_percent.png"/>
+    <img style="width:50%;float:left" src = "plots_production/simusers_geo_12months.png"/>
+    <img style="width:50%;float:right" src = "plots_production/simusers_geo_12months_percent.png"/>
 </div>
 
 <hr>
    
+<div>
+<h3 id="nanoHUB Utilization" style ="text-align:center;"> How long does nanoHUB's services get utilized among self-study users, classroom users, and researchers? </h3>
+<p> The following section compares and contrasts how long users typically use nanoHUB's resources among researchers, classroom users, and self-study users. (Green for
+    classroom users, red for research users, and orange for unclassified users.)</p>
+    <img style="width:50%;vertical-align:top;float:left;" src = "plots_production/simuser_lifetime_class.png"/>
+    <img style="width:50%;float:right;" src = "plots_production/simuser_lifetime_research.png"/>
+    <img style="width:50%;" class = "center" alt = "centered image" src = "plots_production/simuser_lifetime_unclass.png"/>
+
+    
+</div>
+<!--
 <div> 
-<h3 id="Institution" style ="text-align:center;padding-top:30px;"> NanoHUB's Utilization in University Classrooms </h3>
+<h3 id="Institution" style ="text-align:center;padding-top:30px;"> nanoHUB's Utilization in University Classrooms </h3>
 <p> The following section describes nanoHUB user activity in context of institutions. Basic data like institution names, 
     locations, addresses, states, and unique web addresses are taken into account. Additionally, people's email addresses, 
     geolocation, class clusters, and citations are used to better understand affiliations with institutions.
@@ -52,37 +67,70 @@ These different areas primarily include data on NanoHUB's users (physical locati
     <img style="width:50%; float:right;" src = "generatedImages/FWSum.png">
     <img style="width:50%;float:left;" src = "generatedImages/FWTrailing.png">
 </div>
+!-->
 
 <hr>
 
 <div>
-<h3 id="Citations" style ="text-align:center;padding-top:30px;"> NanoHUB's Utilization Among Researchers </h3>
+<h3 id="Citations" style ="text-align:center;padding-top:30px;"> nanoHUB's Utilization Among Researchers </h3>
 <p> The following section describes how nanoHUB gets cited in research papers by NCN and non-NCN affiliated researchers. 
     Generally, citation information pertaining to the type of document, the industry using nanoHUB
     (i.e. education, government, military), citations by continent, and nature of citation (i.e. cyberinfastructure, education,
     research, research and education) are collected. </p>
+    <img style="width:50%;vertical-align:top;float:left;" src = "plots_production/Citationimg2.svg"/>
+    <img style="width:50%;vertical-align:top;float:right;" src = "plots_production/Citationimg3.svg"/>
+    <img style="width:50%;" class = "center" alt = "centered image" src = "plots_production/totalCumulativeCitations.jpg"/>
+    &nbsp;
+    <h3 style = "text-align:center" > Cumulative Citation Counts </h3>
+<p> The following subsection displays various different bar charts comparing cumulative citation data among NCN and non-NCN affiliated researchers. All of these charts display the same data and are displayed here to get feedback on which type of chart best models the data in a non-misleading way. </p>
+    <h4 style = "text-align:center"> Bar graph with multiple axes </h4>
+    <img style="width:50%" class = "center" alt = "centered image" src = "plots_production/cumulativeMultAxes.jpg"/>
+    <h4 style = "text-align:center"> Side-by-side bar graph with one axes </h4>
+    <img style="width:50%" class = "center" alt = "centered image" src = "plots_production/cumulativeSideBySide.jpg"/>
+    <h4 style = "text-align:center"> Stacked bar graph </h4>
+    <img style="width:50%" class = "center" alt = "centered image" src = "plots_production/cumulativeStacked.jpg"/>
+    
+    <h3 style = "text-align:center" > Yearly Citation Counts </h3>
+<p> The following subsection displays various different bar charts comparing yearly citation data among NCN and non-NCN affiliated researchers. All of these charts display the same data and are displayed here to get feedback on which type of chart best models the data in a non-misleading way. </p>
+    <h4 style = "text-align:center"> Bar graph with multiple axes </h4>
+    <img style="width:50%" class = "center" alt = "centered image"src = "plots_production/yearlyMultAxes.jpg"/>
+    <h4 style = "text-align:center"> Side-by-side bar graph with one axes </h4>
+    <img style="width:50%" class = "center" alt = "centered image"src = "plots_production/yearlySideBySide.jpg"/>
+    <h4 style = "text-align:center"> Stacked bar graph </h4>
+    <img style="width:50%" class = "center" alt = "centered image" src = "plots_production/yearlyStacked.jpg"/>
+    
 </div>
 
 <hr>
     
 <div>
-<h3 id="Classroom Usage" style ="text-align:center;padding-top:30px;"> NanoHUB's Utilization In Structured Classroom Instruction </h3>
+<h3 id="Classroom Usage" style ="text-align:center;padding-top:30px;"> nanoHUB's Utilization In Structured Classroom Instruction </h3>
 <p> The following section describes different user patterns among university classes. People belonging to a University class are 
     grouped into different classes and clusters, and using this different information we can track the number of different University
     classes that have used nanoHUB's services over time. Additionally, we can also track the specific number of students who use nanoHUB
     for one course and compare that with the specific number of students who use nanoHUB for multiple courses. </p>
-    
+    <img style="width:50%;float:left;" src = "plots_production/classclust_semester_XW_classes.png"/>
+    <img style="width:50%;float:right;" src = "plots_production/classclust_semester_XW_participants.png"/>
+    <img style="width:50%" class = "center" alt = "centered image" src = "plots_production/classclust_semester_cumulative_combined.png"/>
+
 </div>
 
 
 <hr>
     
 <div>
-<h3 id="Content Generation" style ="text-align:center;padding-top:30px;"> NanoHUB's Content Generation and Cumulative Growth </h3>  
+<h3 id="Content Generation" style ="text-align:center;padding-top:30px;"> nanoHUB's Content Generation and Cumulative Growth </h3>  
 <p> The following section describes the source of the tools that allows nanoHUB to continue to grow and serve people worldwide.
     Primary sources of the rich information nanoHUB houses mainly come from Purdue affiliated people, people outside of Purdue, 
     and people outside of Purdue who have collaboarated and/or have received assistance from Purdue affiliated people. 
     </p>
     </div>
 
+
+<style>
+.center {
+    margin: 10px auto 20px;
+    display: block;
+}
+</style>
 </html>

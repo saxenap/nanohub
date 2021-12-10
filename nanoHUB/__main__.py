@@ -1,6 +1,7 @@
 from nanoHUB.application import Application
 from nanoHUB.logger import logger
 import typer
+from typing import List
 
 app = typer.Typer()
 task_app = typer.Typer(help="Manage tasks.")
@@ -9,7 +10,7 @@ app.add_typer(task_app, name="task")
 
 @task_app.command()
 def execute(
-        file_path: str,
+        file_paths: List[str],
         loglevel: str = typer.Option(
             "INFO",
             "--log-level",
@@ -17,16 +18,15 @@ def execute(
         )
 ):
     """
-    Execute a task in a Python file (.py) or a Jupyter notebook (.ipynb).
+    Execute task(s) defined in .py or .ipynb files.
     """
 
-    if not file_path:
+    if not file_paths:
         typer.echo("File path for file to be executed not provided.")
         raise typer.Abort()
 
-    application = Application.get_instance()
-    application.execute(file_path)
-    logger(__name__).info("Task called")
+    application = Application.get_instance(loglevel)
+    application.execute(file_paths)
 
 
 if __name__ == '__main__':
