@@ -1,0 +1,31 @@
+image: "continuumio/miniconda3:latest"
+
+before_script:
+  - python --version
+  - pip install -r requirements.txt
+  
+stages:
+  - Static Analysis
+  - Test
+ 
+flake8:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - flake8 ./*.py
+    
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint ./*.py
+  
+mypy:
+  stage: Static Analysis
+  script:
+  - mypy ./*.py --ignore-missing-imports
+
+full_test:
+  stage: Test
+  script:
+  - python cl_V0_repo.py --CI
