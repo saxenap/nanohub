@@ -39,6 +39,10 @@ def get_geo_data(inparams, ip):
         return [None, None]
 
 
+def get_scratch_dir(inparams):
+    return os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
+
+
 def prepare_data(inparams):
     #
     # Load dataframes in feathers
@@ -46,12 +50,18 @@ def prepare_data(inparams):
 
     logging.info('Loading relevent data ...')
 
-    toolstart_df = pd.read_feather(os.path.join(inparams.scratch_dir, 'toolstart.feather'))
+    toolstart_df = pd.read_feather(
+        get_scratch_dir(inparams) + '/toolstart.feather'
+    )
     toolstart_df['tool'] = toolstart_df['tool'].apply(lambda x: x.lower())
 
-    jos_tool_version = pd.read_feather(os.path.join(inparams.scratch_dir, 'jos_tool_version.feather'))
+    jos_tool_version = pd.read_feather(
+        get_scratch_dir(inparams) + '/jos_tool_version.feather'
+    )
 
-    jos_users = pd.read_feather(os.path.join(inparams.scratch_dir, 'jos_users.feather'))
+    jos_users = pd.read_feather(
+        get_scratch_dir(inparams) + '/jos_users.feather'
+    )
 
     # Translate toolname+toolversion (pntoy_r123) into just toolname (pntoy). 
     # In addition, for any toolname+toolversion not found in jos_tool_version table, treat it as toolname.
