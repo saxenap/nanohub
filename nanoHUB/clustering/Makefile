@@ -4,7 +4,7 @@ other_flags=
 
 task = mike
 bucket-name = nanohub.processed
-object-path = clusters/${task-name}/by_semester
+object-path = clusters/${task}/by_semester
 log-level = INFO
 years = {2006..2021}
 FIRST_YEAR := 2008
