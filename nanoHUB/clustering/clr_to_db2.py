@@ -12,6 +12,13 @@ import pickle as pk
 ## take in the classroom detection outputs, filter them and push them onto DB2
 
 # %% import the results of the classroom detection algorithm
+
+
+from nanoHUB.application import Application
+
+application = Application.get_instance()
+wang159_myrmekes_db = application.new_db_engine('wang159_myrmekes')
+
 cwd = os.getcwd()
 dir_data = cwd+'/temp/'
 
@@ -36,13 +43,9 @@ print(cluster_students_info.head(2))
 # %% get DB2 access, find what classid to start at, renumber class ids, then add to DB2 table
 
 # obtain classid from DB2
-import sqlalchemy as sql
-sql_login_params = {"username": "wang2506_ro", "password": "fnVnwcCS7iT45EsA"}
-engine = sql.create_engine('mysql+pymysql://%s:%s@127.0.0.1/wang159_myrmekes' \
-                                               %(sql_login_params['username'], sql_login_params['password']))
 
 class_info_df = pd.read_sql_query('select class_id from cluster_class_info order by '+\
-                                  'class_id desc limit 100', engine)
+                                  'class_id desc limit 100', wang159_myrmekes_db)
 cid_start = class_info_df['class_id'][0]+1
 
 # start stop class_id (and indexes) recalculation
@@ -60,9 +63,9 @@ for index,val in enumerate(cluster_class_info['class_id'].to_list()):
 
 # add to DB2 table
 cluster_class_info = cluster_class_info.drop(columns='ip_set')
-cluster_class_info.to_sql('cluster_class_info', con=engine, if_exists='append', chunksize=20000)
-cluster_classtool_info.to_sql('cluster_classtool_info', con=engine, if_exists='append', chunksize=20000)
-cluster_students_info.to_sql('cluster_students_info',con=engine,if_exists='append',chunksize=20000)
+cluster_class_info.to_sql('cluster_class_info', con=wang159_myrmekes_db, if_exists='append', chunksize=20000)
+cluster_classtool_info.to_sql('cluster_classtool_info', con=wang159_myrmekes_db, if_exists='append', chunksize=20000)
+cluster_students_info.to_sql('cluster_students_info',con=wang159_myrmekes_db,if_exists='append',chunksize=20000)
 
 
 

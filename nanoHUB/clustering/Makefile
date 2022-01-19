@@ -1,5 +1,5 @@
 CPUS=$(shell getconf _NPROCESSORS_ONLN)
-other_flags=''
+other_flags=
 #MAKEFLAGS += -j$(CPUS)
 
 task-name = cost_cluster_analysis
@@ -21,8 +21,10 @@ ${JOBS}: job%:
 	@echo $*
 	python3 main_online_users_TS_analysis.py \
     	--cost_probe_range $* \
+    	--class_probe_range $* \
     	--task $(task-name) \
     	--save_to_geddes \
-    		--bucket_name $(bucket-name) \
-    		--object_path $(object-path) \
-    	--log_level $(log-level) $(other_flags)
+    	--bucket_name $(bucket-name) \
+    	--object_path $(object-path) \
+    	--log_level $(log-level) \
+    	$(other_flags)
