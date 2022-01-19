@@ -120,11 +120,11 @@ def main_online_users_TS_analysis():
     inparams.class_probe_range = inparams.class_probe_range.replace('_', ':')
     inparams.cost_probe_range = inparams.cost_probe_range.replace('_', ':')
 
-    if 'classroom_detection' in inparams.task:
+    if 'classroom_detection' in inparams.task or 'xufeng' in inparams.task:
         # classroom detection
         func = core_classroom_analysis
 
-    if 'cost_cluster_analysis' in inparams.task:
+    if 'cost_cluster_analysis' in inparams.task  or 'mike' in inparams.task:
         # quick cost-function clustering analysis
         if inparams.cost_probe_range == 'all':
             raise NotImplementedError("This functionality is yet to be implemented.")

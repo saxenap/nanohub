@@ -2,9 +2,9 @@ CPUS=$(shell getconf _NPROCESSORS_ONLN)
 other_flags=
 #MAKEFLAGS += -j$(CPUS)
 
-task-name = cost_cluster_analysis
+task-name = mike
 bucket-name = nanohub.processed
-object-path = cost_cluster_analysis/by_semester
+object-path = clusters/${task-name}/by_semester
 log-level = INFO
 years = {2006..2021}
 FIRST_YEAR := 2008
