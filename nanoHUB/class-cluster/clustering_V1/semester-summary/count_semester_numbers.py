@@ -36,7 +36,7 @@ def main_online_users_TS_analysis():
     # data
     parser.add_argument('--geoip2_mmdb_filepath', help='full file path of mmdb file from GeoIP2',
                         action='store',
-                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb'))
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City-new.mmdb'))
 
     # directories
     parser.add_argument('--output_dir', help='location of output directory for output files',
