@@ -548,6 +548,9 @@ def core_classroom_analysis(inparams):
             s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
         )
         save_to_geddes(
+            s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
+        )
+        save_to_geddes(
             s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
         )
         save_to_geddes(
@@ -579,10 +582,10 @@ def core_classroom_analysis(inparams):
 
     logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
 
-def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str):
+def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str, headers:bool = True):
     _buf = StringIO()
     full_path = "%s/%s.csv" % (folder_path, name)
-    df.to_csv(_buf, index=False)
+    df.to_csv(_buf, index=False, header=headers)
     _buf.seek(0)
     s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
 
