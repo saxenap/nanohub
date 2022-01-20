@@ -2,6 +2,7 @@ import multiprocessing
 from pprint import pprint
 import logging
 import pandas as pd
+from dask.dataframe import from_pandas
 import os
 
 from .combine_clusters import combine_clusters, haversine_metric, haversine_affinity
@@ -23,8 +24,9 @@ import pickle
 import code
 
 from functools import partial
-
-
+from io import StringIO
+from nanoHUB.pipeline.geddes.data import get_default_s3_client
+from nanoHUB.application import Application
 #
 # Load geospatial data
 #
@@ -55,6 +57,7 @@ def prepare_data(inparams):
     )
     toolstart_df['tool'] = toolstart_df['tool'].apply(lambda x: x.lower())
 
+
     jos_tool_version = pd.read_feather(
         get_scratch_dir(inparams) + '/jos_tool_version.feather'
     )
@@ -63,12 +66,8 @@ def prepare_data(inparams):
         get_scratch_dir(inparams) + '/jos_users.feather'
     )
 
-    # Translate toolname+toolversion (pntoy_r123) into just toolname (pntoy). 
-    # In addition, for any toolname+toolversion not found in jos_tool_version table, treat it as toolname.
-    toolrun_df = toolstart_df.join(jos_tool_version[['instance', 'toolname']].set_index('instance'), on='tool')
-
     # for toolnames that cannot be found in table "jos_tool_version", use tool instead
-    toolrun_df['toolname'] = toolrun_df['toolname'].fillna(toolrun_df['tool'])
+    toolrun_df = toolstart_df.join(jos_tool_version[['instance', 'toolname']].set_index('instance'), on='tool')
 
     # remove all rows with protocol != 5,6,7
     toolrun_df = toolrun_df[toolrun_df['protocol'].isin([5, 6, 7])]
@@ -110,7 +109,7 @@ def prepare_data(inparams):
 
     logging.info('Longitude and Latitude assigned user tool run activities')
     logging.info('(toolrun_df)')
-    logging.info(toolrun_df)
+    # logging.info(toolrun_df)
 
     return (toolrun_df, toolstart_df, jos_users, jos_tool_version)
 
@@ -124,38 +123,41 @@ def form_activity_blocks(activity_tol, user_df):
     for this_tool in user_tools:
         # tools from each user, sort from latest to earliest
         tooluse_df = user_df[1][user_df[1].toolname == this_tool].sort_values('date', ascending=False)
-
         # start from latest date (present)
-        start_date = tooluse_df.iloc[0]['date']
-        end_date = tooluse_df.iloc[0]['date']
-        ip_set = set([tooluse_df.iloc[0]['ip']])
 
-        for index, this_row in tooluse_df.iterrows():
-            # for each date (moving backward in time)
-            this_date = this_row['date']
-            if (start_date - this_date) > activity_tol:
-                # this time has moved out of activity tolerance range
-                # close previous activity block and start a new one
-                for this_ip in ip_set:
-                    activity_blocks.append([this_tool, \
-                                            start_date - activity_tol, \
-                                            end_date + activity_tol, \
-                                            this_ip])
+        try:
+            start_date = tooluse_df.iloc[0]['date']
+            end_date = tooluse_df.iloc[0]['date']
+            ip_set = set([tooluse_df.iloc[0]['ip']])
 
-                ip_set = set()
+            for index, this_row in tooluse_df.iterrows():
+                # for each date (moving backward in time)
+                this_date = this_row['date']
+                if (start_date - this_date) > activity_tol:
+                    # this time has moved out of activity tolerance range
+                    # close previous activity block and start a new one
+                    for this_ip in ip_set:
+                        activity_blocks.append([this_tool, \
+                                                start_date - activity_tol, \
+                                                end_date + activity_tol, \
+                                                this_ip])
 
-                end_date = this_date
+                    ip_set = set()
 
-            # update start_date
-            start_date = this_date
-            ip_set.add(this_row['ip'])
+                    end_date = this_date
 
-        # insert the last block
-        for this_ip in ip_set:
-            activity_blocks.append([this_tool, \
-                                    start_date - activity_tol, \
-                                    end_date + activity_tol, \
-                                    this_ip])
+                # update start_date
+                start_date = this_date
+                ip_set.add(this_row['ip'])
+
+            # insert the last block
+            for this_ip in ip_set:
+                activity_blocks.append([this_tool, \
+                                        start_date - activity_tol, \
+                                        end_date + activity_tol, \
+                                        this_ip])
+        except IndexError:
+            pass
 
     # add username to dataframe
     # activity_blocks['user'] = user_df.user.unique()
@@ -177,6 +179,7 @@ def geospatial_cluster(cluster_size_cutoff, class_distance_threshold, cluster_in
     cluster_input[1]['scanned_date'] = datetime.datetime(1900, 1, 1)
 
     cluster_output_np = np.empty((0, len(cluster_input[1].columns)))
+
 
     for this_date in [date_earliest + datetime.timedelta(days=n) for n in
                       range(0, int((date_latest - date_earliest).days + 1))]:
@@ -419,6 +422,7 @@ def core_classroom_analysis(inparams):
     ddata = pd.concat(ddata)
     ddata.index.names = ['user', None]
 
+
     user_activity_blocks_df = ddata[
         (ddata.start >= inparams.data_probe_range[0]) & (ddata.end <= inparams.data_probe_range[1])] \
         .reset_index().drop(['level_1'], axis=1)
@@ -530,6 +534,56 @@ def core_classroom_analysis(inparams):
         class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
         classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
 
-    #
-    # Postprocess
-    #
+    if inparams.save_to_geddes == True:
+        bucket_name = inparams.bucket_name
+
+        date_range_str = inparams.cost_probe_range.replace(':', '_')
+        folder_path = "%s/%s" % (inparams.object_path, date_range_str)
+
+        logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
+
+        s3_client = get_default_s3_client(Application.get_instance())
+
+        save_to_geddes(
+            s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, class_info_df, folder_path, 'class_info_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, classtool_info_df, folder_path, 'classtool_info_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, cluster_post_sychrony, folder_path, 'cluster_post_sychrony'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, cluster_output_candidate, folder_path, 'cluster_output_candidate'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, toolrun_df, folder_path, 'toolrun_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, jos_users, folder_path, 'jos_users'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, detected_clusters_df, folder_path, 'detected_clusters_df'
+        )
+        save_to_geddes(
+            s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
+        )
+
+        logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
+
+    logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
+
+def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str):
+    _buf = StringIO()
+    full_path = "%s/%s.csv" % (folder_path, name)
+    df.to_csv(_buf, index=False)
+    _buf.seek(0)
+    s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
+
+    logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))
