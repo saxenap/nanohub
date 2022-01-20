@@ -547,8 +547,16 @@ def core_classroom_analysis(inparams):
         save_to_geddes(
             s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
         )
+
         save_to_geddes(
             s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
+        )
+
+        df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \
+            .rename(columns = lambda x: '{}'.format(x+1))
+
+        save_to_geddes(
+            s3_client, bucket_name, df, inparams.object_path, date_range_str, False
         )
         save_to_geddes(
             s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
