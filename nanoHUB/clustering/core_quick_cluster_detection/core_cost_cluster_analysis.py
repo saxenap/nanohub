@@ -182,9 +182,7 @@ def core_cost_cluster_analysis(inparams):
     #
 
     final_clusters_df = pd.DataFrame(final_clusters)
-    print(final_clusters_df.head(2))
     final_clusters_df.rename(columns = lambda x: '{}'.format(x+1))
-    print(final_clusters_df.head(2))
 
     if inparams.display_output:
         print(final_clusters_df)
