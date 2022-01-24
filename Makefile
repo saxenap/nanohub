@@ -56,7 +56,7 @@ show-cron_tasks:
 
 
 exec-dev:
-	docker exec -it `docker ps -q --filter name=nanohub_dev` bash
+	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
 
 exec-pipeline:
 	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
