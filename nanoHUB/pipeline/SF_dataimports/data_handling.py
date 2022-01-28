@@ -57,3 +57,10 @@ def rename_columns(idf: pd.DataFrame) -> pd.DataFrame:
     idf = idf.rename(columns={0:'Email'})
 
     return idf
+
+
+def add_venue(idf: pd.DataFrame) -> pd.DataFrame:
+    if 'Venue__c' in idf.columns:
+        idf["Venue__c"] = idf["Venue__c"] + ';' + idf["Import as Venue__c"]
+        
+    return idf
