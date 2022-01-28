@@ -277,3 +277,23 @@ class DB2SalesforceAPI:
                             )
 
         return response.text
+
+
+    def delete_job(self, job_id: str):
+        response = requests.delete('https://na172.salesforce.com/services/data/v47.0/jobs/ingest/%s' % job_id,
+                                 headers={"Authorization": "Bearer %s" %self.access_token,
+                                          'Content-Type': 'application/json; charset=UTF-8',
+                                          'Accept': 'application/json'}
+                                   )
+
+        return response.json()
+
+
+    def get_all_jobs(self):
+        response = requests.get('https://na172.salesforce.com/services/data/v47.0/jobs/ingest/',
+                                   headers={"Authorization": "Bearer %s" %self.access_token,
+                                            'Content-Type': 'application/json; charset=UTF-8',
+                                            'Accept': 'application/json'}
+                                   )
+
+        return response.json()
