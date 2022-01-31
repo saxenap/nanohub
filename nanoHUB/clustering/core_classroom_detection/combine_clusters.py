@@ -163,7 +163,7 @@ def intra_tool_cluster_annex(one_tool_clusters):
                     merged_tool_clusters.loc[max_score_index].ip_set.union(row.ip_set)
                 
             else:
-                # append
+
                 merged_tool_clusters = merged_tool_clusters.append({ \
                                                         'start':    row.scanned_date, \
                                                         'end':      row.scanned_date, \
@@ -172,6 +172,20 @@ def intra_tool_cluster_annex(one_tool_clusters):
                                                         'user_set': row.user_set, \
                                                         'ip_set':   row.ip_set \
                                                         }, ignore_index=True)
+
+                # merged_tool_clusters = pd.concat([
+                #     merged_tool_clusters, {
+                #     'start':    row.scanned_date,
+                #     'end':      row.scanned_date,
+                #     'mean_lon': row.mean_lon,
+                #     'mean_lat': row.mean_lat,
+                #     'user_set': row.user_set,
+                #     'ip_set':   row.ip_set
+                #     }],
+                #     axis=0,
+                #     join='outer',
+                #     ignore_index=True
+                # )
   
     return merged_tool_clusters
     
@@ -301,7 +315,18 @@ def combine_clusters(inparams, cluster_post_sychrony):
                                               'lat':this_class_tool_clusters.mean_lat.mean(), \
                                               'ip_set':this_class_tool_clusters.ip_set.values, \
                                               'size':len(set(all_students_list))}, ignore_index=True)
-        
 
+        # class_info_df = pd.concat([class_info_df,
+        #                           {'class_id':this_class_index,
+        #                            'start':this_class_tool_clusters.start.min(),
+        #                            'end':this_class_tool_clusters.end.max(),
+        #                            'lon':this_class_tool_clusters.mean_lon.mean(),
+        #                            'lat':this_class_tool_clusters.mean_lat.mean(),
+        #                            'ip_set':this_class_tool_clusters.ip_set.values,
+        #                            'size':len(set(all_students_list))}],
+        #                             axis=0,
+        #                             join='outer',
+        #                             ignore_index=True
+        #                           )
                                                 
     return intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df

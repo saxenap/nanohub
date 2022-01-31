@@ -17,10 +17,10 @@ import pickle as pk
 from nanoHUB.application import Application
 
 application = Application.get_instance()
-wang159_myrmekes_db = application.new_db_engine('wang159_myrmekes')
+wang159_myrmekes_db = application.new_db_engine('rfm_data')
 
 cwd = os.getcwd()
-dir_data = cwd+'/temp/'
+dir_data = cwd+'/nanoHUB/clustering/temp/'
 
 # classtool - need to re-number the classids from classtool
 with open(dir_data+'cp1_classtool_info_df.pkl','rb') as f:
@@ -44,7 +44,7 @@ print(cluster_students_info.head(2))
 
 # obtain classid from DB2
 
-class_info_df = pd.read_sql_query('select class_id from cluster_class_info order by '+\
+class_info_df = pd.read_sql_query('select class_id from rfm_data.cluster_class_info order by '+\
                                   'class_id desc limit 100', wang159_myrmekes_db)
 cid_start = class_info_df['class_id'][0]+1
 
