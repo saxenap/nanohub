@@ -15,7 +15,7 @@ name = "pypi"
 ##########################################
 
 [requires]
-python_version = "3.8"
+python_version = "3"
 
 [dev-packages]
 pytest = "6.2"
@@ -126,7 +126,7 @@ charset-normalizer = "*"
 boto3 = "*"
 s4cmd = "*"
 awswrangler = "*"
-nanohub = {path = "."}
+
 
 [pipenv]
 allow_prereleases = true
