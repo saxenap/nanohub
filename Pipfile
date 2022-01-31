@@ -36,7 +36,7 @@ typer = "*"
 google-cloud-storage = "*"
 gcsfs = "*"
 fsspec = "*"
-pandas = "*"
+pandas = "1.3.5"
 numpy = "*"
 pymysql = "1.0"
 pyarrow = "4.0"
@@ -126,6 +126,7 @@ charset-normalizer = "*"
 boto3 = "*"
 s4cmd = "*"
 awswrangler = "*"
+nanohub = {path = "."}
 
 [pipenv]
 allow_prereleases = true
