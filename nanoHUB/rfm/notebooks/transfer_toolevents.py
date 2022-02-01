@@ -23,7 +23,7 @@ nanohub_engine = application.new_db_engine('nanohub')
 metrics_engine = application.new_db_engine('nanohub_metrics')
 
 APP_DIR="/home/saxenap/nanohub"
-CACHE_DIR = Path(APP_DIR, '.cache')
+CACHE_DIR = Path(APP_DIR, '../../../.cache')
 
 def new_toolevents_df(last_inserted_id: int, chunksize: int) -> pd.DataFrame:
     df = pd.read_sql_query(

@@ -16,7 +16,7 @@ rfm_engine = application.new_db_engine('rfm_data')
 nanohub_engine = application.new_db_engine('nanohub')
 metrics_engine = application.new_db_engine('nanohub_metrics')
 
-cache_dir = Path(Path(os.getenv('APP_DIR')), '.cache')
+cache_dir = Path(Path(os.getenv('APP_DIR')), '../../../.cache')
 
 
 def get_tool_version_df() -> pd.DataFrame:

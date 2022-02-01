@@ -24,7 +24,7 @@ logger.setLevel(logging.DEBUG)
 etl = ETL(
     SqlDataFrameMapper(connection),
     DataTransformers([DateTimeConvertor()]),
-    CachedDataLoader(ParquetFiles(True), '.cache', logger)
+    CachedDataLoader(ParquetFiles(True), '../../../.cache', logger)
 )
 
 
