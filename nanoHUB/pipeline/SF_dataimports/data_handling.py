@@ -59,7 +59,8 @@ def rename_columns(idf: pd.DataFrame) -> pd.DataFrame:
     return idf
 
 
-def add_venue(idf: pd.DataFrame) -> pd.DataFrame:
+def add_venue(idf: pd.DataFrame, ) -> pd.DataFrame:
+    # import_as =
     if 'Venue__c' in idf.columns:
         idf["Venue__c"] = idf["Venue__c"] + ';' + idf["Import as Venue__c"]
         
