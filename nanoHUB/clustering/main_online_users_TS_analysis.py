@@ -87,7 +87,7 @@ def main_online_users_TS_analysis():
     parser.add_argument('--cost_tolerance', help='classroom detection: tolerance',
                         action='store', default=57)
 
-    # daskcost_probe_range
+    # dask
     parser.add_argument('--dask_scheduler', help='dask scheduler: "threads"/"processes"/"single-threaded"',
                         action='store', default="single-threaded")
 
