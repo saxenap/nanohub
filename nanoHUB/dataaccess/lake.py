@@ -3,8 +3,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, date
 from io import BytesIO, StringIO
 import boto3
-import os
+from nanoHUB.application import Application
 import botocore.client as s3client
+from nanoHUB.pipeline.geddes.data import get_default_s3_client
 
 
 @dataclass
@@ -141,3 +142,7 @@ class S3FileMapper:
         _buf.seek(0)
         self.client.put_object(Bucket=self.bucket, Body=_buf.getvalue(), Key=full_path)
 
+
+def create_default_s3mapper(application: Application, bucket: str) -> S3FileMapper:
+    s3_client = get_default_s3_client(application)
+    return S3FileMapper(s3_client, bucket)
