@@ -69,14 +69,18 @@ def db_query_active_users_by_month(db, year, month: int) -> int :
 
 
 def db_query_active_users_by_semester(db, year, sem: str) -> int :
-    if sem == 'fall':
+    if sem.lower() == 'fall':
         result = db_query_active_users_by_date(
             db, datetime.date(year, 7, 2), datetime.date(year, 12, 31)
         )
 
-    else:
+    elif sem.lower() == 'spring':
         result = db_query_active_users_by_date(
             db, datetime.date(year, 1, 1), datetime.date(year, 7, 1)
+        )
+    else:
+        raise RuntimeError(
+            "Invalid value '%s' for semester provided. Allowed values are: spring or fall" % sem
         )
 
     return result
@@ -142,7 +146,8 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
             m_combined = m_only_cluster_size + overlap_size
             x_combined = x_only_cluster_size + overlap_size
 
-            num_unique_clustered_users = combined_size
+            # num_unique_clustered_users = combined_size
+            num_unique_clustered_users = m_only_cluster_size + x_only_cluster_size + overlap_size
             # print(len(df['CombinedMembers'].apply(literal_eval).sum()), len(set(df['CombinedMembers'].apply(literal_eval).sum())))
 
             num_active_users_sem = (
