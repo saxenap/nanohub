@@ -138,8 +138,9 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
     num_active_users = get_active_users_by_semester(create_default_s3mapper(application, bucket))
     k = 0
     previous_sem = {}
-    previous_sem_members = set()
-    average_cals = []
+    previous_sem_members = []
+    previous_sem_clustered_users = set()
+    data_previous_sems = []
     for year in range(2008, 2022):
         for sem in ['spring', 'fall']:
             if year == 2008 and sem == 'spring':
@@ -150,13 +151,16 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
             x_only_members = set(df['XOnlyMembers'].apply(literal_eval).sum())
             x_only_cluster_size = len(x_only_members)
             overlap_members = set(df['OverlapMembers'].apply(literal_eval).sum())
+            # overlap_size = len(overlap_members)
+
+            overlap_members = overlap_members.union(m_only_members.intersection(x_only_members))
             overlap_size = len(overlap_members)
+
             combined_size = len(set(df['CombinedMembers'].apply(literal_eval).sum()))
             m_combined = m_only_cluster_size + overlap_size
             x_combined = x_only_cluster_size + overlap_size
 
             # num_unique_clustered_users = combined_size
-
             # print(len(df['CombinedMembers'].apply(literal_eval).sum()), len(set(df['CombinedMembers'].apply(literal_eval).sum())))
 
             num_active_users_sem = (
@@ -164,96 +168,73 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
                                      & (num_active_users['semester'] == sem),
                 'number_active_users'].values[0]
             )
-            num_unique_clustered_users = m_only_cluster_size + x_only_cluster_size + overlap_size
-            num_unique_clustered_users1 = num_unique_clustered_users
-            num_unclustered_active_users_sem = num_active_users_sem - num_unique_clustered_users
+            # num_unique_clustered_users = m_only_cluster_size + x_only_cluster_size + overlap_size
+            # num_unique_clustered_users1 = num_unique_clustered_users
+            # num_unclustered_active_users_sem = num_active_users_sem - num_unique_clustered_users
 
             unique_members = m_only_members.union(x_only_members, overlap_members)
-            num_unique_clustered_users2 = len(unique_members)
-            num_unclustered_active_users_sem2 = num_active_users_sem - num_unique_clustered_users2
+            num_unique_clustered_users = len(unique_members)
+            num_unclustered_active_users_sem = num_active_users_sem - num_unique_clustered_users
 
-            new_clustered_users_current_sem = unique_members.difference(previous_sem_members)
+            new_clustered_users_current_sem = unique_members.difference(previous_sem_clustered_users)
+            previous_sem_clustered_users = new_clustered_users_current_sem
             num_new_clustered_users_current_sem = len(new_clustered_users_current_sem)
 
+
             data_point = {}
-            data_point['year'] = year
-            data_point['sem'] = sem
-            data_point['num_active_users_sem'] = num_active_users_sem
+            data_point['num_active_users'] = num_active_users_sem
             data_point['num_new_clustered_users_current_sem'] = num_new_clustered_users_current_sem
-            data_point['num_unclustered_active_users_sem'] = num_unclustered_active_users_sem
-            data_point['num_unique_clustered_users1'] = num_unique_clustered_users1
-            data_point['num_unique_clustered_users2'] = num_unique_clustered_users2
-            data_point['num_unclustered_active_users_sem2'] = num_unclustered_active_users_sem2
-            data_point['m_only_cluster_size'] = m_only_cluster_size
-            data_point['x_only_cluster_size'] = x_only_cluster_size
-            data_point['overlap_size'] = overlap_size
+            data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
+            data_point['num_unique_clustered_users'] = num_unique_clustered_users
+            data_point['num_users_m_only'] = m_only_cluster_size
+            data_point['num_users_x_only'] = x_only_cluster_size
+            data_point['num_users_overlap_mike_xufeng'] = overlap_size
             data_point['combined_size'] = combined_size
             data_point['m_combined'] = m_combined
             data_point['x_combined'] = x_combined
 
-            average_cals.append(data_point)
+            data_previous_sems.append(data_point)
+            data_previous_sems = data_previous_sems[-3:]
 
-            data_point['avg_num_active_users_sem'] = sum(d['num_active_users_sem'] for d in average_cals) / len(average_cals)
-            data_point['avg_num_new_clustered_users_current_sem'] = sum(d['num_new_clustered_users_current_sem'] for d in average_cals) / len(average_cals)
+            dd = {}
+            dd['year'] = year
+            dd['semester'] = sem
 
-            data_point['avg_num_unclustered_active_users_sem'] = sum(d['num_unclustered_active_users_sem'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_num_unique_clustered_users1'] = sum(d['num_unique_clustered_users1'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_num_unique_clustered_users2'] = sum(d['num_unique_clustered_users2'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_num_unclustered_active_users_sem2'] = sum(d['num_unclustered_active_users_sem2'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_m_only_cluster_size'] = sum(d['m_only_cluster_size'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_x_only_cluster_size'] = sum(d['x_only_cluster_size'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_overlap_size'] = sum(d['overlap_size'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_combined_size'] = sum(d['combined_size'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_m_combined'] = sum(d['m_combined'] for d in average_cals) / len(average_cals)
-
-            data_point['avg_x_combined'] = sum(d['x_combined'] for d in average_cals) / len(average_cals)
+            for key in data_point:
+                dd[key] = data_point[key]
+                dd['trailing_' + key] = sum(
+                    d[key] for d in data_previous_sems
+                ) / len(data_previous_sems)
 
 
-            if sem == 'spring':
-                average_cals = []
+            # dd.update(data_point)
+            data.append(dd)
 
-            previous_sem = data_point
-            previous_sem_members = unique_members
-            data.append(data_point.values())
+    return pd.DataFrame(data)
 
-    return pd.DataFrame(
-        data, columns=[
-            'year',
-            'semester',
-            'num_active_users',
-            'num_new_clustered_users_current_sem',
-            'num_unclustered_active_users',
-            'num_unique_clustered_users1',
-            'num_unique_clustered_users2',
-            'num_unclustered_active_users2',
-            'mike_only',
-            'xufeng_only',
-            'overlap_mike_xufeng',
-            'combined',
-            'total_mike_combined',
-            'total_xufeng_combined',
-            'avg_num_active_users_sem',
-            'avg_num_new_clustered_users_current_sem',
-            'avg_num_unclustered_active_users',
-            'avg_num_clustered_active_users1',
-            'avg_num_clustered_active_users2',
-            'avg_num_unclustered_active_users2',
-            'avg_mike_only',
-            'avg_xufeng_only',
-            'avg_overlap_mike_xufeng',
-            'avg_combined',
-            'avg_total_mike_combined',
-            'avg_total_xufeng_combined'
-        ]
-    )
+
+def get_yearly_total_for(df: pd.DataFrame, key: str, year):
+    total = df[(df['year'] == year) & (df['semester'] == 'fall')][key].item()
+    if ((df['year'] == year + 1) & (df['semester'] == 'spring')).any():
+        total = total + df[(df['year'] == year + 1) & (df['semester'] == 'spring')][key].item()
+    return total
+
+
+def get_cluster_numbers_by_year(application: Application, bucket: str) -> pd.DataFrame:
+    df_by_sems = get_cluster_numbers_by_semester(application, bucket)
+    years = []
+    for year in sorted(set(df_by_sems['year'].values)):
+        yearly = {}
+        yearly['academic_year'] = str(year)
+        yearly['num_active_users'] = get_yearly_total_for(df_by_sems, 'num_active_users', year)
+        yearly['num_users_m_only'] = get_yearly_total_for(df_by_sems, 'num_users_m_only', year)
+        yearly['num_users_x_only'] = get_yearly_total_for(df_by_sems, 'num_users_x_only', year)
+        yearly['num_users_overlap_mike_xufeng'] = get_yearly_total_for(df_by_sems, 'num_users_overlap_mike_xufeng', year)
+        yearly['num_unclustered_active_users'] = get_yearly_total_for(df_by_sems, 'num_unclustered_active_users', year)
+        years.append(yearly)
+
+    return pd.DataFrame(years)
+
 
 
 def get_cluster_numbers_by_semester_dups(application: Application, bucket: str) -> pd.DataFrame:
