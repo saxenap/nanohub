@@ -213,6 +213,98 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
     return pd.DataFrame(data)
 
 
+def get_cluster_numbers_by_year_ver1(application: Application, bucket: str) -> pd.DataFrame:
+    repo = create_mike_xufeng_overlap_repo(application, bucket)
+    data = []
+    num_active_users = get_active_users_by_semester(create_default_s3mapper(application, bucket))
+    k = 0
+    previous_sem = {}
+    previous_sem_members = []
+    previous_sem_clustered_users = set()
+    data_previous_sems = []
+
+    m_only_members = set()
+    x_only_members = set()
+    overlap_members = set()
+
+    for year in range(2008, 2022):
+        df_fall = get_overlap_by_semester(repo, year, 'fall')
+        try:
+            df_spring = get_overlap_by_semester(repo, year + 1, 'spring')
+        except KeyError:
+            df_spring = pd.DataFrame
+
+        m_only_members = set(df_fall['MOnlyMembers'].apply(literal_eval).sum())
+        x_only_members = set(df_fall['XOnlyMembers'].apply(literal_eval).sum())
+        overlap_members = set(df_fall['OverlapMembers'].apply(literal_eval).sum())
+
+        num_active_users_year = (
+            num_active_users.loc[(num_active_users['year'] == year)
+                                 & (num_active_users['semester'] == 'fall'),
+                                 'number_active_users'].values[0]
+        )
+
+        if not df_spring.empty:
+            m_only_members = m_only_members.union(
+                set(df_spring['MOnlyMembers'].apply(literal_eval).sum())
+            )
+            x_only_members = x_only_members.union(
+                set(df_spring['XOnlyMembers'].apply(literal_eval).sum())
+            )
+            overlap_members = overlap_members.union(
+                set(df_spring['OverlapMembers'].apply(literal_eval).sum())
+            )
+
+            num_active_users_year = num_active_users_year + (
+                num_active_users.loc[(num_active_users['year'] == year + 1)
+                                     & (num_active_users['semester'] == 'spring'),
+                                     'number_active_users'].values[0]
+            )
+
+        m_only_cluster_size = len(m_only_members)
+        x_only_cluster_size = len(x_only_members)
+        overlap_size = len(overlap_members)
+
+        m_combined = m_only_cluster_size + overlap_size
+        x_combined = x_only_cluster_size + overlap_size
+
+        unique_members = m_only_members.union(x_only_members, overlap_members)
+        num_unique_clustered_users = len(unique_members)
+        num_unclustered_active_users_sem = num_active_users_year - num_unique_clustered_users
+
+        new_clustered_users = unique_members.difference(previous_sem_clustered_users)
+        previous_sem_clustered_users = new_clustered_users
+        num_new_clustered_users = len(new_clustered_users)
+
+        data_point = {}
+        data_point['num_active_users'] = num_active_users_year
+        data_point['num_new_clustered_users'] = num_new_clustered_users
+        data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
+        data_point['num_unique_clustered_users'] = num_unique_clustered_users
+        data_point['num_users_m_only'] = m_only_cluster_size
+        data_point['num_users_x_only'] = x_only_cluster_size
+        data_point['num_users_overlap_mike_xufeng'] = overlap_size
+        data_point['m_combined'] = m_combined
+        data_point['x_combined'] = x_combined
+
+        data_previous_sems.append(data_point)
+        data_previous_sems = data_previous_sems[-3:]
+
+        dd = {}
+        dd['year'] = year
+
+        for key in data_point:
+            dd[key] = data_point[key]
+            # dd['trailing_' + key] = sum(
+            #     d[key] for d in data_previous_sems
+            # ) / len(data_previous_sems)
+
+        # dd.update(data_point)
+        data.append(dd)
+
+    return pd.DataFrame(data)
+
+
 def get_yearly_total_for(df: pd.DataFrame, key: str, year):
     total = df[(df['year'] == year) & (df['semester'] == 'fall')][key].item()
     if ((df['year'] == year + 1) & (df['semester'] == 'spring')).any():
