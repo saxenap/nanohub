@@ -121,6 +121,7 @@ class S3FileMapper:
         self.bucket = bucket
 
     def read(self, file_path: str, **args) -> pd.DataFrame:
+        df = pd.DataFrame
         for key in self.client.list_objects(Bucket=self.bucket, Prefix=file_path)['Contents']:
             obj = self.client.get_object(Bucket=self.bucket, Key=key['Key'])
             if key['Key'].endswith('.parquet.gzip'):
