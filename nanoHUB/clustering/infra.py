@@ -9,6 +9,7 @@ from nanoHUB.application import Application
 from nanoHUB.configuration import ClusteringConfiguration
 from ast import literal_eval
 from dataclasses import dataclass
+from ast import literal_eval
 
 
 class ClustersBySemester(ClustersRepository):
@@ -297,6 +298,14 @@ def add_cluster_info(all_users: pd.DataFrame, cluster_repo: ClustersBySemester) 
     return all_users
 
 
+def get_all_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path,converters={"clusters": literal_eval}, low_memory=False)
+    return all_users_df[all_users_df['clusters'].str.len() > 0]
+
+
+def get_all_self_study_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path,converters={"clusters": literal_eval}, low_memory=False)
+    return all_users_df[all_users_df['clusters'].str.len() == 0]
 
 
 def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd.DataFrame:
