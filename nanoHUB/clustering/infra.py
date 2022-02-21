@@ -308,6 +308,32 @@ def get_all_self_study_users(mapper: S3FileMapper, file_path: str) -> pd.DataFra
     return all_users_df[all_users_df['clusters'].str.len() == 0]
 
 
+def get_all_self_identified_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path,converters={"profile_key": literal_eval}, low_memory=False)
+    result_df = all_users_df[all_users_df['profile_key'].str.len() > 0]
+    return result_df
+
+
+def get_mike_only_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path, low_memory=False)
+    return find_str_in_column(all_users_df, 'clusters', '^(?!.*(xufeng)).*(mike).*')
+    # return find_str_in_column(all_users_df, 'clusters', ['^(?!.*(xufeng)).*(mike).*'])
+
+
+def get_xufeng_only_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path, low_memory=False)
+    return find_str_in_column(all_users_df, 'clusters', '^(?!.*(mike)).*(xufeng).*')
+
+
+def get_mike_xufeng_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path, low_memory=False)
+    return find_str_in_column(all_users_df, 'clusters', '^.*(mike.*xufeng|xufeng.*mike).*')
+
+
+def find_str_in_column(df: pd.DataFrame, column_name: str, search_for: str) -> pd.DataFrame:
+    return df[df[column_name].str.contains(search_for)]
+
+
 def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd.DataFrame:
     repo = create_mike_xufeng_overlap_repo(application, bucket)
     data = []
