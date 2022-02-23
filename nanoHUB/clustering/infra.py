@@ -22,11 +22,30 @@ class ClustersBySemester(ClustersRepository):
         file_path = 'clusters/%s/by_semester/%s.csv' % (alg_name, time_probe)
         return self.mapper.read(file_path, **args)
 
+    def get_for_semester(self, alg_name: str, semester: str, year: int) -> pd.DataFrame:
+        if semester == 'fall':
+            data_df = self.get(alg_name, datetime.date(year, 7, 2), datetime.date(year, 12, 31))
+
+        elif semester == 'spring':
+            data_df = self.get(alg_name, datetime.date(year, 1, 1), datetime.date(year, 7, 1))
+
+        else:
+            raise NotImplementedError("The requested semester must be either spring or fall")
+
+        return data_df
+
     def save(self, df: pd.DataFrame, alg_name: str, from_date: datetime, to_date: datetime, **args) -> None:
         time_probe = self.date_parser.create_time_probe(from_date, to_date)
         file_path = 'clusters/%s/by_semester/%s.csv' % (alg_name, time_probe)
 
         self.mapper.save_as_csv(df, file_path, **args)
+
+
+def get_number_of_clusters_for_sem(
+        repo: ClustersBySemester, alg_name: str, semester: str, year: int
+) -> int:
+    df = repo.get_for_semester(alg_name, semester, year)
+    return len(df)
 
 
 def create_clusters_repository(application: Application, bucket: str) -> ClustersBySemester:
@@ -246,12 +265,16 @@ def get_active_user_ids_by_month(mapper: S3FileMapper) -> pd.DataFrame:
             user_ids_dict['year'] = year
             user_ids_dict['month'] = month
             df = mapper.read(file_path % (year, month))
-            user_ids_dict['active_users'] = df['active_users']
+            user_ids_dict['active_users'] = df['active_users'].tolist()
             final_df.append([year])
             rows_list.append(user_ids_dict)
 
     return pd.DataFrame(rows_list, columns=['year', 'month', 'active_users'])
 
+
+def get_all_active_user_ids(mapper: S3FileMapper) -> pd.DataFrame:
+    df = get_active_user_ids_by_month(mapper)
+    return df
 
 def get_active_user_ids_by_semester(mapper: S3FileMapper) -> int :
     file_path = 'active_user_ids_by_month/%d/%d/.csv'
@@ -281,9 +304,9 @@ def add_cluster_info(all_users: pd.DataFrame, cluster_repo: ClustersBySemester) 
 
                     else:
                         if alg == 'xufeng':
-                            df = cluster_repo.get(alg, datetime.date(year + 1, 1, 1), datetime.date(year + 1, 7, 1),header=None)
+                            df = cluster_repo.get(alg, datetime.date(year, 1, 1), datetime.date(year, 7, 1),header=None)
                         else:
-                            df = cluster_repo.get(alg, datetime.date(year + 1, 1, 1), datetime.date(year + 1, 7, 1))
+                            df = cluster_repo.get(alg, datetime.date(year, 1, 1), datetime.date(year, 7, 1))
 
                     result_set = set()
                     for column in df.columns:
@@ -292,7 +315,7 @@ def add_cluster_info(all_users: pd.DataFrame, cluster_repo: ClustersBySemester) 
                     condition = all_users["username"].isin(list(result_set))
                     all_users["clusters"] = np.where(condition, all_users['clusters'].apply(lambda x: x + [cluster_name]), all_users['clusters'])
                     all_users[cluster_name] = np.where(condition, True, False)
-                    all_users["is_researcher"] = np.where(condition, True, all_users['is_researcher'])
+                    # all_users["is_researcher"] = np.where(condition, True, all_users['is_researcher'])
                 except KeyError:
                     pass
     return all_users
@@ -317,17 +340,48 @@ def get_all_self_identified_users(mapper: S3FileMapper, file_path: str) -> pd.Da
 def get_mike_only_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
     all_users_df = mapper.read(file_path, low_memory=False)
     return find_str_in_column(all_users_df, 'clusters', '^(?!.*(xufeng)).*(mike).*')
-    # return find_str_in_column(all_users_df, 'clusters', ['^(?!.*(xufeng)).*(mike).*'])
 
+def get_clustered_users_by_alg(mapper: S3FileMapper, file_path: str, alg: str) -> pd.DataFrame:
+    all_users_df = mapper.read(file_path, low_memory=False)
+    regex = '^.*(%s).*' %(alg)
+    return find_str_in_column(all_users_df, 'clusters', regex)
+
+def filter_by_algorithm(df: pd.DataFrame, alg: str):
+    regex = '^.*(%s).*' %(alg)
+    return find_str_in_column(df, 'clusters', regex)
+
+def filter_by_semester(df: pd.DataFrame, semester: str, year: int):
+    regex = '^.*(%s_%d).*' %(semester, year)
+    return find_str_in_column(df, 'clusters', regex)
+
+class FilterDataFrameByColumn:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+
+    def apply_regex(self, column_name: str, regex: str) -> pd.DataFrame:
+        return self.df[self.df[column_name].str.contains(regex)]
+
+def get_clustered_users_by_semester(mapper: S3FileMapper, file_path: str, alg: str, semester: str, year: int):
+    regex = '^.*(%s_%s_%d).*' %(alg, semester, year)
+    col_name = "%s_%s_%d" % (alg, semester, year)
+    all_users_df = mapper.read(file_path, low_memory=False)
+    return all_users_df.loc[all_users_df[col_name] == True]
+    # return find_str_in_column(all_users_df, 'clusters', regex)
 
 def get_xufeng_only_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
     all_users_df = mapper.read(file_path, low_memory=False)
     return find_str_in_column(all_users_df, 'clusters', '^(?!.*(mike)).*(xufeng).*')
 
-
 def get_mike_xufeng_clustered_users(mapper: S3FileMapper, file_path: str) -> pd.DataFrame:
     all_users_df = mapper.read(file_path, low_memory=False)
     return find_str_in_column(all_users_df, 'clusters', '^.*(mike.*xufeng|xufeng.*mike).*')
+
+
+
+def get_num_clustered_users_by_semester(df: pd.DataFrame, semester: str, year: int) -> pd.DataFrame:
+
+    df = get_clustered_users_by_semester()
+    return find_str_in_column(df, 'clusters', regex)
 
 
 def find_str_in_column(df: pd.DataFrame, column_name: str, search_for: str) -> pd.DataFrame:
