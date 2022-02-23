@@ -388,7 +388,56 @@ def find_str_in_column(df: pd.DataFrame, column_name: str, search_for: str) -> p
     return df[df[column_name].str.contains(search_for)]
 
 
+def get_non_nan_values(df: pd.DataFrame):
+    result_set = set()
+    for column in df.columns:
+        result_set = result_set.union(df[column].values)
+
+    return result_set
+
 def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd.DataFrame:
+    clusters = create_clusters_repository(application, bucket)
+    data = []
+    num_active_users = get_active_users_by_semester(create_default_s3mapper(application, bucket))
+
+    for year in range(2008, 2022):
+        for sem in ['spring', 'fall']:
+            if year == 2008 and sem == 'spring':
+                continue
+
+            m_df = clusters.get_for_semester('mike', sem, year)
+            m_list = [item for sublist in m_df.values for item in sublist if not pd.isnull(item)]
+            m_set = set(m_list)
+
+            x_df = clusters.get_for_semester('xufeng', sem, year)
+            x_list = [item for sublist in x_df.values for item in sublist if not pd.isnull(item)]
+            x_set = set(x_list)
+
+            data_point = {}
+
+            data_point['year'] = year
+            data_point['semester'] = sem
+            if sem == 'fall':
+                data_point['date'] = datetime.date(year, 12, 31)
+            else:
+                data_point['date'] = datetime.date(year, 7, 1)
+
+            data_point['year_month'] = data_point['date'].strftime('%Y-%m')
+
+            data_point['m_only'] = len(m_set.difference(x_set))
+            data_point['x_only'] = len(x_set.difference(m_set))
+            data_point['mx_only'] = len(m_set.intersection(x_set))
+
+            data_point['total'] = len(m_set.union(x_set))
+
+            data_point['m_combined'] = len(m_list)
+            data_point['x_combined'] = len(x_list)
+
+            data.append(data_point)
+
+    return pd.DataFrame(data)
+
+def get_cluster_numbers_by_semester_dingyan(application: Application, bucket: str) -> pd.DataFrame:
     repo = create_mike_xufeng_overlap_repo(application, bucket)
     data = []
     num_active_users = get_active_users_by_semester(create_default_s3mapper(application, bucket))
@@ -410,7 +459,7 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
             overlap_members = set(df['OverlapMembers'].apply(literal_eval).sum())
             # overlap_size = len(overlap_members)
 
-            overlap_members = overlap_members.union(m_only_members.intersection(x_only_members))
+            # overlap_members = overlap_members.union(m_only_members.intersection(x_only_members))
             overlap_size = len(overlap_members)
 
             combined_size = len(set(df['CombinedMembers'].apply(literal_eval).sum()))
