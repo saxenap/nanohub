@@ -446,9 +446,9 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
                 data_point['Date'] = datetime.date(year, 12, 31)
             else:
                 data_point['Date'] = datetime.date(year, 7, 1)
-            data_point['num_active_users'] = num_active_users_sem
+            # data_point['num_active_users'] = num_active_users_sem
             # data_point['num_new_clustered_users_current_sem'] = num_new_clustered_users_current_sem
-            # data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
+            data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
             # data_point['num_unique_clustered_users'] = num_unique_clustered_users
             data_point['num_users_m_only'] = m_only_cluster_size
             data_point['num_users_x_only'] = x_only_cluster_size
