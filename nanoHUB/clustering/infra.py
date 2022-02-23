@@ -401,6 +401,7 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
         for sem in ['spring', 'fall']:
             if year == 2008 and sem == 'spring':
                 continue
+
             df = get_overlap_by_semester(repo, year, sem)
             m_only_members = set(df['MOnlyMembers'].apply(literal_eval).sum())
             m_only_cluster_size = len(m_only_members)
@@ -438,10 +439,17 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
 
 
             data_point = {}
+
+            data_point['year'] = year
+            data_point['semester'] = sem
+            if sem == 'fall':
+                data_point['Date'] = datetime.date(year, 12, 31)
+            else:
+                data_point['Date'] = datetime.date(year, 7, 1)
             data_point['num_active_users'] = num_active_users_sem
-            data_point['num_new_clustered_users_current_sem'] = num_new_clustered_users_current_sem
-            data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
-            data_point['num_unique_clustered_users'] = num_unique_clustered_users
+            # data_point['num_new_clustered_users_current_sem'] = num_new_clustered_users_current_sem
+            # data_point['num_unclustered_active_users'] = num_unclustered_active_users_sem
+            # data_point['num_unique_clustered_users'] = num_unique_clustered_users
             data_point['num_users_m_only'] = m_only_cluster_size
             data_point['num_users_x_only'] = x_only_cluster_size
             data_point['num_users_overlap_mike_xufeng'] = overlap_size
@@ -452,19 +460,21 @@ def get_cluster_numbers_by_semester(application: Application, bucket: str) -> pd
             data_previous_sems.append(data_point)
             data_previous_sems = data_previous_sems[-3:]
 
-            dd = {}
-            dd['year'] = year
-            dd['semester'] = sem
+            # dd = {}
+            # dd['year'] = year
+            # dd['semester'] = sem
 
-            for key in data_point:
-                dd[key] = data_point[key]
-                dd['trailing_' + key] = sum(
-                    d[key] for d in data_previous_sems
-                ) / len(data_previous_sems)
+            # for key in data_point:
+            #     dd[key] = data_point[key]
+            #     dd['trailing_' + key] = sum(
+            #         d[key] for d in data_previous_sems
+            #     ) / len(data_previous_sems)
 
 
             # dd.update(data_point)
-            data.append(dd)
+            # data.append(dd)
+            data.append(data_point)
+
 
     return pd.DataFrame(data)
 
