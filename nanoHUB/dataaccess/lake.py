@@ -1,6 +1,7 @@
 import pandas as pd
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
+import datetime
 from io import BytesIO, StringIO
 import boto3
 from nanoHUB.application import Application
@@ -147,3 +148,66 @@ class S3FileMapper:
 def create_default_s3mapper(application: Application, bucket: str) -> S3FileMapper:
     s3_client = get_default_s3_client(application)
     return S3FileMapper(s3_client, bucket)
+
+
+@dataclass
+class Semesters:
+    fall: str = 'fall'
+    spring: str = 'string'
+
+    def get_fall_begin(self, year: int) -> datetime:
+        return datetime.date(year, 7, 2)
+
+    def get_fall_end(self, year: int) -> datetime:
+        return datetime.date(year, 12, 31)
+
+    def get_spring_begin(self, year: int) -> datetime:
+        return datetime.date(year, 1, 1)
+
+    def get_spring_end(self, year: int) -> datetime:
+        return datetime.date(year, 7, 1)
+
+
+class SemesterMapper:
+    def __init__(self, mapper: S3FileMapper, date_parser: DateParser, file_path_prefix: str):
+        self.mapper = mapper
+        self.date_parser = date_parser
+        self.file_path_prefix = file_path_prefix
+
+    def get(self, from_date: datetime, to_date: datetime, **args) -> pd.DataFrame:
+        time_probe = self.date_parser.create_time_probe(from_date, to_date)
+        file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+        return self.mapper.read(file_path, **args)
+
+    def get_for_semester(self, semester: str, year: int) -> pd.DataFrame:
+        if semester == Semesters.fall:
+            data_df = self.get(Semesters().get_fall_begin(year), Semesters().get_fall_end(year))
+
+        elif semester == Semesters.spring:
+            data_df = self.get(Semesters().get_spring_begin(year), Semesters().get_spring_end(year))
+
+        else:
+            raise NotImplementedError(
+                "The requested semester must be either %s or %s" % (Semesters.fall, Semesters.spring)
+            )
+
+        return data_df
+
+    def save(self, df: pd.DataFrame, semester: str, year: int, **args) -> None:
+        if semester == 'fall':
+            from_date = Semesters().get_fall_begin(year)
+            to_date = Semesters().get_fall_end(year)
+
+        elif semester == Semesters.spring:
+            from_date = Semesters().get_spring_begin(year)
+            to_date = Semesters().get_spring_end(year)
+
+        else:
+            raise NotImplementedError(
+                "The requested semester must be either %s or %s" % (Semesters.fall, Semesters.spring)
+            )
+
+        time_probe = self.date_parser.create_time_probe(from_date, to_date)
+        file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+
+        self.mapper.save_as_csv(df, file_path, **args)

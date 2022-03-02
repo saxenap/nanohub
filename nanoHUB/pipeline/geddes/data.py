@@ -3,8 +3,7 @@ from dataclasses import dataclass, field
 import time, datetime
 from io import BytesIO
 import boto3
-from nanoHUB.application import Application
-import os
+
 
 @dataclass
 class QueryString:
@@ -80,7 +79,7 @@ def map(
         query,
         db_engine,
         s3_client,
-        bucket_name,
+        bucket_name: str,
         from_date: datetime,
         to_date: datetime = None
 ):
@@ -93,5 +92,41 @@ def map(
         df = new_df(query, from_date, nextday, db_engine)
         from_date = nextday
         save_df(s3_client, df, bucket_name, '%s/%s/%s' % (query.db_name, query.table_name, nextday))
+
+# def read(
+#         s3_client,
+#         bucket_name: str,
+#         from_date: datetime = None,
+#         to_date: datetime = None
+# ):
+#     end = to_date
+#     if to_date is None:
+#         end = datetime.date.today()
+#
+#     while from_date < end:
+#         nextday = from_date + datetime.timedelta(days = 1)
+#         df = read_
+
+
+def read_all(
+        s3_client,
+        bucket_name: str,
+        table_name: str,
+        **args
+):
+    li = []
+    for key in s3_client.list_objects(Bucket=bucket_name, Prefix=table_name)['Contents']:
+        print(key['Key'])
+        obj = s3_client.get_object(Bucket=bucket_name, Key=key['Key'])
+        if key['Key'].endswith('.parquet.gzip'):
+            df = pd.read_parquet(BytesIO(obj['Body'].read()), **args)
+        else:
+            df = pd.read_csv(BytesIO(obj['Body'].read()), **args)
+        li.append(df)
+
+    return pd.concat(li, axis=0, ignore_index=True)
+
+
+
 
 
