@@ -1,6 +1,6 @@
 from nanoHUB.application import Application
 from nanoHUB.pipeline.geddes.data import save_df, new_df, QueryString, get_default_s3_client
-from nanoHUB.dataaccess.lake import SemesterMapper, Semesters
+from nanoHUB.dataaccess.lake import SemesterMapper, Semesters, S3FileMapper, UnderscoredDateParser
 from nanoHUB.configuration import ClusteringConfiguration
 from datetime import datetime
 import argparse
@@ -22,8 +22,12 @@ query = QueryString(
     ['datetime']
 )
 
+mapper = SemesterMapper(S3FileMapper(
+    s3_client, bucket_name), UnderscoredDateParser(), query.db_name + '/' + query.table_name
+)
+# existing_files =
 current_year = datetime.now().year
-for year in range(2002, current_year + 1):
+for year in range(2019, current_year + 1):
     from_date = Semesters().get_fall_begin(year)
     to_date = Semesters().get_fall_end(year)
     df_fall = new_df(

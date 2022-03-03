@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 import time, datetime
 from io import BytesIO
 import boto3
+import re
+# from nanoHUB.dataaccess.lake import DateParser
 
 
 @dataclass
@@ -74,7 +76,6 @@ def save_df(s3_client, df, bucket_name: str, file_path: str) -> None:
     _buf.seek(0)
     s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
 
-
 def map(
         query,
         db_engine,
@@ -127,6 +128,48 @@ def read_all(
     return pd.concat(li, axis=0, ignore_index=True)
 
 
-
+# def has_any_file(
+#         s3_client,
+#         bucket_name: str,
+#         table_name: str,
+# ):
+#     for key in s3_client.list_objects(Bucket=bucket_name, Prefix=table_name)['Contents']:
+#         return True
+#
+# def get_latest_file(
+#         s3_client,
+#         bucket_name: str,
+#         table_name: str,
+#         date_parser: DateParser
+# ):
+#     filenames = get_all_files_in(
+#         s3_client, bucket_name, table_name
+#     )
+#     dates = (get_date(date_parser, fn) for fn in filenames)
+#     dates = (d for d in dates if d is not None)
+#     last_date = max(dates)
+#     last_date = last_date.strftime('%m-%d-%Y')
+#     filenames = [fn for fn in filenames if last_date in fn]
+#     for fn in filenames:
+#         print(fn)
+#
+# def get_all_files_in(
+#         s3_client,
+#         bucket_name: str,
+#         table_name: str,
+# ) -> []:
+#     keys = []
+#     for key in s3_client.list_objects(Bucket=bucket_name, Prefix=table_name)['Contents']:
+#         keys.append(key['Key'])
+#
+#     return keys
+#
+# def get_date(date_parser: DateParser, filename: str) -> datetime:
+#     date_pattern = re.compile(date_parser.get_pattern())
+#     matched = date_pattern.search(filename)
+#     if not matched:
+#         return None
+#     m, d, y = map(int, matched.groups())
+#     return datetime.date(y, m, d)
 
 

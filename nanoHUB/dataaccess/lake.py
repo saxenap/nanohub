@@ -7,6 +7,7 @@ import boto3
 from nanoHUB.application import Application
 import botocore.client as s3client
 from nanoHUB.pipeline.geddes.data import get_default_s3_client
+import re
 
 
 @dataclass
@@ -89,7 +90,7 @@ def map(
 ):
     end = to_date
     if to_date is None:
-        end = date.today()
+        end = datetime.date.today()
 
     while from_date < end:
         nextday = from_date + timedelta(days = 1)
@@ -105,6 +106,9 @@ class DateParser:
     def parse_time_probe(self, datestr: str) -> [datetime, datetime]:
         raise NotImplementedError
 
+    def get_pattern(self) -> str:
+        raise NotImplementedError
+
 
 class UnderscoredDateParser(DateParser):
     def create_time_probe(self, from_date: datetime, to_date: datetime) -> str:
@@ -114,6 +118,9 @@ class UnderscoredDateParser(DateParser):
         from_date, to_date = datestr.split('_')
 
         return datetime.strptime(from_date, '%Y-%m-%d').date(), datetime.strptime(to_date, '%Y-%m-%d').date()
+
+    def get_pattern(self) -> str:
+        return '\b(\d{4})-(\d{2})-(\d{2})_(\d{4})-(\d{2})-(\d{2})\b'
 
 
 class S3FileMapper:
@@ -173,6 +180,15 @@ class SemesterMapper:
         self.mapper = mapper
         self.date_parser = date_parser
         self.file_path_prefix = file_path_prefix
+
+    def exists(self, from_date: datetime, to_date: datetime, **args) -> bool:
+        try:
+            time_probe = self.date_parser.create_time_probe(from_date, to_date)
+            file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+            df = self.mapper.read(file_path, **args)
+            return True
+        except (KeyError):
+            return False
 
     def get(self, from_date: datetime, to_date: datetime, **args) -> pd.DataFrame:
         time_probe = self.date_parser.create_time_probe(from_date, to_date)
