@@ -5,7 +5,7 @@ from io import BytesIO
 import boto3
 import re
 # from nanoHUB.dataaccess.lake import DateParser
-
+import logging
 
 @dataclass
 class QueryString:
@@ -35,9 +35,40 @@ class QueryString:
         return self.datetime_cols
 
 
+@dataclass
+class QueryStringForAll:
+    db_name: str
+    table_name: str
+    col_names: []
+    datetime_cols: []
+
+    def make_query(self) -> str:
+        sql = '''
+        SELECT %s FROM %s.%s;
+        '''.strip()
+
+        return sql % (
+            ','.join(self.col_names),
+            self.db_name,
+            self.table_name
+        )
+
+    def get_datetime_cols(self) -> []:
+        return self.datetime_cols
+
 def new_df(query: QueryString, from_date: datetime, to_date: datetime, engine):
     print(query.make_query(from_date, to_date))
     df = pd.read_sql_query(query.make_query(from_date, to_date), engine)
+
+    for col_name in query.datetime_cols:
+        df[col_name] = pd.to_datetime(df[col_name],errors='coerce')
+
+    return df
+
+
+def new_df_for_all(query: QueryStringForAll, engine):
+    print(query.make_query())
+    df = pd.read_sql_query(query.make_query(), engine)
 
     for col_name in query.datetime_cols:
         df[col_name] = pd.to_datetime(df[col_name],errors='coerce')
@@ -76,6 +107,7 @@ def save_df(s3_client, df, bucket_name: str, file_path: str) -> None:
     _buf.seek(0)
     s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
 
+
 def map(
         query,
         db_engine,
@@ -93,6 +125,17 @@ def map(
         df = new_df(query, from_date, nextday, db_engine)
         from_date = nextday
         save_df(s3_client, df, bucket_name, '%s/%s/%s' % (query.db_name, query.table_name, nextday))
+
+
+def map_for_all(
+        query,
+        db_engine,
+        s3_client,
+        bucket_name: str
+):
+
+    df = new_df_for_all(query, db_engine)
+    save_df(s3_client, df, bucket_name, '%s/%s' % (query.db_name, query.table_name))
 
 # def read(
 #         s3_client,
@@ -113,11 +156,12 @@ def read_all(
         s3_client,
         bucket_name: str,
         table_name: str,
+        logger: logging.Logger,
         **args
 ):
     li = []
     for key in s3_client.list_objects(Bucket=bucket_name, Prefix=table_name)['Contents']:
-        print(key['Key'])
+        logger.debug('Reading: ' + key['Key'])
         obj = s3_client.get_object(Bucket=bucket_name, Key=key['Key'])
         if key['Key'].endswith('.parquet.gzip'):
             df = pd.read_parquet(BytesIO(obj['Body'].read()), **args)
