@@ -1,11 +1,16 @@
+import logging
+
 import pandas as pd
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
+import datetime
 from io import BytesIO, StringIO
 import boto3
 from nanoHUB.application import Application
 import botocore.client as s3client
-from nanoHUB.pipeline.geddes.data import get_default_s3_client
+from nanoHUB.pipeline.geddes.data import get_default_s3_client, read_all
+from nanoHUB.configuration import ClusteringConfiguration, DataLakeConfiguration
+import re
 
 
 @dataclass
@@ -88,7 +93,7 @@ def map(
 ):
     end = to_date
     if to_date is None:
-        end = date.today()
+        end = datetime.date.today()
 
     while from_date < end:
         nextday = from_date + timedelta(days = 1)
@@ -104,6 +109,9 @@ class DateParser:
     def parse_time_probe(self, datestr: str) -> [datetime, datetime]:
         raise NotImplementedError
 
+    def get_pattern(self) -> str:
+        raise NotImplementedError
+
 
 class UnderscoredDateParser(DateParser):
     def create_time_probe(self, from_date: datetime, to_date: datetime) -> str:
@@ -113,6 +121,9 @@ class UnderscoredDateParser(DateParser):
         from_date, to_date = datestr.split('_')
 
         return datetime.strptime(from_date, '%Y-%m-%d').date(), datetime.strptime(to_date, '%Y-%m-%d').date()
+
+    def get_pattern(self) -> str:
+        return '\b(\d{4})-(\d{2})-(\d{2})_(\d{4})-(\d{2})-(\d{2})\b'
 
 
 class S3FileMapper:
@@ -147,3 +158,192 @@ class S3FileMapper:
 def create_default_s3mapper(application: Application, bucket: str) -> S3FileMapper:
     s3_client = get_default_s3_client(application)
     return S3FileMapper(s3_client, bucket)
+
+
+@dataclass
+class Semesters:
+    fall: str = 'fall'
+    spring: str = 'string'
+
+    def get_fall_begin(self, year: int) -> datetime:
+        return datetime.date(year, 7, 2)
+
+    def get_fall_end(self, year: int) -> datetime:
+        return datetime.date(year, 12, 31)
+
+    def get_spring_begin(self, year: int) -> datetime:
+        return datetime.date(year, 1, 1)
+
+    def get_spring_end(self, year: int) -> datetime:
+        return datetime.date(year, 7, 1)
+
+
+class SemesterMapper:
+    def __init__(self, mapper: S3FileMapper, date_parser: DateParser, file_path_prefix: str):
+        self.mapper = mapper
+        self.date_parser = date_parser
+        self.file_path_prefix = file_path_prefix
+
+    def exists(self, from_date: datetime, to_date: datetime, **args) -> bool:
+        try:
+            time_probe = self.date_parser.create_time_probe(from_date, to_date)
+            file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+            df = self.mapper.read(file_path, **args)
+            return True
+        except (KeyError):
+            return False
+
+    def get(self, from_date: datetime, to_date: datetime, **args) -> pd.DataFrame:
+        time_probe = self.date_parser.create_time_probe(from_date, to_date)
+        file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+        return self.mapper.read(file_path, **args)
+
+    def get_for_semester(self, semester: str, year: int) -> pd.DataFrame:
+        if semester == Semesters.fall:
+            data_df = self.get(Semesters().get_fall_begin(year), Semesters().get_fall_end(year))
+
+        elif semester == Semesters.spring:
+            data_df = self.get(Semesters().get_spring_begin(year), Semesters().get_spring_end(year))
+
+        else:
+            raise NotImplementedError(
+                "The requested semester must be either %s or %s" % (Semesters.fall, Semesters.spring)
+            )
+
+        return data_df
+
+    def save(self, df: pd.DataFrame, semester: str, year: int, **args) -> None:
+        if semester == 'fall':
+            from_date = Semesters().get_fall_begin(year)
+            to_date = Semesters().get_fall_end(year)
+
+        elif semester == Semesters.spring:
+            from_date = Semesters().get_spring_begin(year)
+            to_date = Semesters().get_spring_end(year)
+
+        else:
+            raise NotImplementedError(
+                "The requested semester must be either %s or %s" % (Semesters.fall, Semesters.spring)
+            )
+
+        time_probe = self.date_parser.create_time_probe(from_date, to_date)
+        file_path = self.file_path_prefix + '/by_semester/%s.csv' % (time_probe)
+
+        self.mapper.save_as_csv(df, file_path, **args)
+
+
+class DateDifference:
+    def __init__(self, df: pd.DataFrame, id_col_name: str, datetime_col_name: str):
+        self.id_col_name = id_col_name
+        self.datetime_col_name = datetime_col_name
+        self.calculate_for(df)
+
+
+    def calculate_for(self, df: pd.DataFrame):
+        df[self.datetime_col_name] = pd.to_datetime(df[self.datetime_col_name])
+        df = df.sort_values(self.datetime_col_name).groupby(self.id_col_name)[self.datetime_col_name].agg(['first','last'])
+
+        df['_difference'] = (df['last'] - df['first']) / pd.Timedelta(seconds=1)
+        self.df = df.reset_index()
+
+
+    def get_users_with_sessions_less_than(self, seconds:int):
+        return self.df.loc[self.df['_difference'] <= seconds]
+
+
+    def get_users_with_sessions_more_than(self, seconds:int):
+        return self.df.loc[self.df['_difference'] > seconds]
+
+
+    def get_24_hour_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs())
+
+
+    def get_7_day_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 7)
+
+
+    def get_30_day_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 30)
+
+
+    def get_90_day_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 90)
+
+
+    def get_180_day_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 180)
+
+
+    def get_365_day_users(self):
+        return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 365)
+
+
+    def get_more_than_1_year_users(self):
+        return self.get_users_with_sessions_more_than(self.num_seconds_in_24_hrs() * 365)
+
+
+    def num_seconds_in_24_hrs(self) -> int:
+        return 86400
+
+
+def new_session_lifetime_calculator(application) -> DateDifference:
+    df = read_all(
+        get_default_s3_client(application),
+        ClusteringConfiguration().bucket_name_raw,
+        DataLakeConfiguration().toolstart_path,
+        logging.getLogger('session_calculation')
+    )
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    return DateDifference(df, 'user', 'datetime')
+
+
+def num_seconds_in_24_hrs() -> int:
+    return 86400
+
+
+def get_users_with_sessions_less_than(df, seconds:int):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_users_with_sessions_less_than(seconds)
+
+
+def get_users_with_sessions_more_than(df, seconds:int):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_users_with_sessions_more_than(seconds)
+
+
+def get_24_hour_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_24_hour_users()
+
+
+def get_7_day_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_7_day_users()
+
+
+def get_30_day_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_30_day_users()
+
+
+def get_90_day_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_90_day_users()
+
+
+def get_180_day_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_180_day_users()
+
+
+def get_365_day_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_365_day_users()
+
+
+def get_more_than_1_year_users(df):
+    date_diff = new_session_lifetime_calculator(df)
+    return date_diff.get_more_than_1_year_users()
+
+

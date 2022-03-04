@@ -10,6 +10,7 @@ from nanoHUB.configuration import ClusteringConfiguration
 from ast import literal_eval
 from dataclasses import dataclass
 from ast import literal_eval
+import logging
 
 
 class ClustersBySemester(ClustersRepository):

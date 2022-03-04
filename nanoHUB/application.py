@@ -51,10 +51,10 @@ class Application:
             loglevel = loglevel.upper()
             level = logging.getLevelName(loglevel)
 
-            if loglevel == 'DEBUG':
-                loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
-                for logger in loggers:
-                    logger.setLevel(logging.DEBUG)
+            # if loglevel == 'DEBUG':
+            #     loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+            #     for logger in loggers:
+            #         logger.setLevel(logging.DEBUG)
 
             logger = log()
             logger.setLevel(level)
