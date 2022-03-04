@@ -233,9 +233,16 @@ class SemesterMapper:
 
 
 class DateDifference:
-    def __init__(self, df: pd.DataFrame, id_col_name: str, datetime_col_name: str):
+    def __init__(
+            self,
+            df: pd.DataFrame,
+            id_col_name: str,
+            datetime_col_name: str,
+            difference_col_name: str = 'difference(seconds)'
+    ):
         self.id_col_name = id_col_name
         self.datetime_col_name = datetime_col_name
+        self.difference_col_name = difference_col_name
         self.calculate_for(df)
 
 
@@ -243,43 +250,50 @@ class DateDifference:
         df[self.datetime_col_name] = pd.to_datetime(df[self.datetime_col_name])
         df = df.sort_values(self.datetime_col_name).groupby(self.id_col_name)[self.datetime_col_name].agg(['first','last'])
 
-        df['_difference'] = (df['last'] - df['first']) / pd.Timedelta(seconds=1)
+        df[self.difference_col_name] = (df['last'] - df['first']) / pd.Timedelta(seconds=1)
         self.df = df.reset_index()
 
 
-    def get_users_with_sessions_less_than(self, seconds:int):
-        return self.df.loc[self.df['_difference'] <= seconds]
+    def get_users_with_sessions_between_days(self, min_limit_days: int, max_limit_days: int) -> pd.DataFrame:
+        df_max = self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * max_limit_days)
+        df_min = self.get_users_with_sessions_more_than(self.num_seconds_in_24_hrs() * min_limit_days)
+
+        return pd.merge(df_max, df_min, how='inner', on=[self.id_col_name])
 
 
-    def get_users_with_sessions_more_than(self, seconds:int):
-        return self.df.loc[self.df['_difference'] > seconds]
+    def get_users_with_sessions_less_than(self, seconds:int) -> pd.DataFrame:
+        return self.df.loc[self.df[self.difference_col_name] <= seconds]
 
 
-    def get_24_hour_users(self):
+    def get_users_with_sessions_more_than(self, seconds:int) -> pd.DataFrame:
+        return self.df.loc[self.df[self.difference_col_name] > seconds]
+
+
+    def get_24_hour_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs())
 
 
-    def get_7_day_users(self):
+    def get_7_day_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 7)
 
 
-    def get_30_day_users(self):
+    def get_30_day_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 30)
 
 
-    def get_90_day_users(self):
+    def get_90_day_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 90)
 
 
-    def get_180_day_users(self):
+    def get_180_day_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 180)
 
 
-    def get_365_day_users(self):
+    def get_365_day_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_less_than(self.num_seconds_in_24_hrs() * 365)
 
 
-    def get_more_than_1_year_users(self):
+    def get_more_than_1_year_users(self) -> pd.DataFrame:
         return self.get_users_with_sessions_more_than(self.num_seconds_in_24_hrs() * 365)
 
 
