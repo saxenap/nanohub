@@ -17,8 +17,8 @@ def main_online_users_TS_analysis():
     parser = argparse.ArgumentParser(description='Online user weblog time series analysis originally designed for nanoHUB.org')
     
     # task options
-    parser.add_argument('--task', help='specific task', 
-                                  action='store', default='classroom_detection')
+    parser.add_argument('--task', help='specific task classroom_detection(=xufeng) cost_cluster_analysis (=mike)', 
+                                  action='store', default='cost_cluster_analysis')
                                              
     # SQL connection
     parser.add_argument('--SQL_username', help='SQL database username', 
@@ -152,11 +152,11 @@ def main_online_users_TS_analysis():
     #
     
     if 'classroom_detection' in inparams.task:
-        # classroom detection
+        # classroom detection - Xufeng's algorithm
         core_classroom_analysis(inparams)
 
     if 'cost_cluster_analysis' in inparams.task:
-        # quick cost-function clustering analysis
+        # quick cost-function clustering analysis - Mike's Algorithm
         core_cost_cluster_analysis(inparams)
 
                             

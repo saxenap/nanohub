@@ -2,7 +2,7 @@ from PIL import Image
 from PIL import ImageDraw
 import mysql.connector
 from optparse import OptionParser
-from . import UserToolDayPattern
+from . import UserToolDayPattern     # user defined function
 import csv
 import sys
 import os

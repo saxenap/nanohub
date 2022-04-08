@@ -1,4 +1,8 @@
+# Compare and combine the clusters 
+
+# full raindrop chart plotting is in visualization_V2
 from visualization_V2.MakeFullRaindrop import call_func
+
 import os
 import pathlib
 
@@ -35,6 +39,9 @@ def get_cluster_overlap(year, semester):
     m_id = 1
     x_id = 1
 
+    # loop over Mike classes and find overlaps with Xufeng classes.   
+    # Sort out in each of Mike's classes which ones are overlap members and Xfeng only or Mike only
+    # we are NOT doing an exhaustive search over ALL the classes found - just the Mike classes
     overlap_list = []
     for m_line in m_csv:
         m_set = set(m_line)
@@ -52,8 +59,17 @@ def get_cluster_overlap(year, semester):
         x_id = 1
         m_id += 1
 
+    # we need to capture all the classes found by Xufeng, that have NO OVERLAP at all with any of Mike classes. 
+    # This is a to do item to be performed. 
+    # XXXXX    
+    
     overlap_list.sort(key=lambda x: (x[0], -x[3]))
     return overlap_list
+
+
+# combine the Xufeng clusters that clearly have overlapping members.  
+# Xufeng had an assumption of locality in the original approach.   
+# There are clearly very similar clusters that are also showing overlapping persons. 
 
 def combined_x_clusters(year, semester):
     m_csv, x_csv = read_files(year, semester)

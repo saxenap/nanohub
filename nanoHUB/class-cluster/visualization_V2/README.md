@@ -1,3 +1,10 @@
+# critical files in thsi directory:
+# * MakeFullRaindrop.py is the file used to plot the raindrop charts. 
+# * UserToolDayPattern.py is called by MakeFullRaindrop.py
+
+# * ImageTest.py  contains an example on how to call the raindrop chart plot with a finite , explicit set of users. 
+
+
 # Clustering and Raindrop Plot Guide
 
 ### Step 1: Run clustering algorithm on db2
