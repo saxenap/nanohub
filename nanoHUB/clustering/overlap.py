@@ -14,6 +14,10 @@ def get_cluster_overlap(df_m: pd.DataFrame, df_x: pd.DataFrame) -> pd.DataFrame:
     series_set_m = get_set_from(df_m)
     series_set_x = get_set_from(df_x)
 
+    # loop over Mike classes and find overlaps with Xufeng classes.   
+    # Sort out in each of Mike's classes which ones are overlap members and Xfeng only or Mike only
+    # we are NOT doing an exhaustive search over ALL the classes found - just the Mike classes
+
     overlap_list = []
     for m_line in series_set_m:
         m_set = set(m_line)
@@ -35,6 +39,11 @@ def get_cluster_overlap(df_m: pd.DataFrame, df_x: pd.DataFrame) -> pd.DataFrame:
         x_id = 1
         m_id += 1
 
+    # we need to capture all the classes found by Xufeng, that have NO OVERLAP at all with any of Mike classes. 
+    # This is a to do item to be performed. 
+    # XXXXX    
+
+    
     overlap_list.sort(key=lambda x: (x[0], -x[3]))
     return pd.DataFrame(overlap_list, columns = [
         'MClusterID', 'XClusterID', 'MClusterSize', 'XClusterSize', 'OverlapSize', 'OverlapMembers', 'MOnlySize',
