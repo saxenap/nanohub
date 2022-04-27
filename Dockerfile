@@ -1,4 +1,5 @@
-FROM ubuntu:latest AS vars-image
+ARG UBUNTU_VERSION
+FROM ubuntu:${UBUNTU_VERSION} AS vars-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
 ARG CPUS
@@ -91,7 +92,7 @@ RUN apt-get update -y \
         php${PHP_VERSION}-curl \
         php${PHP_VERSION}-gd \
         php${PHP_VERSION}-imagick \
-        php${PHP_VERSION}-json \
+#        php${PHP_VERSION}-json \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-mysql \
         php-ssh2 \
@@ -101,8 +102,8 @@ RUN apt-get update -y \
     " \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        $php_deps \
-    && echo "extension=zmq.so" > /etc/php/${PHP_VERSION}/mods-available/zmq.ini
+        $php_deps
+#RUN echo "extension=zmq.so" > /etc/php/${PHP_VERSION}/mods-available/zmq.ini
 WORKDIR ${APP_DIR}
 COPY composer.json .
 COPY composer.lock .

@@ -1,4 +1,6 @@
-env-vars=NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
+
+
+env-vars=UBUNTU_VERSION=$$(cat .env | grep UBUNTU_VERSION= | cut -d '=' -f2) NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
 
 log-level=INFO
 ########################################################################################################################
@@ -30,19 +32,19 @@ clean:
 # Base Commands
 
 dev-down:
-	docker-compose down
+	$(env-vars) docker-compose down
 
 dev-up:
 	$(env-vars) docker-compose up --build
 
 cartopy-down:
-	docker-compose -f docker-compose-cartopy.yml down
+	$(env-vars) docker-compose -f docker-compose-cartopy.yml down
 
 cartopy-up:
 	$(env-vars) docker-compose -f docker-compose-cartopy.yml up --build
 
 pipeline-down:
-	docker-compose -f docker-compose-pipeline.yml down
+	$(env-vars) docker-compose -f docker-compose-pipeline.yml down
 
 
 ########################################################################################################################

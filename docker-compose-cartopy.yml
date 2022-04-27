@@ -9,6 +9,7 @@ services:
       labels:
         com.nanoHUB.description: "Development and Exploration service"
       args:
+        UBUNTU_VERSION: "${UBUNTU_VERSION}"
         NB_USER: "${NB_USER}"
         NB_UID: "${NB_UID}"
         NB_GID: "${NB_GID}"
