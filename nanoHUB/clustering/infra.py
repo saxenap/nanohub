@@ -1037,3 +1037,32 @@ def get_dups(application: Application, bucket: str) -> pd.DataFrame:
         ]
     )
 
+def get_tool_users(mapper: S3FileMapper, file_path: str = 'tool_users_map.csv') -> pd.DataFrame:
+    df = mapper.read(file_path)
+    df = df[df['toolname'].notna()]
+    df = df[df['names_users'].notna()]
+    df['names_users'] = df['names_users'].str.split(',')
+    return df
+
+def get_user_tools(mapper: S3FileMapper, file_path: str = 'user_tools.csv') -> pd.DataFrame:
+    df = mapper.read(file_path)
+    # get_clustered_one_day_users
+    df = df[df['names_tools'].notna()]
+    df['names_tools'] = df['names_tools'].str.split(',')
+    return df
+
+
+def get_clustered_one_day_users(
+        mapper: S3FileMapper, file_path: str = 'derived_data_for_users_with_one_day_users.csv'
+) -> pd.DataFrame:
+    df = mapper.read(file_path, converters={"clusters": literal_eval})
+    return df.loc[(df['is_one_day_user'] == True) & (df['clusters'].str.len() > 0)]
+
+
+def get_unclassified_one_day_users(
+        mapper: S3FileMapper, file_path: str = 'derived_data_for_users_with_one_day_users.csv'
+) -> pd.DataFrame:
+    df = mapper.read(file_path, converters={"clusters": literal_eval})
+    return df.loc[(df['is_one_day_user'] == True) & (df['clusters'].str.len() == 0)]
+
+
