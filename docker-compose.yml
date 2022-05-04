@@ -24,6 +24,7 @@ services:
         LOCALE: "${LOCALE}"
         CPUS: "${CPUS}"
         PHP_VERSION: "${PHP_VERSION}"
+        COMPOSER_SIGNATURE: "${COMPOSER_SIGNATURE}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
