@@ -28,6 +28,7 @@ services:
         GDAL_VERSION: "${GDAL_VERSION}"
         GEOS_VERSION: "${GEOS_VERSION}"
         PROJ_VERSION: "${PROJ_VERSION}"
+        COMPOSER_SIGNATURE: "${COMPOSER_SIGNATURE}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"

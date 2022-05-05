@@ -20,6 +20,7 @@ services:
         LOCALE: "${LOCALE}"
         CPUS: "${CPUS}"
         PHP_VERSION: "${PHP_VERSION}"
+        COMPOSER_SIGNATURE: "${COMPOSER_SIGNATURE}"
     restart: always
 #    logging:
 #      driver: syslog
