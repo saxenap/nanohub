@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
+    kompose.version: 1.26.1 (a9d05d509)
+    geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dev
+  name: dev
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    io.kompose.service: dev
+status:
+  loadBalancer: {}
+

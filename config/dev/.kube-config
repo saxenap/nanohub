@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "geddes"
+  cluster:
+    server: "https://beta.geddes.rcac.purdue.edu/k8s/clusters/local"
+
+users:
+- name: "USERNAME_HERE"
+  user:
+    token: "TOKEN_HERE"
+
+
+contexts:
+- name: "geddes"
+  context:
+    user: "USERNAME_HERE"
+    cluster: "geddes"
+
+current-context: "geddes"
+
