@@ -16,6 +16,8 @@ name = "pypi"
 
 [requires]
 python_version = "3"
+behave = "*"
+cucumber = "*"
 
 [dev-packages]
 pytest = "6.2"
