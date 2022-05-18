@@ -9,29 +9,32 @@
    2. Use this email address to [create a new account on GitLab](https://gitlab.com/users/sign_up/).
 2. Server Access
    1. These are db2, db3, db4... db(n) and compute01... compute0(n). 
-   2. This access is granted by [Pascal](mailto:pmeunier@ucsd.edu). You will need to share:
+   2. Access to these is granted by [Pascal](mailto:pmeunier@ucsd.edu). You will need to share:
          1. Your Purdue career account username.
          2. The ssh public key you want to use.
-   3. Credentials to use once access granted:
-      1. Username: Purdue Career Account Username
-      2. Password: Purdue Career Account Password (not BoilerKey)
+   3. Configuration & Credentials to use once access granted:
+      1. Hostname: db(n).nanohub.org (Example: for db3, the hostname will be db3.nanohub.org)
+      2. Username: Purdue Career Account Username
+      3. Password: Purdue Career Account Password (not BoilerKey)
 3. Database(SQL<sup>)1,2</sup> Access
    1. db2, db3, db4... db(n)
    2. The databases run on their respective servers. 
       Example: db2 database runs on db2 server from 2 above.
-   3. Credentials to use once access granted:
-      1. Log in to the respective server from 2 above.
-      2. Your database credentials are stored in a _.my.cnf_ file in your root directory on that server.
+   3. Access to these is granted by [Pascal](mailto:pmeunier@ucsd.edu).
+   
 4. Geddes<sup>3</sup>
    1. This access is provided by ITap.
+   
 5. VPN 
    1. All Purdue staff and students should have access to Purdue's VPN already.
    2. [Download](https://www.itap.purdue.edu/services/software.html) Purdue specific VPN software.
       1. Make sure to select the appropriate option for your machine (personal or Purdue provided).
-   3. Configuration:
+   3. Configuration & Credentials:
       1. Address: webvpn2.purdue.edu
       2. Username: Purdue Username
       3. Password: BoilerKey
+
+--------
 
 ### Required Downloads/Installs on your machine:
 1. Docker<sup>4</sup>
@@ -50,6 +53,45 @@
       3. [Visual Studio Code](https://visualstudio.microsoft.com/vs/)
       4. [vim](https://www.vim.org)
       5. [Spyder](https://www.spyder-ide.org)
+
+--------
+
+### Database Access
+
+Credentials to use once access granted:
+1. Log in to the respective server from 2 above. 
+2. Your database credentials are stored in a _.my.cnf_ file in your root directory on that server.
+   1. SSH into the respective server (db3.nanohub.org etc.). In your terminal or command line, type:
+```shell
+ssh db3.nanohub.org -l PurdueCareerAccountUSERNAME
+```    
+Once logged in to the remote server (db3 in this case), type:
+```shell
+cd ~/   
+nano .my.cnf
+```
+2. You can also directly extract your username and password. Once logged in to the remote server:
+   1. For username:
+```shell
+awk '/^user/ {print $3; exit}' .my.cnf
+```
+   2. For password:
+```shell
+awk '/^password/ {print $3; exit}' .my.cnf
+```
+3. To access the database:
+   1. Direct access:
+      1. SSH into the respective server (db3.nanohub.org etc.). In your terminal or command line, type:
+      ```shell 
+      ssh db3.nanohub.org -l PurdueCareerAccountUSERNAME
+      ```
+      3. Once logged in to the remote server (db3 in this case), type:
+      ```shell
+      mysql
+      ```
+   2. Access via code:
+      1. Create an ssh tunnel to the remote server.
+      2. Make database calls as needed.
 
 --------
 
