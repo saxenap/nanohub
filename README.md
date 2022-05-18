@@ -42,17 +42,17 @@
    2. Install for Desktop
 2. Git<sup>5</sup>
    1. Install for [Terminal/Shell](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-   2. (Optional) Install for [Desktop](https://git-scm.com/downloads/guis)
+   2. (Optional for mac) Install for [Desktop](https://git-scm.com/downloads/guis)
 3. VPN (see #5 above)
-4. (Optional) IDE<sup>6</sup>
+4. (Optional for mac) IDE<sup>6</sup>
    1. You have many choices:
       1. (Recommended) [PyCharm](https://www.jetbrains.com/pycharm/)
          1. PyCharm is a professional IDE but available for free to students.
          2. It is used by the nanoHUB-analytics team.  
          3. The whole JetBrains suite is [available through your purdue.edu email](https://www.jetbrains.com/community/education/#students).
-      2. [Sublime Text 3](https://www.sublimetext.com)
+      2. [Sublime Text 3](https://www.sublimetext.com) (note: requires lots of setup to be IDE)
       3. [Visual Studio Code](https://visualstudio.microsoft.com/vs/)
-      4. [vim](https://www.vim.org) (available by default on most machines)
+      4. [vim](https://www.vim.org) (available by default on most machines, lacks features)
       5. [Spyder](https://www.spyder-ide.org)
 
 --------
