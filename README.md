@@ -44,14 +44,15 @@
    1. Install for [Terminal/Shell](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
    2. (Optional) Install for [Desktop](https://git-scm.com/downloads/guis)
 3. VPN (see #5 above)
-4. (Optional) IDE
+4. (Optional) IDE<sup>6</sup>
    1. You have many choices:
       1. (Recommended) [PyCharm](https://www.jetbrains.com/pycharm/)
          1. PyCharm is a professional IDE but available for free to students.
          2. It is used by the nanoHUB-analytics team.  
+         3. The whole JetBrains suite is [available through your purdue.edu email](https://www.jetbrains.com/community/education/#students).
       2. [Sublime Text 3](https://www.sublimetext.com)
       3. [Visual Studio Code](https://visualstudio.microsoft.com/vs/)
-      4. [vim](https://www.vim.org)
+      4. [vim](https://www.vim.org) (available by default on most machines)
       5. [Spyder](https://www.spyder-ide.org)
 
 --------
@@ -62,23 +63,38 @@ Credentials to use once access granted:
 1. Log in to the respective server from 2 above. 
 2. Your database credentials are stored in a _.my.cnf_ file in your root directory on that server.
    1. SSH into the respective server (db3.nanohub.org etc.). In your terminal or command line, type:
-```shell
-ssh db3.nanohub.org -l PurdueCareerAccountUSERNAME
-```    
-Once logged in to the remote server (db3 in this case), type:
-```shell
-cd ~/   
-nano .my.cnf
-```
-2. You can also directly extract your username and password. Once logged in to the remote server:
-   1. For username:
-```shell
-awk '/^user/ {print $3; exit}' .my.cnf
-```
-   2. For password:
-```shell
-awk '/^password/ {print $3; exit}' .my.cnf
-```
+   ```shell
+   ssh db3.nanohub.org -l PurdueCareerAccountUSERNAME
+   ```    
+   2. Once logged in to the remote server (db3 in this case), type:
+   ```shell
+   cd ~/   
+   nano .my.cnf
+   ```
+   3. Once logged in to the remote server:
+   
+      1. username:
+      ```shell
+         awk '/^user/ {print $3; exit}' .my.cnf
+      ```
+      2. password: 
+      ```shell
+         awk '/^password/ {print $3; exit}' .my.cnf
+      ```
+
+[//]: # (Note: to list the files here, use:)
+
+[//]: # (   ```)
+
+[//]: # (   ls -lf)
+
+[//]: # (   ```)
+
+[//]: # (   This shows hidden files.)
+
+[//]: # ()
+[//]: # (Note: You can also extract your username and password using VIM to open .my.cnf)
+
 3. To access the database:
    1. Direct access:
       1. SSH into the respective server (db3.nanohub.org etc.). In your terminal or command line, type:
@@ -108,13 +124,22 @@ awk '/^password/ {print $3; exit}' .my.cnf
    4. db4: It is a copy of db2 as well. Running on Geddes. This is to be used for the analytics work (access required / provided).
 
 3. Geddes Object Storage:
-Object storage is a way of storing large unstructured big data. It is different from the traditional file storage system which is found on computers. https://www.youtube.com/watch?v=71iiAzlF2Rs
-Gedges Object Storage is similar to AWS S3, google cloud. In order to access the stored data one needs to use the specific file paths.
+
+[Object storage](https://www.youtube.com/watch?v=71iiAzlF2Rs) is a way of storing large unstructured big data. It is different from the traditional file storage system which is found on computers. Gedges Object Storage is similar to AWS S3, google cloud. In order to access the stored data one needs to use the specific file paths.
 
 4. Docker:
-Docker is an open-source platform for deploying and managing containerized applications. A container is a standard unit of software that packages up code and all its dependencies, so the application runs quickly and reliably from one computing environment to another. https://www.docker.com/resources/what-container/
--Users need to understand basic understanding of dockers and be able to run the nanohub-analytics containers successfully on
+
+Docker is an open-source platform for deploying and managing containerized applications. A container is a standard unit of software that packages up code and all its dependencies, so the application runs quickly and reliably from one computing environment to another.
+Users need to [have basic understanding](https://www.docker.com/resources/what-container/) of dockers and be able to run the nanohub-analytics containers successfully on
 their machines.
 
-5. Git
-6. IDE
+5. Git:
+
+Git is an open-source software for tracking changes to a project. 
+It is the main way to collaborate in the coding world in a way that protects what each person works on. 
+If there is an issue, anyone in the repository (where you work on a specific project) is able to pull (download) a prior version to either have a working version or a new starting point.
+6. IDE:
+
+IDE stands for integrated development environment. This is where code is developed (for the most part). IDE's are also known to have many useful features beyond basic coding, such as having an onboard way to run code, syntax completion, and more.
+It is able to tell you where you made a mistake in your code, as well as quickly provide useful info about libraries you may want to use. For our purposes, we will be using it with the code on GitLab in order to trace function calls back to their functions, which would be almost impossible without an IDE. 
+The IDE allows us to just hover over a function and find its location, while in Jupyter you must browse through every file to find the function you are looking for.
