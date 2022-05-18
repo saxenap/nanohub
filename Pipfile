@@ -119,6 +119,7 @@ oauth2client = "3.0.0"
 python-Levenshtein = "*"
 scholarly = "*"
 google = "*"
+sendgrid = "*"
 ##########################################
 # charset detection
 chardet = "*"

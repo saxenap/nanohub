@@ -181,6 +181,7 @@ WORKDIR ${APP_DIR}
 RUN apt-get update -y \
     && pip3 install --upgrade pip
 COPY requirements.txt .
+COPY setup.py .
 RUN python3 -m venv ${VIRTUAL_ENV} \
     && pip3 install --no-cache-dir -r requirements.txt \
     && chown -R --from=root ${NB_USER} ${VIRTUAL_ENV}
