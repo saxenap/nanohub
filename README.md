@@ -2,6 +2,8 @@
 
 ### Required Access:
 
+For Mac and Windows
+
 1. [Code repository for nanoHUB Analytics](https://gitlab.hubzero.org/saxenap/nanohub-analytics) on HubZero's GitLab
    1. This access is provided by [Pascal](mailto:pmeunier@ucsd.edu). You will need to share:
       1. The email address you want to use for GitLab. 
@@ -40,6 +42,20 @@
 1. Docker<sup>4</sup>
    1. Install for [Terminal/Shell](https://docs.docker.com/get-docker/)
    2. Install for Desktop
+   3. Additional Guidance (Windows)
+         1. For docker, you must have virtualization enabled in BIOS
+            1. Called different things for different manufacturers
+            2. Google to find yours
+               1. Example: ASUS = "SVM Mode"
+         2. You will also need a 64 bit machine (x64 architecture, or ARM64 works as well) in order to install the WSL 2 Linux kernel. 
+      You can use a x86 (32 bit) processor, however you are extremely limited in what images you can download (this does not matter for mac because they emulate x64).
+         3. In order for docker to work, we will need to install Make on Windows. We will do this [via MinGW](https://www.youtube.com/watch?v=taCJhnBXG_w).
+            1. Shell used in video: Git
+         4. Once Make is installed, navigate to the folder with the root of the nanoHUB repository (what you cloned to) with shell.
+            1. Once in destination, make sure of the following:
+               1. You should see "MINGW64" or similar behind your name/id depending on what architecture you are.
+               2. Run the command "mingw32-make"
+                  1. The result should be "cp nanoHUB/.env.dev nanoHUB/.env"
 2. Git<sup>5</sup>
    1. Install for [Terminal/Shell](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
    2. (Optional) Install for [Desktop](https://git-scm.com/downloads/guis)
@@ -81,6 +97,8 @@ Credentials to use once access granted:
       ```shell
          awk '/^password/ {print $3; exit}' .my.cnf
       ```
+      
+      Note: All of this can be done manually as well (EG. "ls -lf", "cd .my.cnf", "vim .my.cnf")
 
 [//]: # (Note: to list the files here, use:)
 
@@ -108,6 +126,18 @@ Credentials to use once access granted:
    2. Access via code:
       1. Create an ssh tunnel to the remote server.
       2. Make database calls as needed.
+4. To build the container
+   1. Mac: your .env is filled out with the two user/pass combinations you need, you can run "make dev" and your container should build. To clean, run "make clean".
+   2. Windows: there are a few changes we need to make before we can run our make command.
+      1. Open up the Makefile
+      2. Under "make dev"
+         1. “make dev-down” -> “mingw32-make dev-down”
+         2. “make dev-up” -> “mingw32-make dev-up”
+      3. To run: "mingw32-make dev"
+         1. Once built, it will say that it cannot find a default browser. This is fine, just go to your browser of choice and type "127.0.0.1/lab" in the address bar.
+         2. Password: nanoHUB
+      4. To clean: "mingw32-make clean"
+   3. Note for both: Run the clean after each pull or any errors.
 
 --------
 
