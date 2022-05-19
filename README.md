@@ -31,6 +31,7 @@ For Mac and Windows
    1. All Purdue staff and students should have access to Purdue's VPN already.
    2. [Download](https://www.itap.purdue.edu/services/software.html) Purdue specific VPN software.
       1. Make sure to select the appropriate option for your machine (personal or Purdue provided).
+      2. Only install VPN/Core!
    3. Configuration & Credentials:
       1. Address: webvpn2.purdue.edu
       2. Username: Purdue Username
@@ -60,6 +61,7 @@ For Mac and Windows
    1. Install for [Terminal/Shell](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
    2. (Optional for mac) Install for [Desktop](https://git-scm.com/downloads/guis)
 3. VPN (see #5 above)
+   1. Only install VPN/Core!
 4. (Optional for mac) IDE<sup>6</sup>
    1. You have many choices:
       1. (Recommended) [PyCharm](https://www.jetbrains.com/pycharm/)
