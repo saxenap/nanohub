@@ -120,6 +120,7 @@ python-Levenshtein = "*"
 scholarly = "*"
 google = "*"
 sendgrid = "*"
+simple-salesforce = "*"
 ##########################################
 # charset detection
 chardet = "*"
