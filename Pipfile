@@ -121,6 +121,7 @@ scholarly = "*"
 google = "*"
 sendgrid = "*"
 simple-salesforce = "*"
+nameparser="*"
 ##########################################
 # charset detection
 chardet = "*"
