@@ -1,4 +1,4 @@
-FROM ubuntu:latest AS vars-image
+FROM --platform=linux/amd64 ubuntu:latest AS vars-image
 LABEL maintainer="saxep01@gmail.com"
 LABEL authors="Praveen Saxena"
 ARG CPUS
