@@ -271,18 +271,21 @@ class IOnboardingCommandMapper:
         raise NotImplementedError
 
         
-class JupyterCommandMapper(IOnboardingCommandMapper):
+class JupyterCommandMapper(IOnboardingCommandMapper) -> OnboardingCommand:
     def __init__(self, form):
         self.form = form
         
     def create_new(self) -> OnboardingCommand:
         inputs = self.form.execute()
-        return OnboardingCommand(
+        if inputs.password.value == inputs.passwordv.value:
+            return OnboardingCommand(
             inputs.fullname.value,
             inputs.email.value,
             inputs.username.value,
             inputs.password.value
         )
+        else:
+            raise UserInputError ("Make sure your passwords match")
     
     
 class CommandErrors:
@@ -348,6 +351,9 @@ class OnboardingProcessor:
         self.git_user = git_user
         self.git_repo = git_repo
         self.jupyter_password = jupyter_password
+        
+    def notebook_inputs(self, inputs: JupyterCommandMapper) -> :
+        
                 
     
     def process(self, command: OnboardingCommand) -> None:
