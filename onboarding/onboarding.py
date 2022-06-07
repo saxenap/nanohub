@@ -3,6 +3,8 @@ import subprocess
 from IPython.display import display, HTML, Javascript
 from ipywidgets import *
 from dataclasses import dataclass
+import json
+import re
 
 
 @dataclass
@@ -301,9 +303,35 @@ class CommandValidator:
     def __init__(self, errors: CommandErrors):
         self.errors = errors
         
-    def validate(self, command: OnboardingCommand) -> None:
-        self.errors.set_error_for('email', 'furbgri')
+    def validate(self, command: OnboardingCommand) -> CommandErrors:
         
+        #fullname
+        if command.fullname == "":
+            self.errors.set_error_for('name', 'Full name field is empty!')
+            
+        #email
+        
+#         regexforemail = r'(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\' + \
+#             'x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z' + \
+#             '0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-' +\
+#             '9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08' +\
+#             '\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'
+
+#         if !(re.fullmatch(regexforemail, command.email)):
+#             self.errors.set_error_for('email', 'Email is not valid!')
+        
+        if command.email == "":
+            self.errors.set_error_for('email', 'Email field is empty!')
+            
+        #username
+        if command.fullname == "":
+            self.errors.set_error_for('name', 'Username field is empty!')
+            
+        #jupyterpassword
+        if command.jupyter_password == "":
+            self.errors.set_error_for('password', 'Jupyter password field is empty!')
+        
+        return self.errors
 
     
 class OnboardingProcessor:
@@ -323,7 +351,10 @@ class OnboardingProcessor:
                 
     
     def process(self, command: OnboardingCommand) -> None:
-        self.validate(command)
+        errors = self.validate(command)
+        if errors.has_errors():
+            raise UserInputError(json.dumps(errors.get_errors()))
+            
         self.git_user.configure_for(
             command.username,
             command.fullname,
