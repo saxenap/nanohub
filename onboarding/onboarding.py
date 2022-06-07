@@ -273,7 +273,7 @@ class JupyterCommandMapper(IOnboardingCommandMapper):
     def __init__(self, form):
         self.form = form
         
-    def map(self) -> OnboardingCommand:
+    def create_new(self) -> OnboardingCommand:
         inputs = self.form.execute()
         return OnboardingCommand(
             inputs.fullname.value,
@@ -283,21 +283,44 @@ class JupyterCommandMapper(IOnboardingCommandMapper):
         )
     
     
+class CommandErrors:
+    def __init__(self):
+        self.errors_by_key = {}
+    
+    def set_error_for(self, key: str, error: str) -> None:
+        self.errors_by_key[key] = error
+    
+    def get_errors(self) -> {}:
+        return self.errors_by_key
+    
+    def has_errors(self) -> bool:
+        return not self.errors_by_key
+    
+    
+class CommandValidator:
+    def __init__(self, errors: CommandErrors):
+        self.errors = errors
+        
+    def validate(self, command: OnboardingCommand) -> None:
+        self.errors.set_error_for('email', 'furbgri')
+        
+
+    
 class OnboardingProcessor:
     def __init__(
         self, 
+        validator: CommandValidator,
         ssh: SSH_Setup, 
         git_user: GitUserConfiguration, 
         git_repo: GitRepositoryConfiguration,
         jupyter_password: JupyterPasswordConfiguration
     ):
+        self.validator = validator
         self.ssh = ssh
         self.git_user = git_user
         self.git_repo = git_repo
         self.jupyter_password = jupyter_password
-        
-    def validate(command: OnboardingCommand):
-        
+                
     
     def process(self, command: OnboardingCommand) -> None:
         self.validate(command)
