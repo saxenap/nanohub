@@ -209,7 +209,10 @@ RUN jupyter labextension install jupyterlab-topbar-extension \
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 RUN jupyter notebook --generate-config
 RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
-RUN sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+ARG JUPYTER_PASSWORD
+ENV JUPYTER_PASSWORD=${JUPYTER_PASSWORD}
+RUN PASSWORD=$(python3 -c "from notebook.auth import passwd; print(passwd(passphrase='${JUPYTER_PASSWORD}', algorithm='sha1'))") \
+    && sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'${PASSWORD}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
@@ -226,9 +229,14 @@ COPY nanoHUB nanoHUB/
 COPY setup.py .
 COPY pyproject.toml .
 USER root
-RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+RUN #cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
 RUN pip3 install . \
     && chown -R --from=root ${NB_USER} ${APP_DIR}
+
+FROM platform-image as remote-image
+USER ${NB_USER}
+RUN rm -r ${NB_USER_DIR}/nanoHUB/*
+EXPOSE ${JUPYTER_PORT}
 
 
 FROM platform-image as dev-image

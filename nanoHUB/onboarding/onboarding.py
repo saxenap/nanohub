@@ -203,20 +203,18 @@ class FormSetup:
         return InputValueMap(fullname, email, username, password1, password2)
     
 class SSH_Setup:
-    def __init__(self, root_folder: str):
-        self.root_folder = root_folder
-        
-    def generate_for(self, email_address: str):
-        cmd2 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (self.root_folder, self.root_folder))
+
+    def generate_for(self, email_address: str,  root_folder: str):
+        cmd2 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
         md2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
         
         # key = self.read_ssh_key()
         # js = self.create_js_for_ssh_key(key)
         # display(Javascript(js))
-        return SSHParams(email_address, key)
-        
-    def get_key(self):
-        return self.key
+    #     return SSHParams(email_address, key)
+    #
+    # def get_key(self):
+    #     return self.key
     
 #     def get_js(self):
 #         return self.js
@@ -255,6 +253,7 @@ class GitRepositoryConfiguration:
 
 class JupyterPasswordConfiguration:
     def configure_for(self, password: str):
+        return
 
 @dataclass
 class OnboardingCommand:
@@ -264,6 +263,7 @@ class OnboardingCommand:
     jupyter_password: str
     repo_ssh_url: str = 'git@gitlab.hubzero.org:saxenap/nanohub-analytics.git'
     local_dir_path: str = '/home/saxenap'
+    dir_name_for_repository: str = 'nanoHUB'
     
     
 class IOnboardingCommandMapper:
@@ -271,7 +271,7 @@ class IOnboardingCommandMapper:
         raise NotImplementedError
 
         
-class JupyterCommandMapper(IOnboardingCommandMapper) -> OnboardingCommand:
+class JupyterCommandMapper(IOnboardingCommandMapper):
     def __init__(self, form):
         self.form = form
         
@@ -299,7 +299,7 @@ class CommandErrors:
         return self.errors_by_key
     
     def has_errors(self) -> bool:
-        return not self.errors_by_key
+        return bool(self.errors_by_key)
     
     
 class CommandValidator:
@@ -351,13 +351,10 @@ class OnboardingProcessor:
         self.git_user = git_user
         self.git_repo = git_repo
         self.jupyter_password = jupyter_password
-        
-    def notebook_inputs(self, inputs: JupyterCommandMapper) -> :
-        
-                
+
     
     def process(self, command: OnboardingCommand) -> None:
-        errors = self.validate(command)
+        errors = self.validator.validate(command)
         if errors.has_errors():
             raise UserInputError(json.dumps(errors.get_errors()))
             
@@ -366,11 +363,25 @@ class OnboardingProcessor:
             command.fullname,
             command.email
         )
-        self.ssh.generate_for(email_address)
+        self.ssh.generate_for(command.email, command.local_dir_path)
         self.git_repo.configure_for(
             command.repo_ssh_url,
-            command.local_dir_path
+            command.local_dir_path + '/' + command.dir_name_for_repository
         )
         self.jupyter_password.configure_for(command.jupyter_password)
         
     
+class OnboardingProcessorFactory:
+    def create_new(self):
+        return OnboardingProcessor(
+            CommandValidator(CommandErrors()),
+            SSH_Setup(),
+            GitUserConfiguration(),
+            GitRepositoryConfiguration(),
+            JupyterPasswordConfiguration()
+        )
+
+
+def read_public_ssh_key(root_folder_path: str) -> str:
+    with open('%s/.ssh/id_rsa.pub' % root_folder_path, 'r') as file:
+        return file.read().strip()
