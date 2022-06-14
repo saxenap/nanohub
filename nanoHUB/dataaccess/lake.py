@@ -3,7 +3,6 @@ import logging
 import pandas as pd
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-import datetime
 from io import BytesIO, StringIO
 import boto3
 from nanoHUB.application import Application
