@@ -28,6 +28,7 @@ pytest = "6.2"
 black = "*"
 ##########################################
 sqlalchemy = "*"
+sqlalchemy-migrate = "*"
 ##########################################
 SQLAlchemy-Utils = "*"
 geoip2 = "*"

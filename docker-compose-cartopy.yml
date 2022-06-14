@@ -30,6 +30,7 @@ services:
         PROJ_VERSION: "${PROJ_VERSION}"
         COMPOSER_SIGNATURE: "${COMPOSER_SIGNATURE}"
         JUPYTER_PASSWORD: "${JUPYTER_PASSWORD}"
+        JUPYTER_TOKEN: "${JUPYTER_TOKEN}"
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"

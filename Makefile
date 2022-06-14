@@ -24,6 +24,12 @@ pipeline:
 	make pipeline-down
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
+remote:
+	git pull origin `git rev-parse --abbrev-ref HEAD`
+	make remote-down
+	make remote-up
+
+
 clean:
 	docker volume rm $$(docker volume ls -q) 2>/dev/null; true
 	docker system prune --all -f
@@ -36,6 +42,12 @@ dev-down:
 
 dev-up:
 	$(env-vars) docker-compose up --build
+
+remote-down:
+	$(env-vars) docker-compose -f docker-compose-remote.yml down
+
+remote-up:
+	$(env-vars) docker-compose -f docker-compose-remote.yml up --build
 
 cartopy-down:
 	$(env-vars) docker-compose -f docker-compose-cartopy.yml down
@@ -59,6 +71,9 @@ show-cron_tasks:
 
 exec-dev:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
+
+exec-remote:
+	docker exec -it `docker ps -q --filter name=nanohub-analytics_remote` bash
 
 exec-pipeline:
 	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
@@ -94,3 +109,11 @@ gcloud:
 pipenv-update:
 	pipenv install -e .
 	pipenv lock -r --dev > requirements.txt
+
+
+
+########################################################################################################################
+########################################################################################################################
+
+jupyter-config:
+	@sed -n -e '/^c./p' ~/.jupyter/jupyter_notebook_config.py
