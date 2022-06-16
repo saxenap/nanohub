@@ -196,6 +196,9 @@ def find_inter_mergable_clusters(this_row, intra_tool_cluster_df, time_tolerance
     # iterate through entire intra_tool_cluster_df
     
     eligible_clusters = intra_tool_cluster_df
+    eligible_clusters['start'] = pd.to_datetime(eligible_clusters['start'])
+    eligible_clusters['end'] = pd.to_datetime(eligible_clusters['end']) 
+    #convert to datetime, causes issue if not converted
     
     # filter dates
     eligible_clusters = eligible_clusters[(abs(eligible_clusters.start - this_row.end) <= time_tolerance) | \
@@ -227,7 +230,6 @@ def combine_clusters(inparams, cluster_post_sychrony):
     group_clusters = cluster_post_sychrony.groupby(['tool', 'cluster', 'scanned_date','DBSCAN']) \
                                           .apply(user_to_group_clusters, min_size=inparams.class_size_min) \
                                           .reset_index()
-
     #
     # First, annex clusters adjacent in time within the same tool group to form intra-tool clusters
     #
@@ -237,21 +239,21 @@ def combine_clusters(inparams, cluster_post_sychrony):
         intra_tool_cluster_df = pool.map(intra_tool_cluster_annex, [(name, group) for name, group in grouped])
     intra_tool_cluster_df = pd.concat(intra_tool_cluster_df)
     intra_tool_cluster_df.index.name = 'tool'
-
+    
     #                      
     # Second, annex clusters sharing same users within a time range to form final classes
     #
-    
+    print('preintrareset')
     intra_tool_cluster_df = intra_tool_cluster_df.reset_index()
 
     # generate similiarity matrix based on number of users shared. 
     # hard rules are also in place for cases that should not be merged
-    similarity_tuples = intra_tool_cluster_df.apply(find_inter_mergable_clusters, \
-                                            intra_tool_cluster_df = intra_tool_cluster_df, \
-                                            time_tolerance = datetime.timedelta(days = inparams.class_merge_time_threshold), \
-                                            dist_tolerance = inparams.class_merge_distance_threshold, \
+    similarity_tuples = intra_tool_cluster_df.apply(find_inter_mergable_clusters, 
+                                            intra_tool_cluster_df = intra_tool_cluster_df, 
+                                            time_tolerance = datetime.timedelta(days = inparams.class_merge_time_threshold), 
+                                            dist_tolerance = inparams.class_merge_distance_threshold, 
                                             axis=1)
-
+    print('defnintely not')
     similarity_tuples_hstack = np.hstack(similarity_tuples)
 
     similarity_matrix = coo_matrix( \
