@@ -485,14 +485,14 @@ def core_classroom_analysis(inparams):
         logging.info('Generating Jupyter Notebook checkpoint 1: Synchrony EDA')
 
         # class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
-        user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))
-        detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))
-        jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))
-        toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
-        cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
-
-        with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
-            pickle.dump([inparams], f)
+        # user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))
+        # detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))
+        # jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))
+        # toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
+        # cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
+        #
+        # with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
+        #     pickle.dump([inparams], f)
 
     #
     # Sychrony check for each cluster. Remove false positives and split cluster if multiple sub-clusters detected
@@ -524,71 +524,76 @@ def core_classroom_analysis(inparams):
 
     intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df = combine_clusters(inparams,
                                                                                                  cluster_post_sychrony)
+    
 
-    # NOTEBOOK CHECKPOINT
-    if inparams.generate_notebook_checkpoints:
-        logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
-
-        intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
-        students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
-        class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
-        classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
-
-    if inparams.save_to_geddes == True:
-        bucket_name = inparams.bucket_name
-
-        date_range_str = inparams.cost_probe_range.replace(':', '_')
-        folder_path = "%s/%s" % (inparams.object_path, date_range_str)
-
-        logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
-
-        s3_client = get_default_s3_client(Application.get_instance())
-
-        save_to_geddes(
-            s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
-        )
-
-        save_to_geddes(
-            s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
-        )
-
-        df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \
-            .rename(columns = lambda x: '{}'.format(x+1))
-
-        save_to_geddes(
-            s3_client, bucket_name, df, inparams.object_path, date_range_str, False
-        )
-        save_to_geddes(
-            s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, class_info_df, folder_path, 'class_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, classtool_info_df, folder_path, 'classtool_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, cluster_post_sychrony, folder_path, 'cluster_post_sychrony'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, cluster_output_candidate, folder_path, 'cluster_output_candidate'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, toolrun_df, folder_path, 'toolrun_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, jos_users, folder_path, 'jos_users'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, detected_clusters_df, folder_path, 'detected_clusters_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
-        )
-
-        logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
+    # # NOTEBOOK CHECKPOINT
+    # if inparams.generate_notebook_checkpoints:
+    #     logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
+    #
+    #     intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
+    #     students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
+    #     class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
+    #     classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
 
     logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
+
+    return intra_tool_cluster_df
+
+    #geddes functionality
+
+    # if inparams.save_to_geddes == True:
+    #     bucket_name = inparams.bucket_name
+    #
+    #     date_range_str = inparams.cost_probe_range.replace(':', '_')
+    #     folder_path = "%s/%s" % (inparams.object_path, date_range_str)
+    #
+    #     logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
+    #
+    #     s3_client = get_default_s3_client(Application.get_instance())
+    #
+    #     save_to_geddes(
+    #         s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
+    #     )
+    #
+    #     save_to_geddes(
+    #         s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
+    #     )
+    #
+    #     df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \
+    #         .rename(columns = lambda x: '{}'.format(x+1))
+    #
+    #     save_to_geddes(
+    #         s3_client, bucket_name, df, inparams.object_path, date_range_str, False
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, class_info_df, folder_path, 'class_info_df'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, classtool_info_df, folder_path, 'classtool_info_df'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, cluster_post_sychrony, folder_path, 'cluster_post_sychrony'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, cluster_output_candidate, folder_path, 'cluster_output_candidate'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, toolrun_df, folder_path, 'toolrun_df'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, jos_users, folder_path, 'jos_users'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, detected_clusters_df, folder_path, 'detected_clusters_df'
+    #     )
+    #     save_to_geddes(
+    #         s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
+    #     )
+    #
+    #     logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
 
 def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str, headers:bool = True):
     _buf = StringIO()

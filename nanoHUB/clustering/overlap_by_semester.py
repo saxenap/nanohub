@@ -14,7 +14,7 @@ def overlap_by_semester():
     # task options
     parser.add_argument('--class_probe_range',
                         help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1_2018-5-1',
-                        action='store', default='latest')  # '2020-9-25_2020-10-13')
+                        action='store', default='latest')  # 'c')
 
     parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
                         action='store', default='INFO')

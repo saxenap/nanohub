@@ -187,36 +187,38 @@ def core_cost_cluster_analysis(inparams):
     if inparams.display_output:
         print(final_clusters_df)
 
-    if inparams.no_save_output == False:
+    logging.info("Finished cluster analysis for %s" % inparams.cost_probe_range)
 
-        # create output directory if it does not exist
-        if not os.path.exists(inparams.output_dir):
-            logging.info('Creating new output directory: ' + inparams.output_dir)
-            os.mkdir(inparams.output_dir)
+    return final_clusters_df
 
-        outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[
-            1].strftime("%Y_%m_%d") + '.csv'
-        outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
-        logging.info('Saving output files to ' + outfile_filepath)
-
-        with open(outfile_filepath, 'w') as f:
-            for this_row in final_clusters:
-                f.write(','.join([str(x) for x in this_row]) + '\n')
-
-    if inparams.save_to_geddes == True:
-        bucket_name = inparams.bucket_name
-
-        date_range_str = inparams.cost_probe_range.replace(':', '_')
-        full_path = "%s/%s.csv" % (inparams.object_path, date_range_str)
-        logging.debug("Uploading output file to Geddes: %s/%s" % (bucket_name, full_path))
-
-        s3_client = get_default_s3_client(Application.get_instance())
-
-        _buf = StringIO()
-        final_clusters_df.to_csv(_buf, index=False)
-        _buf.seek(0)
-        s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
-
-        logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))
-
-    logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
+    # if inparams.no_save_output == False:
+    #
+    #     # create output directory if it does not exist
+    #     if not os.path.exists(inparams.output_dir):
+    #         logging.info('Creating new output directory: ' + inparams.output_dir)
+    #         os.mkdir(inparams.output_dir)
+    #
+    #     outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[
+    #         1].strftime("%Y_%m_%d") + '.csv'
+    #     outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
+    #     logging.info('Saving output files to ' + outfile_filepath)
+    #
+    #     with open(outfile_filepath, 'w') as f:
+    #         for this_row in final_clusters:
+    #             f.write(','.join([str(x) for x in this_row]) + '\n')
+    #
+    # if inparams.save_to_geddes == True:
+    #     bucket_name = inparams.bucket_name
+    #
+    #     date_range_str = inparams.cost_probe_range.replace(':', '_')
+    #     full_path = "%s/%s.csv" % (inparams.object_path, date_range_str)
+    #     logging.debug("Uploading output file to Geddes: %s/%s" % (bucket_name, full_path))
+    #
+    #     s3_client = get_default_s3_client(Application.get_instance())
+    #
+        # _buf = StringIO()
+        # final_clusters_df.to_csv(_buf, index=False)
+        # _buf.seek(0)
+        # s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
+        #
+        # logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))
