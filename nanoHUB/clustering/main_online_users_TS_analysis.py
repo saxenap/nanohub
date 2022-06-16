@@ -3,6 +3,7 @@ from pprint import pprint, pformat
 import code
 import os
 import time
+import pandas as pd
 
 from datetime import date
 import logging
@@ -13,7 +14,7 @@ from core_classroom_detection.core_classroom_analysis import core_classroom_anal
 from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis, get_scratch_dir
 
 
-def main_online_users_TS_analysis():
+def main_online_users_TS_analysis(inparams) -> pd.DataFrame:
     #
     # Analysis:
     #
@@ -108,11 +109,11 @@ def main_online_users_TS_analysis():
     logging.debug(pformat(vars(inparams)))
 
     final_clusters_df = func(inparams) #runs clustering
-    print(final_clusters_df)
 
+    return final_clusters_df
 
-if __name__ == '__main__':
-    start = time.time()
-    main_online_users_TS_analysis()
-    end = time.time()
-    print("Time:", end - start)
+# if __name__ == '__main__':
+#     start = time.time()
+#     main_online_users_TS_analysis()
+#     end = time.time()
+#     print("Time:", end - start)
