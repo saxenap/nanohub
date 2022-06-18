@@ -11,6 +11,7 @@ import datetime
 from preprocessing.gather_data import gather_data
 from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
 from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis, get_scratch_dir
+from save_clusters_to_geddes import save_clusters_to_geddes
 
 #I want to turn the parameter into an object that you can call like flags.time or flags.task
 #When the object is created, I want the useless flags to default to false, so that if someone wants to use it quick they don't have to worry about it
@@ -114,6 +115,9 @@ def main_online_users_TS_analysis(task, firstyear, lastyear, bucket_name, object
     # logging.debug(pformat(vars(inparams)))
 
     final_clusters_df = func(inparams) #runs clustering
+
+    if save_to_geddes == True:
+        save_clusters_to_geddes(final_clusters_df, bucket_name, class_probe_range, object_path)
 
     return final_clusters_df
 
