@@ -105,7 +105,7 @@ def main_online_users_TS_analysis(task, firstyear, lastyear, bucket_name, object
 
     if not use_old_data:
         # logging.info('Gathering data  ......')
-        gather_data(inparams) #unsure
+        gather_data(inparams) #unsure how to handle with current solution
         if gather_data_only:
             return
     # else:

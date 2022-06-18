@@ -32,7 +32,7 @@ def run_clustering(task, firstyear, lastyear, bucketname, objectpath, loglevel):
 #           "--object_path $(" + 'objectpath' + ") " + \
 #           "--log_level $(" + 'loglevel' + ") " + \
 #           "(other_flags)"
-#     print(lol)
+#     print(lol) #
 
 if __name__ == '__main__':
     run_clustering('mike', '2006', '2006', '', '', '')
