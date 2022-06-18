@@ -204,7 +204,7 @@ RUN jupyter labextension install jupyterlab-topbar-extension \
     && jupyter nbextension enable splitcell/splitcell
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 RUN jupyter notebook --generate-config
-RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = x''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py

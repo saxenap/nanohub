@@ -19,7 +19,7 @@ JOBS = $(addprefix job,${SEMS})
 all: ${JOBS} ; echo "$@ success"
 ${JOBS}: job%:
 	@echo $*
-	python3 main_online_users_TS_analysis.py \
+	python3 main_online_users_TS.py \
     	--cost_probe_range $* \
     	--class_probe_range $* \
     	--task $(task) \
@@ -28,3 +28,6 @@ ${JOBS}: job%:
     	--object_path $(object-path) \
     	--log_level $(log-level) \
     	$(other_flags)
+        
+#separate length parameters
+#how are they retreived with $*
