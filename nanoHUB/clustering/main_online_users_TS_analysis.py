@@ -68,8 +68,8 @@ def main_online_users_TS_analysis(flags) -> pd.DataFrame:
     else:
         # probes given time range
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
-        class_probe_range = flags.class_probe_range.split(':')
-        data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in class_probe_range]
+        flags.class_probe_range = flags.class_probe_range.split(':')
+        flags.data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in flags.class_probe_range]
     #timeframe
 
     #moved above 2 lines out of else:
@@ -110,7 +110,7 @@ def main_online_users_TS_analysis(flags) -> pd.DataFrame:
     final_clusters_df = func(flags) #runs clustering
 
     if flags.saveToGeddes == True:
-        save_clusters_to_geddes(final_clusters_df, flags.bucketName, flags.class_probe_range, flags.objectPath)
+        save_clusters_to_geddes(final_clusters_df, flags)
 
     return final_clusters_df
 

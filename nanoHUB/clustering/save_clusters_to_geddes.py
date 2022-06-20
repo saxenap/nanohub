@@ -5,17 +5,17 @@ import pandas as pd
 
 # geddes functionality
 
-def save_clusters_to_geddes(clusters_df, bucket_name, class_probe_range, object_path):
+def save_clusters_to_geddes(clusters_df, flags):
 
-        date_range_str = class_probe_range.replace(':', '_')
-        folder_path = "%s/%s" % (object_path, date_range_str)
+        date_range_str = flags.class_probe_range.replace(':', '_')
+        folder_path = "%s/%s" % (flags.objectPath, date_range_str)
 
         # logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
 
         s3_client = get_default_s3_client(Application.get_instance())
 
         save_to_geddes(
-            s3_client, bucket_name, clusters_df, folder_path, 'intra_tool_cluster_df'
+            s3_client, flags.bucketName, clusters_df, folder_path, 'intra_tool_cluster_df'
         ) #intra_tool_cluster_df
 
         # save_to_geddes(

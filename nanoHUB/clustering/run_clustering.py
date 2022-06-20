@@ -8,7 +8,7 @@ class ClusteringFlags:
     task: str
     firstYear: str
     lastYear: str
-    class_probe_range: str = field(default = firstYear + ":" + lastYear) #check
+    class_probe_range: str = field(default = firstYear + "-01-01" + ":" + lastYear  + "-07-02") #check
 
     #data
     geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
@@ -51,8 +51,8 @@ def run_clustering(flags):
     flags.firstYear = flags.firstYear + "-01-01" #semester 1
     flags.lastYear = flags.lastYear + "-07-02" #semester 2
 
-    main_online_users_TS_analysis(flags)
-
+    final_df = main_online_users_TS_analysis(flags)
+    print(final_df)
 
 
 
