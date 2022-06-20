@@ -39,7 +39,7 @@ def get_geo_data(inparams, ip):
 
 
 def get_scratch_dir(inparams):
-    return os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
+    return os.path.join(inparams.scratchDir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
 
 
 def prepare_data(inparams):

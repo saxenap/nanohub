@@ -8,7 +8,7 @@ class ClusteringFlags:
     task: str
     firstYear: str
     lastYear: str
-    class_probe_range: str = field(default = firstYear + "-01-01" + ":" + lastYear  + "-07-02") #check
+    class_probe_range: str = field(init = False)
 
     #data
     geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
@@ -17,11 +17,11 @@ class ClusteringFlags:
     outputDir: str = field(default = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output')) #check
     scratchDir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
     namePrefix: str = field(default='users_analysis')
-    displayOutput: bool = field(default='True')
-    noSaveOutput: bool = field(default='False')
-    saveToGeddes: bool = field(default='False')
+    displayOutput: bool = field(default=True)
+    noSaveOutput: bool = field(default=False)
+    saveToGeddes: bool = field(default=False)
     bucketName: str = field(default='nanohub.processed')
-    objectPath: str = field(default='clusters/${' + task + '}/by_semester')
+    objectPath: str = field(init = False)
 
     #classroom detection behavior (xufeng)
     classActivityTol: str = field(default='2')
@@ -40,20 +40,22 @@ class ClusteringFlags:
     daskScheduler: str = field(default='single-threaded')
 
     #internal options
-    CI: str = field(default='False') #check
-    CI_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'CI')) #FILL
-    generateNotebookCheckpoints: str = field(default='True')
-    gatherDataOnly: bool = field(default='False') #check
-    useOldData: bool = field(default='False') #check
+    CI: bool = field(default=False) #check
+    CI_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'CI')) #use os.getcwd() instead of os.path.dirname(os.path.realpath(__file__)) for jupyter
+    generateNotebookCheckpoints: bool = field(default=True)
+    gatherDataOnly: bool = field(default=False) #check
+    useOldData: bool = field(default=False) #check
     logLevel: str = field(default='INFO')
+    
+    def __post_init__(self):
+        self.class_probe_range = self.firstYear + "-01-01" + ":" + self.lastYear  + "-07-02"
+        self.objectPath = 'clusters/${' + self.task + '}/by_semester'
+        
 
 def run_clustering(flags):
-    flags.firstYear = flags.firstYear + "-01-01" #semester 1
-    flags.lastYear = flags.lastYear + "-07-02" #semester 2
 
     final_df = main_online_users_TS_analysis(flags)
-    print(final_df)
-
+    return final_df
 
 
 # if __name__ == '__main__':
@@ -68,4 +70,7 @@ def run_clustering(flags):
 #     print(lol) #
 
 if __name__ == '__main__':
-    run_clustering(ClusteringFlags())
+    run_clustering(ClusteringFlags('mike', '2006', '2007'))
+    #check 2nd date is after first
+    #allow any dates
+    #take first date and second date only

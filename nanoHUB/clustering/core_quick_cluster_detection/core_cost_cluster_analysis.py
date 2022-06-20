@@ -27,7 +27,7 @@ from nanoHUB.application import Application
 
 
 def get_scratch_dir(inparams):
-    return os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
+    return os.path.join(inparams.scratchDir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
 
 def prepare_data(inparams):
     #
@@ -122,15 +122,17 @@ def core_cost_cluster_analysis(inparams):
     (toolrun_df, toolstart_df, jos_users, jos_tool_version) = prepare_data(inparams)
 
     # Limit analysis range to within limits
-
-    if inparams.cost_probe_range == 'all':
+    print(type(inparams.class_probe_range))
+    print(inparams.class_probe_range)
+    if inparams.class_probe_range == 'all':
         # probes only the latest (today - 3 STD of Gaussian attention window function)
         data_probe_range = [toolrun_df.date.min(), toolrun_df.date.max()]
 
     else:
         # probes given time range
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
-        datetime_range_list = inparams.cost_probe_range.split(':')
+        # datetime_range_list = inparams.class_probe_range.split(':')
+        datetime_range_list = inparams.class_probe_range
         data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in datetime_range_list]
         logging.info(data_probe_range)
 
@@ -149,7 +151,7 @@ def core_cost_cluster_analysis(inparams):
     ddata = dd.from_pandas(toolrun_df_within_range, npartitions=200) \
         .groupby('user').apply(form_tool_usage_pattern, first_day=data_probe_range[0],
                                days_span=int((data_probe_range[1] - data_probe_range[0]).days)) \
-        .compute(scheduler=inparams.dask_scheduler)
+        .compute(scheduler=inparams.daskScheduler)
 
     user_activity_df = ddata.reset_index(
         name='ToolUsagePattern')  # reset index and form DF
@@ -159,7 +161,7 @@ def core_cost_cluster_analysis(inparams):
     ddata = dd.from_pandas(user_activity_df.sample(frac=1), npartitions=200) \
         .apply(cross_compare_two_users, user_activity_df=user_activity_df,
                forceAllDifferencesLevel=inparams.cost_force_all_diff_lvl, axis=1) \
-        .compute(scheduler=inparams.dask_scheduler)
+        .compute(scheduler=inparams.daskScheduler)
 
     #
     # Form clusters based on costs
@@ -187,7 +189,7 @@ def core_cost_cluster_analysis(inparams):
     if inparams.display_output:
         print(final_clusters_df)
 
-    logging.info("Finished cluster analysis for %s" % inparams.cost_probe_range)
+    logging.info("Finished cluster analysis for %s" % inparams.class_probe_range)
 
     return final_clusters_df
 

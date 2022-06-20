@@ -19,8 +19,7 @@ from save_clusters_to_geddes import save_clusters_to_geddes
 #how would you have done it?
 
 def main_online_users_TS_analysis(flags) -> pd.DataFrame:
-    print(flags.firstYear)
-    # class_probe_range = flags.firstYear + ':' + flags.lastYear
+
     #
     # Analysis:
     #
@@ -39,12 +38,12 @@ def main_online_users_TS_analysis(flags) -> pd.DataFrame:
     else:
         raise ValueError("A task must be assigned.")
 
-    # numeric_level = getattr(logging, inparams.log_level.upper(), 10)
-    # logging.basicConfig(level=numeric_level, format='%(message)s')
-    #     # summarize input options
+    numeric_level = getattr(logging, flags.logLevel.upper(), 10)
+    logging.basicConfig(level=numeric_level, format='%(message)s')
+        # summarize input options
 
     #cleaned data/live data
-    if flags.CI:
+    if flags.CI == True:
         # CI/Test runs
         # The only difference here should be CI/Test runs use sample,
         # cleaned data instead of live SQL data
@@ -72,14 +71,12 @@ def main_online_users_TS_analysis(flags) -> pd.DataFrame:
         flags.data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in flags.class_probe_range]
     #timeframe
 
-    #moved above 2 lines out of else:
-
     #
     # Preparations
     #
 
     #checks to see if bucket/path are valid
-    if flags.save_to_geddes:
+    if flags.saveToGeddes:
         if flags.bucketName is None or flags.bucketName == '':
             raise ValueError("A bucket name is necessary in order to save results to Geddes")
         if flags.objectPath is None or flags.objectPath == '':
@@ -91,14 +88,14 @@ def main_online_users_TS_analysis(flags) -> pd.DataFrame:
         logging.info('Creating new scratch directory: ' + get_scratch_dir(flags))
         os.mkdir(get_scratch_dir(flags))
 
-    if flags.noSaveOutput:
+    if flags.noSaveOutput == True:
         logging.info("Skipping saving output locally ...")
 
-    if not flags.saveToGeddes:
+    if flags.saveToGeddes == False:
         logging.info("Skipping saving output to Geddes ...")
 
-    if not flags.useOldData:
-        # logging.info('Gathering data  ......')
+    if flags.useOldData == False:
+        logging.info('Gathering data  ......')
         gather_data(flags) #unsure how to handle with current solution
         if flags.gatherDataOnly:
             return
