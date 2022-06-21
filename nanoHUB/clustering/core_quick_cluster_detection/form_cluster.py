@@ -104,7 +104,7 @@ def form_cluster_new(inparams, user_usage_df):
     # Forming clusters of individual users
     #
     logging.info('Forming clusters of individual users ...')
-    all_clusters = user_usage_indexed_df.apply(user_cluster_formation, user_usage_indexed_df = user_usage_indexed_df, tolerance = inparams.cost_tolerance, axis=1)
+    all_clusters = user_usage_indexed_df.apply(user_cluster_formation, user_usage_indexed_df = user_usage_indexed_df, tolerance = inparams.costTolerance, axis=1)
     
     '''
     user
@@ -121,7 +121,7 @@ def form_cluster_new(inparams, user_usage_df):
     logging.info('Forming super cluster sets ...') 
        
     # First: remove clusters that are smaller than minimum size
-    all_clusters_no_dup = all_clusters.apply(lambda x: x if len(x) >= inparams.cost_size_min else set())
+    all_clusters_no_dup = all_clusters.apply(lambda x: x if len(x) >= inparams.costSizeMin else set())
         
     # Second: remove duplicates and empty
     all_clusters_no_dup = pd.DataFrame(np.unique(all_clusters_no_dup[all_clusters_no_dup != set()]), columns=['clusters'])
@@ -130,7 +130,7 @@ def form_cluster_new(inparams, user_usage_df):
     # Third: combine clusters if one is a subset of another
     all_clusters_no_dup['is_not_subset'] = dd.from_pandas(all_clusters_no_dup.sample(frac=1), npartitions=200) \
                                              .apply(eliminate_subsets, all_clusters_no_dup = all_clusters_no_dup, axis=1) \
-                                             .compute(scheduler=inparams.dask_scheduler)
+                                             .compute(scheduler=inparams.daskScheduler)
               
     return all_clusters_no_dup[all_clusters_no_dup.is_not_subset]
 
