@@ -56,7 +56,6 @@ class ClusteringFlags:
         
 
 def run_clustering(flags):
-
     startCheck = datetime.strptime(flags.startDate, '%Y-%m-%d')
     endCheck = datetime.strptime(flags.endDate, '%Y-%m-%d')
 
