@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass, field
 from main_online_users_TS_analysis import main_online_users_TS_analysis
+from datetime import datetime
 
 @dataclass
 class ClusteringFlags:
@@ -53,6 +54,12 @@ class ClusteringFlags:
         
 
 def run_clustering(flags):
+
+    startCheck = datetime.strptime(flags.startDate, '%Y-%m-%d')
+    endCheck = datetime.strptime(flags.endDate, '%Y-%m-%d')
+
+    if not startCheck < endCheck:
+        raise Exception("startDate before endDate")
 
     final_df = main_online_users_TS_analysis(flags)
     return final_df
