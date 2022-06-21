@@ -160,7 +160,7 @@ def core_cost_cluster_analysis(inparams):
 
     ddata = dd.from_pandas(user_activity_df.sample(frac=1), npartitions=200) \
         .apply(cross_compare_two_users, user_activity_df=user_activity_df,
-               forceAllDifferencesLevel=inparams.cost_force_all_diff_lvl, axis=1) \
+               forceAllDifferencesLevel=inparams.costForceAllDiffLvl, axis=1) \
         .compute(scheduler=inparams.daskScheduler)
 
     #
@@ -186,7 +186,7 @@ def core_cost_cluster_analysis(inparams):
     final_clusters_df = pd.DataFrame(final_clusters)
     final_clusters_df.rename(columns = lambda x: '{}'.format(x+1))
 
-    if inparams.display_output:
+    if inparams.displayOutput:
         print(final_clusters_df)
 
     logging.info("Finished cluster analysis for %s" % inparams.class_probe_range)

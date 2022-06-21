@@ -228,7 +228,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
 
     # transform individual user's clusters into group cluster identified by scanned_date, tool, cluster, and DBSCAN
     group_clusters = cluster_post_sychrony.groupby(['tool', 'cluster', 'scanned_date','DBSCAN']) \
-                                          .apply(user_to_group_clusters, min_size=inparams.class_size_min) \
+                                          .apply(user_to_group_clusters, min_size=inparams.classSizeMin) \
                                           .reset_index()
     #
     # First, annex clusters adjacent in time within the same tool group to form intra-tool clusters
@@ -248,10 +248,10 @@ def combine_clusters(inparams, cluster_post_sychrony):
 
     # generate similiarity matrix based on number of users shared. 
     # hard rules are also in place for cases that should not be merged
-    similarity_tuples = intra_tool_cluster_df.apply(find_inter_mergable_clusters, 
-                                            intra_tool_cluster_df = intra_tool_cluster_df, 
-                                            time_tolerance = datetime.timedelta(days = inparams.class_merge_time_threshold), 
-                                            dist_tolerance = inparams.class_merge_distance_threshold, 
+    similarity_tuples = intra_tool_cluster_df.apply(find_inter_mergable_clusters,
+                                            intra_tool_cluster_df = intra_tool_cluster_df,
+                                            time_tolerance = datetime.timedelta(days = inparams.classMergeTimeThreshold),
+                                            dist_tolerance = inparams.classMergeDistanceThreshold,
                                             axis=1)
     print('defnintely not')
     similarity_tuples_hstack = np.hstack(similarity_tuples)

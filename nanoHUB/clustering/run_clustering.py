@@ -1,5 +1,7 @@
 import os
 from dataclasses import dataclass, field
+from datetime import datetime, date
+
 from main_online_users_TS_analysis import main_online_users_TS_analysis
 from datetime import datetime
 
@@ -7,8 +9,8 @@ from datetime import datetime
 class ClusteringFlags:
     #general
     task: str
-    firstYear: str
-    lastYear: str
+    firstDate: str #datetimeformat: ####-##-##
+    lastDate: str #datetimeformat: ####-##-##
     class_probe_range: str = field(init = False)
 
     #data
@@ -25,17 +27,17 @@ class ClusteringFlags:
     objectPath: str = field(init = False)
 
     #classroom detection behavior (xufeng)
-    classActivityTol: str = field(default='2')
-    classAttentionSpan: str = field(default='3')
-    classSizeMin: str = field(default='5')
-    classDistanceThreshold: str = field(default ='50')
-    classMergeTimeThreshold: str = field(default='120')
-    classMergeDistanceThreshold: str = field(default='5')
+    classActivityTol: int = field(default=2)
+    classAttentionSpan: int = field(default=3)
+    classSizeMin: int = field(default=5)
+    classDistanceThreshold: int = field(default =50)
+    classMergeTimeThreshold: int = field(default=120)
+    classMergeDistanceThreshold: int = field(default=5)
 
     #quick cost-based cluster analysis
-    costSizeMin: str = field(default='4')
-    costForceAllDiffLvl: str = field(default='501')
-    costTolerance: str = field(default='57')
+    costSizeMin: int = field(default=4)
+    costForceAllDiffLvl: int = field(default=501)
+    costTolerance: int = field(default=57)
 
     #dask
     daskScheduler: str = field(default='single-threaded')
@@ -49,7 +51,7 @@ class ClusteringFlags:
     logLevel: str = field(default='INFO')
     
     def __post_init__(self):
-        self.class_probe_range = self.firstYear + "-01-01" + ":" + self.lastYear  + "-07-02"
+        self.class_probe_range = self.firstDate + ":" + self.lastDate
         self.objectPath = 'clusters/${' + self.task + '}/by_semester'
         
 
@@ -77,7 +79,5 @@ def run_clustering(flags):
 #     print(lol) #
 
 if __name__ == '__main__':
-    run_clustering(ClusteringFlags('mike', '2006', '2007'))
-    #check 2nd date is after first
-    #allow any dates
-    #take first date and second date only
+    #datetime parsing in alg file to view for checking enddate is later than startdate
+    run_clustering(ClusteringFlags('mike', '2006-01-01', '2007-07-02'))
