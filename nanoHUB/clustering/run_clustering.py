@@ -61,17 +61,19 @@ class ExecuteAlgorithmCommand:
 
 
 class ExecuteAlgorithmCommandFactory:
-    def create_new(task: str, start_date: str, stop_date: str) -> ExecuteAlgorithmCommand:
-        command = ExecuteAlgorithmCommand(task, start_date, stop_date)
+    def create_new(task: str, start_date: str, end_date: str) -> ExecuteAlgorithmCommand:
+        command = ExecuteAlgorithmCommand(task, start_date, end_date)
         command.class_probe_range = [
-            datetime.strptime(start_date, '%Y-%m-%d'), 
-            datetime.strptime(stop_date, '%Y-%m-%d')
+            start_date,
+            end_date
+            # datetime.strptime(start_date, '%Y-%m-%d'),
+            # datetime.strptime(end_date, '%Y-%m-%d')
             ]
         command.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in command.class_probe_range]
 
         if not os.path.exists(get_scratch_dir(command)):
             logging.info('Creating new scratch directory: ' + get_scratch_dir(command))
-        os.mkdir(get_scratch_dir(command))
+            os.mkdir(get_scratch_dir(command))
 
         return command
         
