@@ -27,7 +27,7 @@ from nanoHUB.application import Application
 
 
 def get_scratch_dir(inparams):
-    return os.path.join(inparams.scratchDir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
+    return os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1])
 
 def prepare_data(inparams):
     #
@@ -151,7 +151,7 @@ def core_cost_cluster_analysis(inparams):
     ddata = dd.from_pandas(toolrun_df_within_range, npartitions=200) \
         .groupby('user').apply(form_tool_usage_pattern, first_day=data_probe_range[0],
                                days_span=int((data_probe_range[1] - data_probe_range[0]).days)) \
-        .compute(scheduler=inparams.daskScheduler)
+        .compute(scheduler=inparams.dask_scheduler)
 
     user_activity_df = ddata.reset_index(
         name='ToolUsagePattern')  # reset index and form DF
@@ -160,8 +160,8 @@ def core_cost_cluster_analysis(inparams):
 
     ddata = dd.from_pandas(user_activity_df.sample(frac=1), npartitions=200) \
         .apply(cross_compare_two_users, user_activity_df=user_activity_df,
-               forceAllDifferencesLevel=inparams.costForceAllDiffLvl, axis=1) \
-        .compute(scheduler=inparams.daskScheduler)
+               forceAllDifferencesLevel=inparams.cost_force_all_diff_lvl, axis=1) \
+        .compute(scheduler=inparams.dask_scheduler)
 
     #
     # Form clusters based on costs
@@ -186,7 +186,7 @@ def core_cost_cluster_analysis(inparams):
     final_clusters_df = pd.DataFrame(final_clusters)
     final_clusters_df.rename(columns = lambda x: '{}'.format(x+1))
 
-    if inparams.displayOutput:
+    if inparams.display_output:
         print(final_clusters_df)
 
     logging.info("Finished cluster analysis for %s" % inparams.class_probe_range)

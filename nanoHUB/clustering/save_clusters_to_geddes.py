@@ -9,14 +9,14 @@ import logging
 def save_clusters_to_geddes(clusters_df: pd.DataFrame, flags, name: str = 'intra_tool_cluster_df'):
 
         date_range_str = flags.class_probe_range.replace(':', '_')
-        folder_path = "%s/%s" % (flags.objectPath, date_range_str)
+        folder_path = "%s/%s" % (flags.object_path, date_range_str)
 
-        logging.debug("Uploading output files to Geddes: %s/%s" % (flags.bucketName, folder_path))
+        logging.debug("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
 
         s3_client = get_default_s3_client(Application.get_instance())
 
         save_to_geddes(
-            s3_client, flags.bucketName, clusters_df, folder_path, name
+            s3_client, flags.bucket_name, clusters_df, folder_path, name
         ) #intra_tool_cluster_df
 
         # save_to_geddes(

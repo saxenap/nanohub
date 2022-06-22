@@ -70,7 +70,7 @@ def save_data_from_db_to_df(inparams, db_name, sql_table, date_range=False):
 
         # save DF using Feather
         df.reset_index(drop=True).to_feather(
-            os.path.join(inparams.scratchDir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1] + '/' + sql_table.name + '.feather')
+            os.path.join(inparams.scratch_dir, inparams.class_probe_range[0] + '_' + inparams.class_probe_range[1] + '/' + sql_table.name + '.feather')
         )
 
         # display a small part of DF

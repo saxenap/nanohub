@@ -405,7 +405,7 @@ def core_classroom_analysis(inparams):
     #
     # Form user tool activity blocks
     #
-    activity_tol = datetime.timedelta(days=inparams.classActivityTol) #float()
+    activity_tol = datetime.timedelta(days=inparams.class_activity_tol) #float()
     # ddata = dd.from_pandas(toolrun_df, npartitions=200) \
     #           .groupby('user').apply(form_activity_blocks, activity_tol = activity_tol) \
     #           .compute(scheduler=inparams.daskScheduler)
@@ -442,7 +442,7 @@ def core_classroom_analysis(inparams):
 
     # Geospatial clustering for each day, each tool
     grouped = user_activity_blocks_df.groupby('tool')
-    geospatial_cluster_partial = partial(geospatial_cluster, inparams.classSizeMin, inparams.classDistanceThreshold)
+    geospatial_cluster_partial = partial(geospatial_cluster, inparams.class_size_min, inparams.class_distance_threshold)
     with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
         ddata = pool.map(geospatial_cluster_partial, [(name, group) for name, group in grouped])
 
@@ -453,7 +453,7 @@ def core_classroom_analysis(inparams):
     cluster_output_nodup = detected_clusters_df.drop_duplicates(subset=['scanned_date', 'cluster', 'user', 'tool'])
 
     passed_cutoff = cluster_output_nodup[['scanned_date', 'cluster', 'tool', 'user']]
-    passed_cutoff = passed_cutoff.groupby(['scanned_date', 'cluster', 'tool']).count()['user'] > inparams.classSizeMin
+    passed_cutoff = passed_cutoff.groupby(['scanned_date', 'cluster', 'tool']).count()['user'] > inparams.class_size_min
 
     cluster_output_candidate = cluster_output_nodup.join(passed_cutoff, on=['scanned_date', 'cluster', 'tool'],
                                                          rsuffix='_meet_class_size_min')
@@ -478,7 +478,7 @@ def core_classroom_analysis(inparams):
     '''
 
     # NOTEBOOK CHECKPOINT
-    if inparams.generateNotebookCheckpoints:
+    if inparams.generate_notebook_checkpoints:
         logging.info('Generating Jupyter Notebook checkpoint 1: Synchrony EDA')
 
         # class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
@@ -510,7 +510,7 @@ def core_classroom_analysis(inparams):
     cluster_post_sychrony = cluster_post_sychrony.reset_index(drop=True)
 
     # NOTEBOOK CHECKPOINT
-    if inparams.generateNotebookCheckpoints:
+    if inparams.generate_notebook_checkpoints:
         logging.info('Generating Jupyter Notebook checkpoint 2: Post-Synchrony EDA')
 
         # cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))

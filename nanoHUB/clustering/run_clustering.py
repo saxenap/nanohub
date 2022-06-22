@@ -15,67 +15,74 @@ from save_clusters_to_geddes import save_clusters_to_geddes
 class ClusteringFlags:
     #general
     task: str
-    firstDate: str #datetimeformat: ####-##-##
-    lastDate: str #datetimeformat: ####-##-##
+    start_date: str #datetimeformat: ####-##-##
+    end_date: str #datetimeformat: ####-##-##
     class_probe_range: str = field(init = False)
 
     #data
     geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
 
     #directories
-    outputDir: str = field(default = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output')) #check
-    scratchDir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
-    namePrefix: str = field(default='users_analysis')
-    displayOutput: bool = field(default=True)
-    noSaveOutput: bool = field(default=False)
-    saveToGeddes: bool = field(default=False)
-    bucketName: str = field(default='nanohub.processed')
-    objectPath: str = field(init = False)
+    output_dir: str = field(default = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output')) #check
+    scratch_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
+    name_prefix: str = field(default='users_analysis')
+    display_output: bool = field(default=True)
+    no_save_output: bool = field(default=False)
+    save_to_geddes: bool = field(default=False)
+    bucket_name: str = field(default='nanohub.processed')
+    object_path: str = field(init = False)
 
     #classroom detection behavior (xufeng)
-    classActivityTol: int = field(default=2)
-    classAttentionSpan: int = field(default=3)
-    classSizeMin: int = field(default=5)
-    classDistanceThreshold: int = field(default =50)
-    classMergeTimeThreshold: int = field(default=120)
-    classMergeDistanceThreshold: int = field(default=5)
+    class_activity_tol: int = field(default=2)
+    class_attention_span: int = field(default=3)
+    class_size_min: int = field(default=5)
+    class_distance_threshold: int = field(default =50)
+    class_merge_time_threshold: int = field(default=120)
+    class_merge_distance_threshold: int = field(default=5)
 
     #quick cost-based cluster analysis
     costSizeMin: int = field(default=4)
-    costForceAllDiffLvl: int = field(default=501)
-    costTolerance: int = field(default=57)
+    cost_force_all_diff_lvl: int = field(default=501)
+    cost_tolerance: int = field(default=57)
 
     #dask
-    daskScheduler: str = field(default='single-threaded')
+    dask_scheduler: str = field(default='single-threaded')
 
     #internal options
     CI: bool = field(default=False) #check
     CI_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'CI')) #use os.getcwd() instead of os.path.dirname(os.path.realpath(__file__)) for jupyter
-    generateNotebookCheckpoints: bool = field(default=True)
-    gatherDataOnly: bool = field(default=False) #check
-    useOldData: bool = field(default=False) #check
-    logLevel: str = field(default='INFO')
+    generate_notebook_checkpoints: bool = field(default=True)
+    gather_data_only: bool = field(default=False) #check
+    use_old_data: bool = field(default=False) #check
+    log_level: str = field(default='INFO')
+    makefile: bool = field(default=False)
     
     def __post_init__(self):
-        self.class_probe_range = self.firstDate + ":" + self.lastDate
+        self.class_probe_range = self.start_date + ":" + self.end_date
         self.objectPath = 'clusters/${' + self.task + '}/by_semester'
 
 def cluster_by_semester(flags):
     df_list = []
+
+    # start_dt = datetime.strptime(flags.start_date, '%Y-%m-%d')
+    # sem1 = year + '-01-01'
+    # sem2 = year + '-07-02'
+    yield run_clustering(flags)
 
 #flags -> ClusteringFlags
 def run_clustering(flags) -> pd.DataFrame:
     _map = AlgorithmsMap()
     validate_flags(flags, _map)
     maybe_save_raw_data(flags)
-    if flags.gatherDataOnly:
+    if flags.gather_data_only:
         return
     # final_df = main_online_users_TS_analysis(flags)
     func = getattr(_map, flags.task)
-
+    print(type(func))
+    print(func)
     final_clusters_df = func(flags) #runs clustering
 
-    if flags.saveToGeddes == True:
+    if flags.save_to_geddes == True:
         save_clusters_to_geddes(final_clusters_df, flags)
 
     return final_clusters_df
@@ -83,7 +90,7 @@ def run_clustering(flags) -> pd.DataFrame:
 
 
 def maybe_save_raw_data(flags: ClusteringFlags) -> None:
-    if flags.useOldData == False:
+    if flags.use_old_data == False:
         logging.info('Gathering data  ......')
         gather_data(flags) #unsure how to handle with current solution
     else:
@@ -103,15 +110,16 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
     # Algorithm Validation
     if not hasattr(_map, flags.task):
         raise Exception(
-            "Invalid Algorithm/Task. Valid algorithms/tasks are: %s" % _map
+            "Invalid Algorithm/Task. Valid algorithms/tasks are: %s" %_map
         )
 
     # Date Validation
-    startCheck = datetime.strptime(flags.startDate, '%Y-%m-%d')
-    endCheck = datetime.strptime(flags.endDate, '%Y-%m-%d')
+    if not flags.makefile:
+        start_check = datetime.strptime(flags.start_date, '%Y-%m-%d')
+        end_check = datetime.strptime(flags.end_date, '%Y-%m-%d')
 
-    if not startCheck < endCheck:
-        raise Exception("startDate before endDate")
+        if not start_check < end_check:
+            raise Exception("start_date before end_date")
 
     #task selection
     ###
@@ -127,7 +135,7 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
     else:
         raise ValueError("A task must be assigned.")
 
-    numeric_level = getattr(logging, flags.logLevel.upper(), 10)
+    numeric_level = getattr(logging, flags.log_level.upper(), 10)
     logging.basicConfig(level=numeric_level, format='%(message)s')
         # summarize input options
 
@@ -144,7 +152,7 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
         flags.class_probe_range = '2018-1-1:2018-5-1'
         logging.info('Setting analysis time range to CI default: ' + flags.class_probe_range)
     #cleaned data/live data
-
+    print(flags.class_probe_range)
     #timeframe
     if flags.class_probe_range == 'latest':
         # probes only the latest (today - 2 STD of Gaussian attention window function)
@@ -157,7 +165,7 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
         # probes given time range
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
         flags.class_probe_range = flags.class_probe_range.split(':')
-        flags.data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in flags.class_probe_range]
+        flags.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in flags.class_probe_range]
     #timeframe
 
     #
@@ -165,10 +173,10 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
     #
 
     #checks to see if bucket/path are valid
-    if flags.saveToGeddes:
-        if flags.bucketName is None or flags.bucketName == '':
+    if flags.save_to_geddes:
+        if flags.bucket_name is None or flags.bucket_name == '':
             raise ValueError("A bucket name is necessary in order to save results to Geddes")
-        if flags.objectPath is None or flags.objectPath == '':
+        if flags.object_path is None or flags.object_path == '':
             raise ValueError("An object path is necessary in order to save results to Geddes")
     # checks to see if bucket/path are valid
 
@@ -177,10 +185,10 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
         logging.info('Creating new scratch directory: ' + get_scratch_dir(flags))
         os.mkdir(get_scratch_dir(flags))
 
-    if flags.noSaveOutput == True:
+    if flags.no_save_output == True:
         logging.info("Skipping saving output locally ...")
 
-    if flags.saveToGeddes == False:
+    if flags.save_to_geddes == False:
         logging.info("Skipping saving output to Geddes ...")
 
     

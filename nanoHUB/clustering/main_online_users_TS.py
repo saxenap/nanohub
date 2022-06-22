@@ -1,14 +1,7 @@
 import argparse
-from pprint import pprint, pformat
-import code
 import os
 import time
-
-from datetime import date
-import datetime
-
-from main_online_users_TS_analysis import main_online_users_TS_analysis
-
+from run_clustering import run_clustering
 
 def main_online_users_TS():
     parser = argparse.ArgumentParser(
@@ -74,9 +67,6 @@ def main_online_users_TS():
                         action='store', default=5)
 
     # quick cost-based cluster analysis
-    parser.add_argument('--cost_probe_range',
-                        help='classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1',
-                        action='store', default='all')
     parser.add_argument('--cost_size_min', help='classroom detection: minimal cluster size',
                         action='store', default=4)
     parser.add_argument('--cost_force_all_diff_lvl', help='classroom detection: forceAllDifferencesLevel',
@@ -104,16 +94,21 @@ def main_online_users_TS():
 
     parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
                         action='store', default='INFO')
+    
+    #indicates that clustering is run from makefile: will bypass date check
+    parser.add_argument('--makefile',
+                        help='indicates if makefile was used for clustering, bypasses date check',
+                        action='store_true')
 
     inparams = parser.parse_args()
 
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
+    inparams.makefile = True
 
     inparams.class_probe_range = inparams.class_probe_range.replace('_', ':')
-    inparams.cost_probe_range = inparams.cost_probe_range.replace('_', ':')
 
-    returned_cluster_df = main_online_users_TS_analysis(inparams)
+    returned_cluster_df = run_clustering(inparams)
     print(returned_cluster_df)
 
 
