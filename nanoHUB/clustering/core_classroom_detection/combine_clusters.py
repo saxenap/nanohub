@@ -196,7 +196,7 @@ def find_inter_mergable_clusters(this_row, intra_tool_cluster_df, time_tolerance
     # iterate through entire intra_tool_cluster_df
     
     eligible_clusters = intra_tool_cluster_df
-    
+
     # filter dates
     eligible_clusters = eligible_clusters[(abs(eligible_clusters.start - this_row.end) <= time_tolerance) | \
                                           (abs(eligible_clusters.end - this_row.start) <= time_tolerance)]
@@ -207,8 +207,7 @@ def find_inter_mergable_clusters(this_row, intra_tool_cluster_df, time_tolerance
                                                   [this_row.mean_lon, this_row.mean_lat]), \
                        axis=1)    
     eligible_clusters = eligible_clusters[distance < dist_tolerance]
-    
-    
+
     # form similarity matrix by number of users shared across
     # shared_user is a percentage (0-1). 
     shared_user = eligible_clusters.user_set\
