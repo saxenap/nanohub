@@ -9,13 +9,14 @@ import datetime
 
 from main_online_users_TS_analysis import main_online_users_TS_analysis
 
+
 def main_online_users_TS():
     parser = argparse.ArgumentParser(
         description='Online user weblog time series analysis originally designed for nanoHUB.org')
 
     # task options
     parser.add_argument('--task', help='specific task',
-                        action='store', default='classroom_detection')
+                        action='store', default='core_classroom_analysis')
 
     # data
     parser.add_argument('--geoip2_mmdb_filepath', help='full file path of mmdb file from GeoIP2',
