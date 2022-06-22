@@ -1,11 +1,15 @@
 import os
 from dataclasses import dataclass, field
 from datetime import datetime, date
-
-from main_online_users_TS_analysis import main_online_users_TS_analysis
-from datetime import datetime
 from algorithms_map import AlgorithmsMap
+from pprint import pprint, pformat
+import pandas as pd
+import logging
 
+from preprocessing.gather_data import gather_data
+from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
+from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis, get_scratch_dir
+from save_clusters_to_geddes import save_clusters_to_geddes
 
 @dataclass
 class ClusteringFlags:
@@ -55,7 +59,9 @@ class ClusteringFlags:
     def __post_init__(self):
         self.class_probe_range = self.firstDate + ":" + self.lastDate
         self.objectPath = 'clusters/${' + self.task + '}/by_semester'
-        
+
+def cluster_by_semester(flags):
+    df_list = []
 
 #flags -> ClusteringFlags
 def run_clustering(flags) -> pd.DataFrame:
