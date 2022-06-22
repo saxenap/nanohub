@@ -101,6 +101,7 @@ class GeddesSaver(IExecuteAlgorithm):
 
         df = self.handler.handle(command)
         if command.save_to_geddes == True:
+            command.object_path = 'clusters/${' + command.task + '}/by_semester'
             save_clusters_to_geddes(df, command)
         return df
 

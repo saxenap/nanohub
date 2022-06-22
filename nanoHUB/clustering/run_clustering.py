@@ -21,7 +21,6 @@ class ExecuteAlgorithmCommand:
     task: str
     start_date: str #datetimeformat: ####-##-##
     end_date: str #datetimeformat: ####-##-##
-    class_probe_range: str = field(init = False)
 
     #data
     geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
@@ -59,19 +58,23 @@ class ExecuteAlgorithmCommand:
     gather_data_only: bool = field(default=False) #check
     use_old_data: bool = field(default=False) #check
     log_level: str = field(default='INFO')
-    
-    def __post_init__(self):
-        if not self.class_probe_range:
-            self.class_probe_range = self.start_date + ":" + self.end_date
 
-        self.class_probe_range = self.class_probe_range.split(':')
-        self.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in self.class_probe_range]
 
-        self.objectPath = 'clusters/${' + self.task + '}/by_semester'
-        if not os.path.exists(get_scratch_dir(self)):
-            logging.info('Creating new scratch directory: ' + get_scratch_dir(self))
-        os.mkdir(get_scratch_dir(self))
+class ExecuteAlgorithmCommandFactory:
+    def create_new(task: str, start_date: str, stop_date: str) -> ExecuteAlgorithmCommand:
+        command = ExecuteAlgorithmCommand(task, start_date, stop_date)
+        command.class_probe_range = [
+            datetime.strptime(start_date, '%Y-%m-%d'), 
+            datetime.strptime(stop_date, '%Y-%m-%d')
+            ]
+        command.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in command.class_probe_range]
 
+        if not os.path.exists(get_scratch_dir(command)):
+            logging.info('Creating new scratch directory: ' + get_scratch_dir(command))
+        os.mkdir(get_scratch_dir(command))
+
+        return command
+        
 
 def cluster_by_semester(command):
     df_list = []
@@ -109,5 +112,5 @@ def create_default_handler(command):
 
 if __name__ == '__main__':
     #datetime parsing in alg file to view for checking enddate is later than startdate
-    command = ExecuteAlgorithmCommand('mike', '2006-01-01', '2007-07-02')
+    command = ExecuteAlgorithmCommandFactory.create_new('mike', '2006-01-01', '2007-07-02')
     run_clustering(command)
