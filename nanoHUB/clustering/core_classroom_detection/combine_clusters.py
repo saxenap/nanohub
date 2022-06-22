@@ -197,6 +197,13 @@ def find_inter_mergable_clusters(this_row, intra_tool_cluster_df, time_tolerance
     
     eligible_clusters = intra_tool_cluster_df
 
+<<<<<<< HEAD
+=======
+    #convert to datetime, causes issue if not converted
+    eligible_clusters['start'] = pd.to_datetime(eligible_clusters['start'])
+    eligible_clusters['end'] = pd.to_datetime(eligible_clusters['end'])
+    
+>>>>>>> d497d3e594f63cbc68dc01775014e89583e6b6de
     # filter dates
     eligible_clusters = eligible_clusters[(abs(eligible_clusters.start - this_row.end) <= time_tolerance) | \
                                           (abs(eligible_clusters.end - this_row.start) <= time_tolerance)]
