@@ -1,7 +1,8 @@
 import argparse
 import os
 import time
-from run_clustering import run_clustering
+from nanoHUB.clustering.run_clustering import run_clustering, ExecuteAlgorithmCommandFactory
+
 
 def main_online_users_TS():
     parser = argparse.ArgumentParser(
@@ -101,8 +102,7 @@ def main_online_users_TS():
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
 
-    inparams.class_probe_range = inparams.class_probe_range.replace('_', ':')
-
+    inparams.start_date, inparams.end_date = inparams.class_probe_range.split('_')
     returned_cluster_df = run_clustering(inparams)
     print(returned_cluster_df)
 

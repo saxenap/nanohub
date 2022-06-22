@@ -2,11 +2,11 @@ from dataclasses import dataclass, asdict
 import pandas as pd
 import json
 from dataclasses import dataclass, field
-from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
-from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis
-from save_clusters_to_geddes import save_clusters_to_geddes
-from preprocessing.gather_data import gather_data
-from pprint import pprint, pformat
+from nanoHUB.clustering.core_quick_cluster_detection.core_cost_cluster_analysis import  get_scratch_dir, core_cost_cluster_analysis
+from nanoHUB.clustering.core_classroom_detection.core_classroom_analysis import core_classroom_analysis
+from nanoHUB.clustering.save_clusters_to_geddes import save_clusters_to_geddes
+from nanoHUB.clustering.preprocessing.gather_data import gather_data
+import os
 from datetime import datetime, date
 import logging
 
@@ -66,6 +66,18 @@ class AlgorithmHandler(IExecuteAlgorithm):
         self.logger = logger
 
     def handle(self, command) -> pd.DataFrame:
+        command.class_probe_range = [command.start_date, command.end_date]
+        command.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in command.class_probe_range]
+
+        if  not command.task or not hasattr(self._map, command.task):
+            raise Exception(
+                "Invalid Algorithm/Task %s. A valid task must be assigned. Valid algorithms/tasks are: %s" % (command.task, self._map)
+            )
+
+        if not os.path.exists(get_scratch_dir(command)):
+            logging.info('Creating new scratch directory: ' + get_scratch_dir(command))
+            os.mkdir(get_scratch_dir(command))
+
         if command.use_old_data == False:
             logging.info('Gathering data .....')
             gather_data(command)
@@ -73,16 +85,17 @@ class AlgorithmHandler(IExecuteAlgorithm):
             self.logger.info('Option "--user_old_data" enabled. Using data from previous run')
 
         if command.gather_data_only:
-            self.logger.info("Only gathering data required => Returning empty dataframe ...")
+            self.logger.info("Only gathering data required => Returning empty dataframe.")
             return pd.DataFrame()
 
-        if  not command.task or not hasattr(self._map, command.task):
-            raise Exception(
-                "Invalid Algorithm/Task %s. A valid task must be assigned. Valid algorithms/tasks are: %s" % (command.task, self._map)
-            )
-
         func = getattr(self._map, command.task)
-        return func(command)
+        try:
+            self.logger.info("Running %s now." % func)
+            return globals()[func](command)
+        except KeyError as e:
+            self.logger.error(
+                "%s not found in the list of imported global modules. Make sure %s is imported." % (func, func)
+            )
 
 
 class GeddesSaver(IExecuteAlgorithm):
@@ -113,8 +126,15 @@ class LocalDriveSaver(IExecuteAlgorithm):
 
     def handle(self, command) -> pd.DataFrame:
         df = self.handler.handle(command)
+        if not os.path.exists(command.dir_path):
+            os.mkdir(command.dir_path)
+
         if command.no_save_output == True:
-            self.logger.info("Skipping saving output locally...")
+            self.logger.info("Skipping saving output locally.")
+        else:
+            path = command.output_dir + '_' + command.task + '_' + command.class_probe_range + '.csv'
+            self.logger.info("Saving output locally at %s" % path)
+            df.to_csv(path)
 
         return df
 

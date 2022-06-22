@@ -1,17 +1,9 @@
 import os
 from dataclasses import dataclass, field
-from datetime import datetime, date
-from algorithms_map import AlgorithmsMap
-from pprint import pprint, pformat
 import pandas as pd
 import logging
-
-from preprocessing.gather_data import gather_data
-from core_classroom_detection.core_classroom_analysis import core_classroom_analysis
-from core_quick_cluster_detection.core_cost_cluster_analysis import core_cost_cluster_analysis, get_scratch_dir
-from save_clusters_to_geddes import save_clusters_to_geddes
-from algorithms_map import (
-    DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler
+from nanoHUB.clustering.algorithms_map import (
+    DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
 
 
@@ -63,38 +55,29 @@ class ExecuteAlgorithmCommand:
 class ExecuteAlgorithmCommandFactory:
     def create_new(task: str, start_date: str, end_date: str) -> ExecuteAlgorithmCommand:
         command = ExecuteAlgorithmCommand(task, start_date, end_date)
-        command.class_probe_range = [
-            start_date,
-            end_date
-            # datetime.strptime(start_date, '%Y-%m-%d'),
-            # datetime.strptime(end_date, '%Y-%m-%d')
-            ]
-        command.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in command.class_probe_range]
-
-        if not os.path.exists(get_scratch_dir(command)):
-            logging.info('Creating new scratch directory: ' + get_scratch_dir(command))
-            os.mkdir(get_scratch_dir(command))
-
         return command
         
 
-def cluster_by_semester(command):
+def cluster_by_semester(command) -> []:
     df_list = []
 
     # start_dt = datetime.strptime(command.start_date, '%Y-%m-%d')
     # sem1 = year + '-01-01'
     # sem2 = year + '-07-02'
-    yield run_clustering(command)
+    for sem in semesters:
+        df_list.append(run_clustering(command))
+
+    return df_list
 
 
 #command -> ClusteringFlags
 def run_clustering(command) -> pd.DataFrame:
-    handler = create_default_handler(command)
+    handler = create_default_handler(command.log_level)
     return handler.handle(command)
 
 
-def create_default_handler(command):
-    numeric_level = getattr(logging, command.log_level.upper(), 10)
+def create_default_handler(log_level):
+    numeric_level = getattr(logging, log_level.upper(), 10)
     logging.basicConfig(level=numeric_level, format='%(message)s')
     _l = logging.getLogger()
 
@@ -103,16 +86,15 @@ def create_default_handler(command):
         GeddesSaver(
             DisplayDf(
                 DataframeLogger(
-                    AlgorithmHandler(
-                        AlgorithmsMap(), _l
-                    ), _l
+                    AlgorithmHandler(AlgorithmsMap(), _l), _l
                 ), _l
             ), _l
         ), _l
     )
 
 
-if __name__ == '__main__':
-    #datetime parsing in alg file to view for checking enddate is later than startdate
-    command = ExecuteAlgorithmCommandFactory.create_new('mike', '2006-01-01', '2007-07-02')
-    run_clustering(command)
+
+# if __name__ == '__main__':
+#     #datetime parsing in alg file to view for checking enddate is later than startdate
+#     command = ExecuteAlgorithmCommandFactory.create_new('mike', '2006-01-01', '2007-07-02')
+#     run_clustering(command)
