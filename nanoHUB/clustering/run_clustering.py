@@ -55,12 +55,12 @@ class ClusteringFlags:
     gather_data_only: bool = field(default=False) #check
     use_old_data: bool = field(default=False) #check
     log_level: str = field(default='INFO')
-    makefile: bool = field(default=False)
     
     def __post_init__(self):
-        self.class_probe_range = self.start_date + ":" + self.end_date
+        if not self.class_probe_range:
+            self.class_probe_range = self.start_date + ":" + self.end_date
         self.objectPath = 'clusters/${' + self.task + '}/by_semester'
-
+        self.validate()
 def cluster_by_semester(flags):
     df_list = []
 
@@ -71,21 +71,12 @@ def cluster_by_semester(flags):
 
 #flags -> ClusteringFlags
 def run_clustering(flags) -> pd.DataFrame:
-    _map = AlgorithmsMap()
-    validate_flags(flags, _map)
-    maybe_save_raw_data(flags)
-    if flags.gather_data_only:
-        return
-    # final_df = main_online_users_TS_analysis(flags)
-    func = getattr(_map, flags.task)
-    print(type(func))
-    print(func)
-    final_clusters_df = func(flags) #runs clustering
 
-    if flags.save_to_geddes == True:
-        save_clusters_to_geddes(final_clusters_df, flags)
 
-    return final_clusters_df
+    df = executor.execute(flags)
+
+    # add the loop
+    return df
 
 
 
@@ -100,59 +91,20 @@ def maybe_save_raw_data(flags: ClusteringFlags) -> None:
 
 
 
-def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
+def validate(self) -> None:
+    flags = self
 
-    #
-    # Analysis:
-    #
-    #
-    
     # Algorithm Validation
     if not hasattr(_map, flags.task):
         raise Exception(
             "Invalid Algorithm/Task. Valid algorithms/tasks are: %s" %_map
         )
 
-    # Date Validation
-    if not flags.makefile:
-        start_check = datetime.strptime(flags.start_date, '%Y-%m-%d')
-        end_check = datetime.strptime(flags.end_date, '%Y-%m-%d')
-
-        if not start_check < end_check:
-            raise Exception("start_date before end_date")
-
-    #task selection
-    ###
-    if flags.task == 'core_classroom_analysis' or flags.task == 'xufeng':
-        # classroom detection
-        func = core_classroom_analysis
-
-    elif flags.task == 'core_cost_cluster_analysis' or flags.task == 'mike':
-        # quick cost-function clustering analysis
-
-        func = core_cost_cluster_analysis
-
-    else:
-        raise ValueError("A task must be assigned.")
-
     numeric_level = getattr(logging, flags.log_level.upper(), 10)
     logging.basicConfig(level=numeric_level, format='%(message)s')
         # summarize input options
 
-    #cleaned data/live data
-    if flags.CI == True:
-        # CI/Test runs
-        # The only difference here should be CI/Test runs use sample,
-        # cleaned data instead of live SQL data
 
-
-        logging.info('GitLab CI runs')
-
-        # setting the default time range for CI
-        flags.class_probe_range = '2018-1-1:2018-5-1'
-        logging.info('Setting analysis time range to CI default: ' + flags.class_probe_range)
-    #cleaned data/live data
-    print(flags.class_probe_range)
     #timeframe
     if flags.class_probe_range == 'latest':
         # probes only the latest (today - 2 STD of Gaussian attention window function)
@@ -166,42 +118,19 @@ def validate_flags(flags: ClusteringFlags, _map: AlgorithmsMap) -> None:
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
         flags.class_probe_range = flags.class_probe_range.split(':')
         flags.data_probe_range = [datetime.strptime(x, '%Y-%m-%d') for x in flags.class_probe_range]
-    #timeframe
-
-    #
-    # Preparations
-    #
-
-    #checks to see if bucket/path are valid
-    if flags.save_to_geddes:
-        if flags.bucket_name is None or flags.bucket_name == '':
-            raise ValueError("A bucket name is necessary in order to save results to Geddes")
-        if flags.object_path is None or flags.object_path == '':
-            raise ValueError("An object path is necessary in order to save results to Geddes")
-    # checks to see if bucket/path are valid
 
     # # create scratch directory if it does not exist
     if not os.path.exists(get_scratch_dir(flags)):
         logging.info('Creating new scratch directory: ' + get_scratch_dir(flags))
         os.mkdir(get_scratch_dir(flags))
 
-    if flags.no_save_output == True:
-        logging.info("Skipping saving output locally ...")
+def create_default_executor():
+    return DatabaseSaver(
+        GeddesSaver(
+            DisplayDf(AlgorithmExecutor(DataLoader(), AlgorithmsMap()))
+        )
+    )
 
-    if flags.save_to_geddes == False:
-        logging.info("Skipping saving output to Geddes ...")
-
-    
-# if __name__ == '__main__':
-#     lol = "python3 main_online_users_TS.py " + \
-#           "--cost_probe_range " + 'firstyear' + ":" + 'lastyear' + " " + \
-#           "--class_probe_range " + 'firstyear' + ":" + 'lastyear' + " " + \
-#           "--task $(" + 'task' + ") " + \
-#           "--bucket_name $(" + 'bucketname' + ") " + \
-#           "--object_path $(" + 'objectpath' + ") " + \
-#           "--log_level $(" + 'loglevel' + ") " + \
-#           "(other_flags)"
-#     print(lol) #
 
 if __name__ == '__main__':
     #datetime parsing in alg file to view for checking enddate is later than startdate

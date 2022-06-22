@@ -94,17 +94,12 @@ def main_online_users_TS():
 
     parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
                         action='store', default='INFO')
-    
-    #indicates that clustering is run from makefile: will bypass date check
-    parser.add_argument('--makefile',
-                        help='indicates if makefile was used for clustering, bypasses date check',
-                        action='store_true')
+
 
     inparams = parser.parse_args()
 
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
-    inparams.makefile = True
 
     inparams.class_probe_range = inparams.class_probe_range.replace('_', ':')
 
