@@ -2,6 +2,7 @@ from nanoHUB.pipeline.geddes.data import get_default_s3_client
 from nanoHUB.application import Application
 from io import StringIO
 import pandas as pd
+import logging
 
 # geddes functionality
 
@@ -10,7 +11,7 @@ def save_clusters_to_geddes(clusters_df, flags):
         date_range_str = flags.class_probe_range.replace(':', '_')
         folder_path = "%s/%s" % (flags.objectPath, date_range_str)
 
-        # logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
+        logging.debug("Uploading output files to Geddes: %s/%s" % (flags.bucketName, folder_path))
 
         s3_client = get_default_s3_client(Application.get_instance())
 
