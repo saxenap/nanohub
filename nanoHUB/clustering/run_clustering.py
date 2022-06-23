@@ -1,10 +1,12 @@
 import os
 from dataclasses import dataclass, field
+from datetime import datetime
 import pandas as pd
 import logging
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
+from dateutil.relativedelta import relativedelta
 
 
 @dataclass
@@ -56,16 +58,67 @@ class ExecuteAlgorithmCommandFactory:
     def create_new(task: str, start_date: str, end_date: str) -> ExecuteAlgorithmCommand:
         command = ExecuteAlgorithmCommand(task, start_date, end_date)
         return command
-        
 
-def cluster_by_semester(command) -> []:
+
+
+class IGenerateSemesterTimeFrames:
+    def create_timeframe_list(start_date: datetime.date, end_date: datetime.date) -> [(
+            datetime.date, datetime.date
+    )]:
+        raise NotImplementedError
+
+
+class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
+    def __int__(
+            self, fall_start_month: str = '07', spring_start_month: str = '01', fall_start_date: str = '02',  spring_start_date: str = '01'
+    ):
+        self.fall_start_month = fall_start_month
+        self.spring_start_month = spring_start_month
+        self.fall_start_date = fall_start_date
+        self.spring_start_date = spring_start_date
+
+    def determine_semester(date: datetime.date) -> datetime.date:
+        print(date.year)
+        if date.month <= 7 & date.day < 2:
+            date1 = str(date.year) + "-07-02"
+            return datetime.strptime(date1, '%Y-%m-%d')
+        elif date.month > 7 & date.day >= 2:
+            date2 = str(date.year + 1) + "-01-01"
+            return datetime.strptime(date2, '%Y-%m-%d')
+    def create_timeframe_list(start_date: datetime.date, end_date: datetime.date) -> [(
+            datetime.date, datetime.date
+    )]:
+        # start = datetime.strptime(start_date, '%Y-%m-%d')
+        # stop = datetime.strptime(end_date, '%Y-%m-%d')
+        start = start_date
+        stop = end_date
+
+        timelist = []
+
+        while (True):
+            end_range = TwoSemesterTimeFrameGenerator.determine_semester(start)
+            print(end_range)
+            timelist.append((start, end_range))
+            if end_range > stop:
+                timelist.append((start, stop))
+                break
+            else:
+                start = end_range
+
+        return timelist
+
+
+def cluster_by_time_list(task: str, timelist: dict) -> [(int, pd.DataFrame)]:
     df_list = []
 
-    # start_dt = datetime.strptime(command.start_date, '%Y-%m-%d')
-    # sem1 = year + '-01-01'
-    # sem2 = year + '-07-02'
-    for sem in semesters:
-        df_list.append(run_clustering(command))
+    timelist = {
+        '1': ['2006-01-01', '2006-07-02'],
+        '2': ['2006-07-02', '2007-01-01']
+    }
+
+    for x in range(len(timelist)):
+        start, end = timelist[x]
+        df_list.append((x, ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
 
     return df_list
 
