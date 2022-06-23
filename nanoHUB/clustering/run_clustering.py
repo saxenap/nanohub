@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 import logging
 from nanoHUB.clustering.algorithms_map import (
@@ -62,14 +62,14 @@ class ExecuteAlgorithmCommandFactory:
 
 
 class IGenerateSemesterTimeFrames:
-    def create_timeframe_list(start_date: datetime.date, end_date: datetime.date) -> [(
+    def create_timeframe_list(self, start_date: datetime.date, end_date: datetime.date) -> [(
             datetime.date, datetime.date
     )]:
         raise NotImplementedError
 
 
 class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
-    def __int__(
+    def __init__(
             self, fall_start_month: str = '07', spring_start_month: str = '01', fall_start_date: str = '02',  spring_start_date: str = '01'
     ):
         self.fall_start_month = fall_start_month
@@ -77,35 +77,32 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
         self.fall_start_date = fall_start_date
         self.spring_start_date = spring_start_date
 
-    def determine_semester(date: datetime.date) -> datetime.date:
-        print(date.year)
-        if date.month <= 7 & date.day < 2:
-            date1 = str(date.year) + "-07-02"
-            return datetime.strptime(date1, '%Y-%m-%d')
-        elif date.month > 7 & date.day >= 2:
-            date2 = str(date.year + 1) + "-01-01"
-            return datetime.strptime(date2, '%Y-%m-%d')
-    def create_timeframe_list(start_date: datetime.date, end_date: datetime.date) -> [(
+    def determine_semester(self, temp_date: datetime.date) -> datetime.date:
+        year_hold = temp_date.year
+        if temp_date < date(year_hold, int(self.fall_start_month), int(self.fall_start_date)):
+            date1 = date(temp_date.year, int(self.fall_start_month), int(self.fall_start_date))
+            return date1
+        elif temp_date >= date(year_hold, int(self.fall_start_month), int(self.fall_start_date)):
+            date2 = date(int(temp_date.year) + 1, int(self.spring_start_month), int(self.spring_start_date))
+            return date2
+
+    def create_timeframe_list(self, start_date: datetime.date, end_date: datetime.date) -> [(
             datetime.date, datetime.date
     )]:
-        # start = datetime.strptime(start_date, '%Y-%m-%d')
-        # stop = datetime.strptime(end_date, '%Y-%m-%d')
+
+        timeframe = []
         start = start_date
-        stop = end_date
-
-        timelist = []
-
-        while (True):
-            end_range = TwoSemesterTimeFrameGenerator.determine_semester(start)
-            print(end_range)
-            timelist.append((start, end_range))
-            if end_range > stop:
-                timelist.append((start, stop))
+        stop = self.determine_semester(start)
+        while True:
+            timeframe.append([start, stop])
+            # print(str(start) + ", " + str(stop))
+            start = stop
+            stop = self.determine_semester(start)
+            if stop > end_date:
+                timeframe.append([start, end_date])
                 break
-            else:
-                start = end_range
 
-        return timelist
+        return timeframe
 
 
 def cluster_by_time_list(task: str, timelist: dict) -> [(int, pd.DataFrame)]:
