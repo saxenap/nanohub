@@ -48,18 +48,11 @@ class SFQuery:
     def execute(self, name: str) -> pd.DataFrame:
         sf_object = self.sf.__getattr__(name)
         field_names = [field['name'] for field in sf_object.describe()['fields']]
+        print("Querying for %s now." % name)
         results = self.sf.query_all( "SELECT " + ", ".join(field_names) + " FROM " + name )
         df = pd.DataFrame(results['records'])
-        pprint(df)
         df.drop(columns=['attributes'], inplace=True, errors='ignore')
         return df
-
-def run(sf_query, raw_mapper, name, backup_folder):
-    print("Dataframe for %s" % name)
-    df = sf_query.execute(name)
-    outputfile = datapath / (name+".csv")
-    raw_mapper.save_as_csv(df, backup_folder + '/' + name + '.csv', index=None)
-    # df.to_csv(datadir + '/' + name + '.csv', index=None')
 
 sf_query = SFQuery(sf)
 
@@ -67,26 +60,26 @@ description = sf.describe()
 names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
 
 for name in names:
-    while True:
-        count = 0
+    count = 1
+    while count < 6:
         try:
-            sf_query = SFQuery(SalesforceFromEnvironment('dev').create_new())
-            run(sf_query, raw_mapper, name, backup_folder)
-            break
+            print("Attempt #%d for object %s" %(count, name))
+            df = sf_query.execute(name)
+            print("Dataframe for %s" % name)
+            print(df)
+            raw_mapper.save_as_csv(df, backup_folder + '/' + name + '.csv', index=None)
+            print("Attempt Successful.")
+            count = 7
+            # outputfile = datapath / (name+".csv")
+            # df.to_csv(datadir + '/' + name + '.csv', index=None')
         except SalesforceMalformedRequest as e:
             print("Malformed Request: Continuing.")
             continue
         except ConnectionError as ce:
             count = count + 1
-            if count > 5:
-                break
-            print("Connection Error: Retrying.")
             sf_query = SFQuery(SalesforceFromEnvironment('dev').create_new())
-            run(sf_query, raw_mapper, name, backup_folder)
+            print("Connection Error: Retrying.")
             continue
-
-
-
 
 print('Backup completed!')
 print('Path %s' % backup_folder)
