@@ -33,8 +33,6 @@ def execute(
     application.execute(file_paths)
 
 
-
-
 @backup_app.command()
 def salesforce(
         domain: str,
@@ -59,7 +57,6 @@ def salesforce(
     if fields:
         command.specific_fields = fields.split(',')
     command.number_of_retries = retries
-
     handler.handle(command)
 
 
