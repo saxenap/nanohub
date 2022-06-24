@@ -1,7 +1,16 @@
 # Created by saxenap at 6/1/22
+import time
 
 
 class IEvent:
+    event_datetime: str
+
+    def __init__(self):
+        self.datetime = time.strftime("%Y%m%d-%H%M%S")
+
+    def get_event_datetime(self):
+        return self.event_datetime
+
     def get_event_name(self) -> str:
         raise NotImplementedError
 
@@ -26,6 +35,5 @@ class EventNotifier:
 
     def notify_for(self, event: IEvent) -> None:
         for handler in self.event_handlers:
-            print(event)
             handler.handle(event)
 
