@@ -16,8 +16,7 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: git-pull pipeline-down
-	nohup make pipeline-up
+pipeline: git-pull pipeline-down pipeline-up
 	tail -f nohup.out
 
 remote: git-pull remote-down remote-up
@@ -51,7 +50,7 @@ pipeline-down:
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml down
 
 pipeline-up:
-	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build </dev/null >nohup.out 2>&1 &
+	$(env-vars) nohup docker-compose -f docker-compose-pipeline.yml up --build </dev/null >nohup.out 2>&1 &
 
 
 ########################################################################################################################
