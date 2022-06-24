@@ -99,10 +99,13 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
         stop = self.determine_semester(start)
         while True:
             timeframe.append([start, stop])
+            last = start
             start = stop
             stop = self.determine_semester(start)
+            print(start, stop)
             if stop > end_date:
-                timeframe.append([start, end_date])
+                if start < end_date:
+                    timeframe.append([start, end_date])
                 break
 
         return timeframe
@@ -117,7 +120,22 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
         return str_timeframe
 
 
-def cluster_by_timeframe_list(task: str, timelist: dict) -> [(int, pd.DataFrame)]:
+def cluster_for_all():
+    alg_df_list = []
+    start = date(2006, 1, 1)
+    present = datetime.now().date()
+
+    #get algs from algorithms_map
+    alg_list = AlgorithmsMap().return_algorithms()
+
+    for alg in alg_list:
+        tf_list = TwoSemesterTimeFrameGenerator().create_timeframe_list(start, present)
+        tf_str_list = TwoSemesterTimeFrameGenerator().timeframe_to_str(tf_list)
+        df_list = cluster_by_timeframe_list(alg, tf_str_list)
+        alg_df_list.append(df_list)
+
+
+def cluster_by_timeframe_list(task: str, timelist: []) -> [(int, pd.DataFrame)]:
     df_list = []
 
     for x in timelist:

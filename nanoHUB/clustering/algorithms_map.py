@@ -36,10 +36,20 @@ class AlgorithmsMap:
 
     mike: str = 'core_cost_cluster_analysis'
     cost_cluster_analysis: str = 'core_cost_cluster_analysis'
-    core_cost_cluster_analysis: str = 'cost_cluster_analysis'
+    core_cost_cluster_analysis: str = 'core_cost_cluster_analysis'
 
     def __str__(self) -> str:
         return json.dumps(asdict(self))
+
+    def return_algorithms(self):
+        alg_list = []
+        for func in self.__dataclass_fields__:
+            algorithm = getattr(self, func)
+            if algorithm not in alg_list:
+                print('Will run: ' + algorithm + ' algorithm.')
+                alg_list.append(algorithm)
+
+        return alg_list
 
 
 class IExecuteAlgorithm:
