@@ -15,6 +15,7 @@ class ExecuteAlgorithmCommand:
     task: str
     start_date: str #datetimeformat: ####-##-##
     end_date: str #datetimeformat: ####-##-##
+    class_probe_range: str = field(init=False)
 
     #data
     geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
@@ -38,7 +39,7 @@ class ExecuteAlgorithmCommand:
     class_merge_distance_threshold: int = field(default=5)
 
     #quick cost-based cluster analysis
-    costSizeMin: int = field(default=4)
+    cost_size_min: int = field(default=4)
     cost_force_all_diff_lvl: int = field(default=501)
     cost_tolerance: int = field(default=57)
 
@@ -52,6 +53,9 @@ class ExecuteAlgorithmCommand:
     gather_data_only: bool = field(default=False) #check
     use_old_data: bool = field(default=False) #check
     log_level: str = field(default='INFO')
+
+    def __post_init__(self):
+        self.class_probe_range = self.start_date + ':' + self.end_date
 
 
 class ExecuteAlgorithmCommandFactory:
@@ -95,7 +99,6 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
         stop = self.determine_semester(start)
         while True:
             timeframe.append([start, stop])
-            # print(str(start) + ", " + str(stop))
             start = stop
             stop = self.determine_semester(start)
             if stop > end_date:
@@ -104,18 +107,23 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
 
         return timeframe
 
+    def timeframe_to_str(self, timeframe_list: [(datetime.date, datetime.date)]) -> [str, str]:
+        str_timeframe = []
+        for x in timeframe_list:
+            str_timeframe.append([
+                str(x[0].year) + "-" + str(x[0].month).rjust(2, '0') + "-" + str(x[0].day).rjust(2, '0'),
+                str(x[1].year) + "-" + str(x[1].month).rjust(2, '0') + "-" + str(x[1].day).rjust(2, '0')
+            ])
+        return str_timeframe
 
-def cluster_by_time_list(task: str, timelist: dict) -> [(int, pd.DataFrame)]:
+
+def cluster_by_timeframe_list(task: str, timelist: dict) -> [(int, pd.DataFrame)]:
     df_list = []
 
-    timelist = {
-        '1': ['2006-01-01', '2006-07-02'],
-        '2': ['2006-07-02', '2007-01-01']
-    }
-
-    for x in range(len(timelist)):
-        start, end = timelist[x]
-        df_list.append((x, ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
+    for x in timelist:
+        start, end = x
+        df_list.append(run_clustering(ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
+        #start/end have to be str, could change in ExecuteAlgorithmCommand setup. If changed here, would need to change in main_online_users_TS so that everything can accept datetime.date() format
 
     return df_list
 
