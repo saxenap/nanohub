@@ -6,7 +6,10 @@ NANOHUB_DIR=$(ROOT_DIR)/nanoHUB
 PIPELINE_DIR=$(NANOHUB_DIR)/pipeline
 SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
 
-EXECUTE_TASK=python3 $(ROOT_DIR)/nanoHUB/__main__.py task execute
+CALL_MAIN=python3 $(ROOT_DIR)/nanoHUB/__main__.py
+EXECUTE_TASK=$(CALL_MAIN) task execute
+SALESFORCE_BACKUP=$(CALL_MAIN) backup salesforce
+
 log-level=INFO
 logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t PIPELINE
 
@@ -51,4 +54,5 @@ execute:
 test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
 
-
+salesforce-backup:
+	$(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN)
