@@ -19,22 +19,22 @@ from nanoHUB.configuration import DataLakeConfiguration, SalesforceBackupConfigu
 from nanoHUB.logger import get_app_logger
 
 
-cwd = os.getcwd()
-load_dotenv()
-
-now = time.strftime("%Y%m%d-%H%M%S")
-backup_folder = 'salesforce_backups' + '/' + now
-print("Commencing backup.")
-print("Time is %s", now)
-
-datadir = os.environ['APP_DIR'] + '/' + backup_folder
-print('Saving Results -> Local dir: ' + datadir)
-
-datapath = Path(datadir)
-try:
-    datapath.mkdir(parents=True) #in python 3.5 we can switch to using  exist_ok=True
-except FileExistsError:
-    pass
+# cwd = os.getcwd()
+# load_dotenv()
+#
+# now = time.strftime("%Y%m%d-%H%M%S")
+# backup_folder = 'salesforce_backups' + '/' + now
+# print("Commencing backup.")
+# print("Time is %s", now)
+#
+# datadir = os.environ['APP_DIR'] + '/' + backup_folder
+# print('Saving Results -> Local dir: ' + datadir)
+#
+# datapath = Path(datadir)
+# try:
+#     datapath.mkdir(parents=True) #in python 3.5 we can switch to using  exist_ok=True
+# except FileExistsError:
+#     pass
 
 
 class SalesForceBackupCommand(ICommand):
@@ -74,6 +74,16 @@ class BackupFinishedEvent(IEvent):
     def get_object_name(self) -> str:
         return self.object_name
 
+    def __repr__(self):
+        return 'BackupFinishedEvent(object_name = ' + self.get_object_name() + ', df = ' + str(self.df) + ')'
+
+    def __str__(self):
+        return json.dumps({
+            'event_name': self.get_event_name(),
+            'object_name': self.get_object_name(),
+            'dataframe_dict': self.df
+        })
+
 
 class SalesforceBackup(ICommandHandler):
     backup_finished: str = 'BackupFinished'
@@ -100,6 +110,7 @@ class SalesforceBackup(ICommandHandler):
                     self.logger.debug(df.iloc[:5].to_json)
                     self.logger.info("Attempt Successful. Rows obtained: %d" % len(df))
                     count = 7
+                    print(pd.DataFrame(df.to_dict()))
                     self.notifier.notify_for(BackupFinishedEvent(df.to_dict(), name))
                 except SalesforceMalformedRequest as e:
                     count = count + 1
@@ -127,16 +138,13 @@ class SalesforceBackupGeddes(IEventHandler):
 
     def handle(self, event: BackupFinishedEvent):
         object_name = event.get_object_name()
-        file_path = self.file_path + '/' + object_name + '.csv'
-        df = pd.from_dict(event.get_dict())
+        file_path = self.file_path + '/' + time.strftime("%Y%m%d-%H%M%S") + '/' + object_name + '.csv'
+        df = pd.DataFrame(event.get_dict())
+        print(df)
         self.mapper.save_as_csv(
             df, file_path, index=None
         )
-        self.logger.info("%d records for object %s saved at: %s" % (len(df), object_name, file_path))
-
-
-print('Backup completed!')
-print('Path %s' % backup_folder)
+        self.logger.info("Geddes - %d records for object %s saved in Geddes at: %s" % (len(df), object_name, file_path))
 
 
 class DefaultBackupCommandHandler:
@@ -145,13 +153,13 @@ class DefaultBackupCommandHandler:
     ) -> SalesforceBackup:
         logger = get_app_logger('SalesforceBackups', loglevel)
 
-        notifier = EventNotifier(SalesforceBackupGeddes(
-                create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
-                SalesforceBackupConfiguration.geddes_folder_path,
-                logger
-            )
-        )
-
+        notifier = EventNotifier()
+        notifier.add_event_handler(SalesforceBackupGeddes(
+            create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
+            SalesforceBackupConfiguration.geddes_folder_path,
+            logger
+        ))
+        print(vars(notifier))
         return SalesforceBackup(client_factory, notifier, logger)
 
 
