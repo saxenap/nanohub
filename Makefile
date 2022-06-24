@@ -18,6 +18,7 @@ cartopy: git-pull cartopy-down cartopy-up
 
 pipeline: git-pull pipeline-down
 	nohup make pipeline-up
+	tail -f nohup.out
 
 remote: git-pull remote-down remote-up
 
