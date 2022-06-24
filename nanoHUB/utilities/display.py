@@ -4,7 +4,7 @@ from inspect import getmembers
 from types import FunctionType
 
 
-class color:
+class ColorOutput:
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
     DARKCYAN = '\033[36m'
@@ -24,6 +24,7 @@ def attributes(obj):
     return {
         name: getattr(obj, name) for name in dir(obj)
         if name[0] != '_' and name not in disallowed_names and hasattr(obj, name)}
+
 
 def print_attributes(obj):
     pprint(attributes(obj))
