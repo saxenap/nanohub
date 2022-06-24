@@ -5,7 +5,6 @@ from nanoHUB.domain.contact import (
     ContactNotCreated,
     ContactName
 )
-from simple_salesforce import Salesforce
 from dataclasses import dataclass
 import json
 import os
@@ -126,17 +125,3 @@ class SalesforceContactNotCreated(ContactNotCreated):
         return self.params
 
 
-class SalesforceFromEnvironment:
-    def __init__(self, domain: str, prefix: str = 'salesforce_'):
-        self.prefix = prefix
-        self.domain = domain
-
-    def create_new(self) -> Salesforce:
-        factory = SimpleSalesforceFactory(
-            os.environ['%susername' % self.prefix],
-            os.environ['%spassword' % self.prefix],
-            os.environ['%ssecurity_token' % self.prefix],
-            os.environ['%sclient_id' % self.prefix],
-            self.domain
-        )
-        return factory.create_new_engine()

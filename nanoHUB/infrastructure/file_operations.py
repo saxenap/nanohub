@@ -16,12 +16,12 @@ class LocalFile(File):
                 data = _file.read(size)
             else:
                 data = _file.read()
-
         return data
 
+
 class LocalFolder(Folder):
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, file_path: str):
+        self._filepath = file_path
 
     def move(self, dest, force: bool = False) -> 'File':
         if force == False and os.path.isfile(dest):

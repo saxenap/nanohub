@@ -79,11 +79,19 @@ logging_conf = dict(
 )
 
 
-def logger(name: str = None):
+def logger(name: str = None, loglevel: str = 'INFO') -> logging.Logger:
+    loglevel = loglevel.upper()
+    level = logging.getLevelName(loglevel)
+
     if name == None :
         logger =  logging.getLogger()
     else:
         logger = logging.getLogger().getChild(name)
 
+    logger.setLevel(level)
+
     return logger
 
+
+def get_app_logger(name: str = None, loglevel: str = 'INFO') -> logging.Logger:
+    return logger(name, loglevel)
