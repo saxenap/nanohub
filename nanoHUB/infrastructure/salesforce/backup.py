@@ -8,16 +8,23 @@ from nanoHUB.application import Application
 from nanoHUB.dataaccess.lake import create_default_s3mapper, S3FileMapper
 import pandas as pd
 from nanoHUB.infrastructure.eventing import EventNotifier, IEvent, IEventHandler
-from nanoHUB.command import ICommandHandler, ICommand
+from nanoHUB.command import (
+    ICommandHandler,
+    ICommand,
+    MetricsReporterDecorator,
+    InitialExecutionDecorator,
+    TimingProfileReporter,
+    MemoryProfileReporter,
+    NullCommandHandler
+)
 from requests.exceptions import ConnectionError
 from nanoHUB.infrastructure.salesforce.client import ISalesforceFactory
 from nanoHUB.infrastructure.salesforce.query import SalesforceObject
-from nanoHUB.configuration import DataLakeConfiguration, SalesforceBackupConfiguration
+from nanoHUB.configuration import SalesforceBackupConfiguration
 from nanoHUB.logger import get_app_logger
 from datetime import datetime
 from nanoHUB.utilities.display import ColorOutput
 # cwd = os.getcwd()
-# load_dotenv()
 #
 # now = time.strftime("%Y%m%d-%H%M%S")
 # backup_folder = 'salesforce_backups' + '/' + now
@@ -107,7 +114,7 @@ class SalesforceBackup(ICommandHandler):
                     self.logger.debug("Dataframe for %s" % name)
                     self.logger.debug(df.iloc[:5].to_json)
                     self.logger.debug("Attempt Successful. Rows obtained: %d" % len(df))
-                    count = 7
+                    count = command.number_of_retries
                     event = BackupFinishedEvent(df.to_dict(), name)
                     event.event_datetime = command.get_datetime()
                     self.notifier.notify_for(event)
@@ -122,6 +129,9 @@ class SalesforceBackup(ICommandHandler):
                     self.logger.debug("Connection Error: Retrying.")
                     continue
         self.logger.info('Salesforce backup finished.')
+
+    def get_name(self) -> str:
+        return 'SalesforceBackup'
 
     def create_new_sf_object(self) -> SalesforceObject:
         client = self.client_factory.create_new()
@@ -172,7 +182,7 @@ class SalesforceBackupResultLogger(IEventHandler):
 class DefaultBackupCommandHandler:
     def create_new(
             self, application: Application, client_factory: ISalesforceFactory, loglevel: str = 'INFO'
-    ) -> SalesforceBackup:
+    ) -> ICommandHandler:
         logger = get_app_logger('SalesforceBackups', loglevel)
 
         notifier = EventNotifier()
@@ -182,7 +192,11 @@ class DefaultBackupCommandHandler:
             logger
         ))
         notifier.add_event_handler(SalesforceBackupResultLogger(logger))
-        return SalesforceBackup(client_factory, notifier, logger)
+        return MetricsReporterDecorator(
+            InitialExecutionDecorator(
+                SalesforceBackup(client_factory, notifier, logger), logger
+            ), [TimingProfileReporter(), MemoryProfileReporter()], logger
+        )
 
 
 

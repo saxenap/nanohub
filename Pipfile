@@ -123,6 +123,7 @@ google = "*"
 sendgrid = "*"
 simple-salesforce = "*"
 nameparser="*"
+mpire="*"
 ##########################################
 # charset detection
 chardet = "*"
