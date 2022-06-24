@@ -118,14 +118,15 @@ class SalesforceBackup(ICommandHandler):
                     event = BackupFinishedEvent(df.to_dict(), name)
                     event.event_datetime = command.get_datetime()
                     self.notifier.notify_for(event)
+                    break
                 except SalesforceMalformedRequest as e:
                     count = count + 1
-                    sf_object = self.create_new_sf_object()
+                    # sf_object = self.create_new_sf_object()
                     self.logger.debug("Malformed Request: Retrying.")
                     continue
                 except ConnectionError as ce:
                     count = count + 1
-                    sf_object = self.create_new_sf_object()
+                    # sf_object = self.create_new_sf_object()
                     self.logger.debug("Connection Error: Retrying.")
                     continue
         self.logger.info('Salesforce backup finished.')
