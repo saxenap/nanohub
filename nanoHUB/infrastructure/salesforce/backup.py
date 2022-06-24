@@ -4,11 +4,8 @@ import logging
 from dataclasses import dataclass
 from simple_salesforce import Salesforce, SalesforceMalformedRequest
 import time
-from pathlib import Path
-from dotenv import load_dotenv
 from nanoHUB.application import Application
 from nanoHUB.dataaccess.lake import create_default_s3mapper, S3FileMapper
-import os
 import pandas as pd
 from nanoHUB.infrastructure.eventing import EventNotifier, IEvent, IEventHandler
 from nanoHUB.command import ICommandHandler, ICommand
@@ -17,8 +14,8 @@ from nanoHUB.infrastructure.salesforce.client import ISalesforceFactory
 from nanoHUB.infrastructure.salesforce.query import SalesforceObject
 from nanoHUB.configuration import DataLakeConfiguration, SalesforceBackupConfiguration
 from nanoHUB.logger import get_app_logger
-
-
+from datetime import datetime
+from nanoHUB.utilities.display import ColorOutput
 # cwd = os.getcwd()
 # load_dotenv()
 #
@@ -95,32 +92,34 @@ class SalesforceBackup(ICommandHandler):
         self.notifier = notifier
         self.logger = logger
 
-    def handle(self, command) -> None:
+    def handle(self, command: SalesForceBackupCommand) -> None:
         client = self.client_factory.create_new()
         sf_object = self.create_new_sf_object()
         description = client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
+        datetime = command.get_datetime()
         for name in names:
             count = 1
             while count < command.number_of_retries + 1:
                 try:
-                    self.logger.info("Attempt #%d for object %s" %(count, name))
+                    self.logger.debug("Attempt #%d for object %s" %(count, name))
                     df = sf_object.get_records_for(name)
                     self.logger.debug("Dataframe for %s" % name)
                     self.logger.debug(df.iloc[:5].to_json)
-                    self.logger.info("Attempt Successful. Rows obtained: %d" % len(df))
+                    self.logger.debug("Attempt Successful. Rows obtained: %d" % len(df))
                     count = 7
-                    print(pd.DataFrame(df.to_dict()))
-                    self.notifier.notify_for(BackupFinishedEvent(df.to_dict(), name))
+                    event = BackupFinishedEvent(df.to_dict(), name)
+                    event.event_datetime = command.get_datetime()
+                    self.notifier.notify_for(event)
                 except SalesforceMalformedRequest as e:
                     count = count + 1
                     sf_object = self.create_new_sf_object()
-                    self.logger.info("Malformed Request: Retrying.")
+                    self.logger.debug("Malformed Request: Retrying.")
                     continue
                 except ConnectionError as ce:
                     count = count + 1
                     sf_object = self.create_new_sf_object()
-                    self.logger.info("Connection Error: Retrying.")
+                    self.logger.debug("Connection Error: Retrying.")
                     continue
 
     def create_new_sf_object(self) -> SalesforceObject:
@@ -133,18 +132,40 @@ class SalesforceBackupGeddes(IEventHandler):
             self, mapper: S3FileMapper, file_path: str, logger: logging.Logger
     ):
         self.mapper = mapper
-        self.file_path = file_path
         self.logger = logger
+        self.file_path = file_path
 
     def handle(self, event: BackupFinishedEvent):
         object_name = event.get_object_name()
-        file_path = self.file_path + '/' + time.strftime("%Y%m%d-%H%M%S") + '/' + object_name + '.csv'
+        event_dt = datetime.strptime(event.get_event_datetime(), "%Y%m%d-%H%M%S")
+        file_path = self.file_path + '/' + \
+                    str(event_dt.year) + '/' +\
+                    str(event_dt.month) + '/' + \
+                    str(event_dt.day) + '/' + \
+                    event_dt.strftime("%Y%m%d-%H%M%S") + '/' + \
+                    object_name + '.csv'
         df = pd.DataFrame(event.get_dict())
-        print(df)
         self.mapper.save_as_csv(
             df, file_path, index=None
         )
-        self.logger.info("Geddes - %d records for object %s saved in Geddes at: %s" % (len(df), object_name, file_path))
+        self.logger.info(
+            "%s %s: %s %d records saved in Geddes at %s" % (
+                ColorOutput.BOLD, event.get_object_name(), ColorOutput.END, len(df), file_path
+            )
+        )
+
+
+class SalesforceBackupResultLogger(IEventHandler):
+    def __init__(self, logger: logging.Logger):
+        self.logger = logger
+
+    def handle(self, event: BackupFinishedEvent):
+        self.logger.info(
+             "%s %s %s backed up." % (ColorOutput.BOLD, event.get_object_name(), ColorOutput.END)
+        )
+        self.logger.debug(
+            "%s: %s." % (event.get_object_name(), event.__str__())
+        )
 
 
 class DefaultBackupCommandHandler:
@@ -159,7 +180,7 @@ class DefaultBackupCommandHandler:
             SalesforceBackupConfiguration.geddes_folder_path,
             logger
         ))
-        print(vars(notifier))
+        notifier.add_event_handler(SalesforceBackupResultLogger(logger))
         return SalesforceBackup(client_factory, notifier, logger)
 
 
