@@ -93,11 +93,11 @@ class SalesforceBackup(ICommandHandler):
         self.logger = logger
 
     def handle(self, command: SalesForceBackupCommand) -> None:
+        self.logger.info('Salesforce backup started.')
         client = self.client_factory.create_new()
         sf_object = self.create_new_sf_object()
         description = client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
-        datetime = command.get_datetime()
         for name in names:
             count = 1
             while count < command.number_of_retries + 1:
@@ -121,6 +121,7 @@ class SalesforceBackup(ICommandHandler):
                     sf_object = self.create_new_sf_object()
                     self.logger.debug("Connection Error: Retrying.")
                     continue
+        self.logger.info('Salesforce backup finished.')
 
     def create_new_sf_object(self) -> SalesforceObject:
         client = self.client_factory.create_new()
