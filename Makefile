@@ -9,26 +9,17 @@ log-level=INFO
 setup:
 	cp nanoHUB/.env.dev nanoHUB/.env
 
-dev:
+git-pull:
 	git pull origin `git rev-parse --abbrev-ref HEAD`
-	make dev-down
-	make dev-up
 
-cartopy:
-	git pull origin `git rev-parse --abbrev-ref HEAD`
-	make cartopy-down
-	make cartopy-up
+dev: git-pull dev-down dev-up
 
-pipeline:
-	git pull origin `git rev-parse --abbrev-ref HEAD`
-	make pipeline-down
-	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
+cartopy: git-pull cartopy-down cartopy-up
 
-remote:
-	git pull origin `git rev-parse --abbrev-ref HEAD`
-	make remote-down
-	make remote-up
+pipeline: git-pull pipeline-down
+	nohup make pipeline-up
 
+remote: git-pull remote-down remote-up
 
 clean:
 	docker volume rm $$(docker volume ls -q) 2>/dev/null; true
@@ -57,6 +48,9 @@ cartopy-up:
 
 pipeline-down:
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml down
+
+pipeline-up:
+	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build </dev/null >nohup.out 2>&1 &
 
 
 ########################################################################################################################
