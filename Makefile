@@ -63,6 +63,9 @@ cron-log:
 show-cron_tasks:
 	tail -f cron_tasks
 
+setup-cron-jobs:
+	crontab ~/cron_pipeline_tasks
+	cat ~/cron_pipeline_tasks
 
 exec-dev:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
