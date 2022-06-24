@@ -7,9 +7,9 @@ from nanoHUB.infrastructure.salesforce.client import SalesforceFromEnvironment
 
 
 app = typer.Typer()
-task_app = typer.Typer(help="Manage tasks.")
+task_app = typer.Typer(help="Manage Tasks.")
 app.add_typer(task_app, name="task")
-backup_app = typer.Typer(help="Run backups.")
+backup_app = typer.Typer(help="Run Salesforce Backups.")
 app.add_typer(backup_app, name="backup")
 
 @task_app.command()
@@ -18,7 +18,7 @@ def execute(
         loglevel: str = typer.Option(
             "INFO",
             "--log-level",
-            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL", prompt="Enter logging level or press enter to set default:"
+            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL"
         )
 ):
     """
@@ -36,18 +36,18 @@ def execute(
 
 
 @backup_app.command()
-def execute(
+def salesforce(
         domain: str,
-        fields: Optional[str] = typer.Argument(''),
+        fields: str = None,
         retries: int = 6,
         loglevel: str = typer.Option(
             "INFO",
             "--log-level",
-            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL", prompt="Enter logging level or press enter to set default:"
+            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL"
         )
 ):
     """
-    Execute task(s) defined in .py or .ipynb files.
+    Run a Salesforce backup.
     """
 
     application = Application.get_instance(loglevel)
@@ -56,7 +56,8 @@ def execute(
         application, SalesforceFromEnvironment(domain), loglevel
     )
     command = SalesForceBackupCommand()
-    command.specific_fields = fields.split(',')
+    if fields:
+        command.specific_fields = fields.split(',')
     command.number_of_retries = retries
 
     handler.handle(command)

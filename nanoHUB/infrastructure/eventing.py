@@ -18,13 +18,14 @@ class IEventHandler:
 
 
 class EventNotifier:
-    def __init__(self, handlers: []):
-        self.handlers = []
+    def __init__(self, event_handlers: [] = []):
+        self.event_handlers = event_handlers
 
-    def add_handler(self, handler: IEventHandler) -> None:
-        self.handlers.append(handler)
+    def add_event_handler(self, handler: IEventHandler) -> None:
+        self.event_handlers.append(handler)
 
     def notify_for(self, event: IEvent) -> None:
-        for handler in self.handlers:
+        for handler in self.event_handlers:
+            print(event)
             handler.handle(event)
 
