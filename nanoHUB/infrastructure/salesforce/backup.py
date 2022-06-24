@@ -93,17 +93,16 @@ class SalesforceBackup(ICommandHandler):
     backup_finished: str = 'BackupFinished'
 
     def __init__(
-            self, client_factory: ISalesforceFactory, notifier: EventNotifier, logger: logging.Logger
+            self, client: Salesforce, notifier: EventNotifier, logger: logging.Logger
     ):
-        self.client_factory = client_factory
+        self.client = client
         self.notifier = notifier
         self.logger = logger
 
     def handle(self, command: SalesForceBackupCommand) -> None:
         self.logger.info('Salesforce backup started.')
-        client = self.client_factory.create_new()
-        sf_object = self.create_new_sf_object()
-        description = client.describe()
+        sf_object = SalesforceObject(self.client)
+        description = self.client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
         for name in names:
             count = 1
@@ -121,22 +120,16 @@ class SalesforceBackup(ICommandHandler):
                     break
                 except SalesforceMalformedRequest as e:
                     count = count + 1
-                    # sf_object = self.create_new_sf_object()
                     self.logger.debug("Malformed Request: Retrying.")
                     continue
                 except ConnectionError as ce:
                     count = count + 1
-                    # sf_object = self.create_new_sf_object()
                     self.logger.debug("Connection Error: Retrying.")
                     continue
         self.logger.info('Salesforce backup finished.')
 
     def get_name(self) -> str:
         return 'SalesforceBackup'
-
-    def create_new_sf_object(self) -> SalesforceObject:
-        client = self.client_factory.create_new()
-        return SalesforceObject(client)
 
 
 class SalesforceBackupGeddes(IEventHandler):
@@ -195,7 +188,7 @@ class DefaultBackupCommandHandler:
         notifier.add_event_handler(SalesforceBackupResultLogger(logger))
         return MetricsReporterDecorator(
             InitialExecutionDecorator(
-                SalesforceBackup(client_factory, notifier, logger), logger
+                SalesforceBackup(client_factory.create_new(), notifier, logger), logger
             ), [TimingProfileReporter(), MemoryProfileReporter()], logger
         )
 
