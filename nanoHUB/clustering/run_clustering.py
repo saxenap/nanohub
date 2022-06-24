@@ -6,7 +6,8 @@ import logging
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
-
+from mpire import WorkerPool
+# from mpire.dashboard import start_dashboard
 
 
 @dataclass
@@ -119,29 +120,54 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
             ])
         return str_timeframe
 
+    def timeframe_to_command(self, task, timeframe_str_list):
+        command_list = []
 
-def cluster_for_all():
-    alg_df_list = []
-    start = date(2006, 1, 1)
-    present = datetime.now().date()
+        for timeframe in timeframe_str_list:
+            start, end = timeframe
+            command_list.append(ExecuteAlgorithmCommandFactory.create_new(task, start, end))
 
-    #get algs from algorithms_map
-    alg_list = AlgorithmsMap().return_algorithms()
+        return command_list
 
-    for alg in alg_list:
-        tf_list = TwoSemesterTimeFrameGenerator().create_timeframe_list(start, present)
-        tf_str_list = TwoSemesterTimeFrameGenerator().timeframe_to_str(tf_list)
-        df_list = cluster_by_timeframe_list(alg, tf_str_list)
-        alg_df_list.append(df_list)
+    def cluster_for_x(self, task, start, end):
+        alg_df_list = []
+
+        timeframe_list = TwoSemesterTimeFrameGenerator().create_timeframe_list(start, end)
+        timeframe_str_list = TwoSemesterTimeFrameGenerator().timeframe_to_str(timeframe_list)
+        command_list = TwoSemesterTimeFrameGenerator().timeframe_to_command(task, timeframe_str_list)
+        df_list = cluster_by_command(command_list)
+
+        return df_list
+
+    def cluster_for_all(self):
+        alg_df_list = []
+        start = date(2006, 1, 1)
+        present = datetime.now().date()
+
+        # get algs from algorithms_map
+        alg_list = AlgorithmsMap().return_algorithms()
+
+        for alg in alg_list:
+            timeframe_list = TwoSemesterTimeFrameGenerator().create_timeframe_list(start, present)
+            timeframe_str_list = TwoSemesterTimeFrameGenerator().timeframe_to_str(timeframe_list)
+            command_list = TwoSemesterTimeFrameGenerator().timeframe_to_command(alg, timeframe_str_list)
+            df_list = cluster_by_command(command_list)
+            alg_df_list.append(df_list)
 
 
-def cluster_by_timeframe_list(task: str, timelist: []) -> [(int, pd.DataFrame)]:
+def cluster_by_command(command_list) -> [(int, pd.DataFrame)]:
     df_list = []
 
-    for x in timelist:
-        start, end = x
-        df_list.append(run_clustering(ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
-        #start/end have to be str, could change in ExecuteAlgorithmCommand setup. If changed here, would need to change in main_online_users_TS so that everything can accept datetime.date() format
+    # dashboard_details = start_dashboard()
+    # print(dashboard_details)
+
+    with WorkerPool(n_jobs=None) as pool:
+        df_list.append(pool.map(run_clustering, command_list))
+
+    # for x in timelist:
+    #     start, end = x
+    #     df_list.append(run_clustering(ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
+    #     #start/end have to be str, could change in ExecuteAlgorithmCommand setup. If changed here, would need to change in main_online_users_TS so that everything can accept datetime.date() format
 
     return df_list
 
