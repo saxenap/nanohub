@@ -126,6 +126,11 @@ class SalesforceBackup(ICommandHandler):
                     count = count + 1
                     self.logger.debug("Connection Error: Retrying.")
                     continue
+                finally:
+                    if count == command.number_of_retries:
+                        self.logger.warning(
+                            "Records for object %s%s%s not backed up." % (ColorOutput.BOLD, name, ColorOutput.END)
+                        )
         self.logger.info('Salesforce backup finished.')
 
     def get_name(self) -> str:
@@ -148,10 +153,10 @@ class SalesforceBackupGeddes(IEventHandler):
                     str(event_dt.month) + '/' + \
                     str(event_dt.day) + '/' + \
                     event_dt.strftime("%Y%m%d-%H%M%S") + '/' + \
-                    object_name + '.csv'
+                    object_name + '.parquet.gzip'
         df = pd.DataFrame(event.get_dict())
-        self.mapper.save_as_csv(
-            df, file_path, index=None
+        self.mapper.save_as_parquet(
+            df, file_path, index=None, compression='gzip'
         )
         self.logger.info(
             "%s %s: %s %d records saved in Geddes at %s" % (
