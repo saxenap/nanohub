@@ -5,17 +5,19 @@ from memory_profiler import memory_usage
 import logging
 import json
 import time
+from datetime import datetime
 
 
 @dataclass
 class ICommand:
     datetime: str
+    command_name: str = ''
 
-    def __init__(self):
-        self.datetime = time.strftime("%Y%m%d-%H%M%S")
+    def __init__(self, datetime_str: str):
+        self.datetime = datetime_str
 
-    def get_name(self) -> str:
-        raise NotImplementedError
+    def get_command_name(self) -> str:
+        return self.command_name
 
     def get_datetime(self) -> str:
         return self.datetime
@@ -28,37 +30,36 @@ class ICommand:
 
 
 class ICommandHandler:
+    handler_name: str = ''
+
     def handle(self, command: ICommand) -> None:
         raise NotImplementedError
 
-    def get_name(self) -> str:
-        raise NotImplementedError
+    def get_handler_name(self) -> str:
+        return self.handler_name
 
 
 class NullCommandHandler(ICommandHandler):
+    handler_name: str = 'Null Handler'
     def handle(self, command: ICommand) -> None:
         return
 
-    def get_name(self) -> str:
-        return 'Null Command Handler'
-
 
 class InitialExecutionDecorator(ICommandHandler):
+    handler_name: str = 'Initial Execution Handler'
+
     def __init__(self, inner_handler: ICommandHandler, logger: logging.Logger):
         self.inner_handler = inner_handler
         self.logger = logger
 
     def handle(self, command: ICommand) -> None:
         self.logger.debug(
-            "%s has started." % self.inner_handler.get_name()
+            "%s has started." % self.inner_handler.get_handler_name()
         )
         self.inner_handler.handle(command)
         self.logger.debug(
             "%s has finished."
         )
-
-    def get_name(self) -> str:
-        return 'Initial Execution Handler'
 
 
 class IMetricsReporter:
@@ -88,12 +89,9 @@ class MetricsReporterDecorator(ICommandHandler):
         self.logger = logger
 
     def handle(self, command: ICommand) -> None:
-        result = {'task': self.get_name(), 'metrics': {}}
+        result = {'task': self.get_handler_name(), 'metrics': {}}
 
         for reporter in self.metrics_reporters:
             result['metrics'].update(reporter.report(self.inner_handler, command))
 
         self.logger.info(json.dumps(result))
-
-    def get_name(self) -> str:
-        return self.inner_handler.get_name()

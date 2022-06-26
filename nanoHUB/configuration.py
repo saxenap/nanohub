@@ -23,3 +23,4 @@ class DataLakeConfiguration(Configuration):
 
 class SalesforceBackupConfiguration(Configuration):
     geddes_folder_path: str = 'salesforce_backups'
+    full_backups_geddes_file_path: str = 'salesforce_backups/full_backups.csv'

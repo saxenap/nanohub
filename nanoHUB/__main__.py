@@ -4,6 +4,7 @@ from typing import Optional
 from typing import List
 from nanoHUB.infrastructure.salesforce.backup import DefaultBackupCommandHandler, SalesForceBackupCommand
 from nanoHUB.infrastructure.salesforce.client import SalesforceFromEnvironment
+from datetime import datetime
 
 
 app = typer.Typer()
@@ -53,7 +54,7 @@ def salesforce(
     handler = DefaultBackupCommandHandler().create_new(
         application, SalesforceFromEnvironment(domain), loglevel
     )
-    command = SalesForceBackupCommand()
+    command = SalesForceBackupCommand(datetime.utcnow().isoformat())
     if fields:
         command.specific_fields = fields.split(',')
     command.number_of_retries = retries
