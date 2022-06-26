@@ -314,7 +314,7 @@ class SFBackupFinishedEventSaver(IEventHandler):
     def handle(self, event: SFBackupFinishedEvent):
         backups_df = self.mapper.read(self.file_path)
         stored_records_path = self.file_path_provider.get_file_path_for(event)
-        backups_df.loc[len(backups_df)] = [event.get_record_names(), stored_records_path]
+        backups_df.loc[len(backups_df)] = [event.get_event_datetime(), stored_records_path, event.get_record_names()]
         self.mapper.save_as_csv(
             backups_df, self.file_path, index=None
         )
