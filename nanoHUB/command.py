@@ -6,21 +6,22 @@ import logging
 import json
 import time
 from datetime import datetime
+from nanoHUB.logger import LoggerMixin
 
 
 @dataclass
 class ICommand:
-    datetime: str
-    command_name: str = ''
+    log_level: str
 
-    def __init__(self, datetime_str: str):
-        self.datetime = datetime_str
+    def __post_init__(self):
+        self.init_datetime = datetime.now().isoformat()
 
-    def get_command_name(self) -> str:
-        return self.command_name
+    def init_datetime(self) -> str:
+        return self.init_datetime
 
-    def get_datetime(self) -> str:
-        return self.datetime
+    @property
+    def command_name(self) -> str:
+        return self.__class__.__name__
 
     def __repr__(self):
         raise NotImplementedError
@@ -45,12 +46,11 @@ class NullCommandHandler(ICommandHandler):
         return
 
 
-class InitialExecutionDecorator(ICommandHandler):
+class InitialExecutionDecorator(ICommandHandler, LoggerMixin):
     handler_name: str = 'Initial Execution Handler'
 
-    def __init__(self, inner_handler: ICommandHandler, logger: logging.Logger):
+    def __init__(self, inner_handler: ICommandHandler):
         self.inner_handler = inner_handler
-        self.logger = logger
 
     def handle(self, command: ICommand) -> None:
         self.logger.debug(
@@ -80,13 +80,12 @@ class MemoryProfileReporter(IMetricsReporter):
         return {"MemoryUsed (MiB)": mem_usage}
 
 
-class MetricsReporterDecorator(ICommandHandler):
+class MetricsReporterDecorator(ICommandHandler, LoggerMixin):
     def __init__(
-        self, inner_handler: ICommandHandler, metrics_reporters: [IMetricsReporter], logger: logging.Logger
+        self, inner_handler: ICommandHandler, metrics_reporters: [IMetricsReporter]
     ):
         self.inner_handler = inner_handler
         self.metrics_reporters = metrics_reporters
-        self.logger = logger
 
     def handle(self, command: ICommand) -> None:
         result = {'task': self.get_handler_name(), 'metrics': {}}

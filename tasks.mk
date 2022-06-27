@@ -55,4 +55,4 @@ test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
 
 salesforce-backup:
-	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN)
+	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) --log-level=$(loglevel)
