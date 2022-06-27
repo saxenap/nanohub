@@ -66,16 +66,20 @@ class ExecuteAlgorithmCommandFactory:
 
 
 
-class IGenerateSemesterTimeFrames:
+class IGenerateTimeFrames:
     def create_timeframe_list(self, start_date: datetime.date, end_date: datetime.date) -> [(
             datetime.date, datetime.date
     )]:
         raise NotImplementedError
 
 
-class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
+class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
     def __init__(
-            self, fall_start_month: str = '07', spring_start_month: str = '01', fall_start_date: str = '02',  spring_start_date: str = '01'
+            self,
+            fall_start_month: int = 7,
+            spring_start_month: int = 1,
+            fall_start_date: int = 2,
+            spring_start_date: int = 1
     ):
         self.fall_start_month = fall_start_month
         self.spring_start_month = spring_start_month
@@ -129,7 +133,7 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
 
         return command_list
 
-    def cluster_for_x(self, task, start, end):
+    def cluster_for_start_end(self, task, start, end):
         alg_df_list = []
 
         timeframe_list = TwoSemesterTimeFrameGenerator().create_timeframe_list(start, end)
@@ -139,9 +143,9 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
 
         return df_list
 
-    def cluster_for_all(self):
+    def cluster_for_all(self, init_year: int = 2006, init_month: int = 1, init_day: int = 1):
         alg_df_list = []
-        start = date(2006, 1, 1)
+        start = date(init_year, init_month, init_day)
         present = datetime.now().date()
 
         # get algs from algorithms_map
@@ -155,13 +159,13 @@ class TwoSemesterTimeFrameGenerator(IGenerateSemesterTimeFrames):
             alg_df_list.append(df_list)
 
 
-def cluster_by_command(command_list) -> [(int, pd.DataFrame)]:
+def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
 
     # dashboard_details = start_dashboard()
     # print(dashboard_details)
 
-    with WorkerPool(n_jobs=None) as pool:
+    with WorkerPool(n_jobs=12) as pool:
         df_list.append(pool.map(run_clustering, command_list))
 
     # for x in timelist:
@@ -196,7 +200,6 @@ def create_default_handler(log_level):
 
 
 
-# if __name__ == '__main__':
-#     #datetime parsing in alg file to view for checking enddate is later than startdate
-#     command = ExecuteAlgorithmCommandFactory.create_new('mike', '2006-01-01', '2007-07-02')
-#     run_clustering(command)
+if __name__ == '__main__':
+    result = TwoSemesterTimeFrameGenerator().cluster_for_all()
+    print(result)
