@@ -136,13 +136,13 @@ class LocalDriveSaver(IExecuteAlgorithm):
 
     def handle(self, command) -> pd.DataFrame:
         df = self.handler.handle(command)
-        if not os.path.exists(command.dir_path):
-            os.mkdir(command.dir_path)
+        if not os.path.exists(command.output_dir):
+            os.mkdir(command.output_dir)
 
         if command.no_save_output == True:
             self.logger.info("Skipping saving output locally.")
         else:
-            path = command.output_dir + '_' + command.task + '_' + command.class_probe_range + '.csv'
+            path = command.output_dir + '/' + command.task + '_' + command.class_probe_range[0] + '_' + command.class_probe_range[1] + '_' + '.csv'
             self.logger.info("Saving output locally at %s" % path)
             df.to_csv(path)
 

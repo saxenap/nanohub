@@ -1,4 +1,5 @@
 import multiprocessing
+from mpire import WorkerPool
 from pprint import pprint
 import logging
 import pandas as pd
@@ -95,8 +96,11 @@ def prepare_data(inparams):
     # or by setting some parameters constant using partial.
     # A prime example of this is the Pool object which offers a convenient means of parallelizing the execution
     # of a function across multiple input values, distributing the input data across processes (data parallelism).
-    with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-        geo_data = pool.map(get_geo_data_partial, toolrun_df['ip'])
+    # with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+    #     geo_data = pool.map(get_geo_data_partial, toolrun_df['ip'])
+
+    with WorkerPool(n_jobs=None) as pool2:
+        geo_data = pool2.map(get_geo_data_partial, toolrun_df['ip'])
 
     geo_data = np.array(geo_data, dtype=np.float32)
 

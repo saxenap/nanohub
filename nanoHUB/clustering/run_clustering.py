@@ -26,7 +26,7 @@ class ExecuteAlgorithmCommand:
     scratch_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
     name_prefix: str = field(default='users_analysis')
     display_output: bool = field(default=True)
-    no_save_output: bool = field(default=False)
+    no_save_output: bool = field(default=True)
     save_to_geddes: bool = field(default=False)
     bucket_name: str = field(default='nanohub.processed')
     object_path: str = field(init = False)
@@ -165,7 +165,7 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
     # dashboard_details = start_dashboard()
     # print(dashboard_details)
 
-    with WorkerPool(n_jobs=12) as pool:
+    with WorkerPool(n_jobs=12, daemon=False) as pool:
         df_list.append(pool.map(run_clustering, command_list))
 
     # for x in timelist:
@@ -190,9 +190,11 @@ def create_default_handler(log_level):
     return ValidationHandler(
         [DateValidator()],
         GeddesSaver(
-            DisplayDf(
-                DataframeLogger(
-                    AlgorithmHandler(AlgorithmsMap(), _l), _l
+            LocalDriveSaver(
+                DisplayDf(
+                    DataframeLogger(
+                        AlgorithmHandler(AlgorithmsMap(), _l), _l
+                    ), _l
                 ), _l
             ), _l
         ), _l

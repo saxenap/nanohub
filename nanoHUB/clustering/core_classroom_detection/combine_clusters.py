@@ -243,7 +243,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
     #                      
     # Second, annex clusters sharing same users within a time range to form final classes
     #
-    print('preintrareset')
+
     intra_tool_cluster_df = intra_tool_cluster_df.reset_index()
 
     # generate similiarity matrix based on number of users shared. 
@@ -253,7 +253,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
                                             time_tolerance = datetime.timedelta(days = inparams.class_merge_time_threshold),
                                             dist_tolerance = inparams.class_merge_distance_threshold,
                                             axis=1)
-    print('defnintely not')
+
     similarity_tuples_hstack = np.hstack(similarity_tuples)
 
     similarity_matrix = coo_matrix( \
@@ -300,6 +300,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
         
         
         students_info_df = students_info_df.append(this_students_df, ignore_index=True)
+        # students_info_df = pd.concat([students_info_df, pd.DataFrame.from_records(this_students_df)]) #concat patch
         
         # tool list
         
@@ -307,6 +308,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
         this_classtool_df['class_id'] = this_class_index
         
         classtool_info_df = classtool_info_df.append(this_classtool_df, ignore_index=True)
+        # classtool_info_df = pd.concat([classtool_info_df, pd.DataFrame.from_records(this_classtool_df)])
         
         # class general information
         
@@ -317,6 +319,7 @@ def combine_clusters(inparams, cluster_post_sychrony):
                                               'lat':this_class_tool_clusters.mean_lat.mean(), \
                                               'ip_set':this_class_tool_clusters.ip_set.values, \
                                               'size':len(set(all_students_list))}, ignore_index=True)
+
 
         # class_info_df = pd.concat([class_info_df,
         #                           {'class_id':this_class_index,
