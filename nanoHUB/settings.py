@@ -29,7 +29,7 @@ class SalesforceSettings(BaseSettings):
     client_id: Optional[str] = Field(env='salesforce_client_id')
     client_secret: Optional[str] = Field(env='salesforce_client_secret')
     username: Optional[str] = Field(env='salesforce_username')
-    password: Optional[str] = Field(env='salesforce_password')
+    password: Optional[str] = Field(env='salesforce_password_with_token')
 
 
 class GoogleApiSettings(BaseSettings):

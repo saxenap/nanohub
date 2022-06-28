@@ -3,25 +3,24 @@ import json
 import logging
 from dataclasses import dataclass
 from simple_salesforce import Salesforce, SalesforceMalformedRequest
-import time
 from nanoHUB.application import Application
 from nanoHUB.dataaccess.lake import create_default_s3mapper, S3FileMapper
 import pandas as pd
-from nanoHUB.infrastructure.eventing import EventNotifier, IEvent, IEventHandler
+from nanoHUB.logger import LoggerMixin
+from nanoHUB.infrastructure.eventing import (
+    EventNotifier, IEvent, IEventHandler, IFilePathProvider, FilePathByCommandDatetime
+)
 from nanoHUB.command import (
     ICommandHandler,
     ICommand,
     MetricsReporterDecorator,
     InitialExecutionDecorator,
     TimingProfileReporter,
-    MemoryProfileReporter,
-    NullCommandHandler
+    MemoryProfileReporter
 )
 from requests.exceptions import ConnectionError
 from nanoHUB.infrastructure.salesforce.client import ISalesforceFactory
-from nanoHUB.infrastructure.salesforce.query import SalesforceObject
 from nanoHUB.configuration import SalesforceBackupConfiguration
-from nanoHUB.logger import get_app_logger
 from datetime import datetime
 from nanoHUB.utilities.display import ColorOutput
 # cwd = os.getcwd()
@@ -40,163 +39,329 @@ from nanoHUB.utilities.display import ColorOutput
 # except FileExistsError:
 #     pass
 
-
+@dataclass
 class SalesForceBackupCommand(ICommand):
-    specific_fields: [] = []
-    number_of_retries: int = 6
-    name: str = 'BackupCommand'
-
-    def get_name(self) -> str:
-        return self.name
+    number_of_retries: int
+    specific_fields: []
 
     def __repr__(self):
         return 'SalesForceBackupCommand(number_of_retries = ' + str(self.number_of_retries) + \
-               'name = ' + self.get_name() + \
+               'name = ' + self.command_name + \
                 'specific_fields = ' + ','.join(self.specific_fields) + \
                 ')'
 
     def __str__(self):
         return json.dumps({
-            'name': self.name,
+            'name': self.command_name,
             'number_of_retries': self.number_of_retries,
             'specific_fields': self.specific_fields
         })
 
 
 @dataclass
-class BackupFinishedEvent(IEvent):
-    df: dict
-    object_name: str
-    event_name: str = 'BackupFinishedEvent'
-
-    def get_event_name(self) -> str:
-        return self.event_name
-
-    def get_dict(self) -> dict:
-        return self.df
-
-    def get_object_name(self) -> str:
-        return self.object_name
+class SFBackupStartedEvent(IEvent):
+    backup_started_datetime: str
 
     def __repr__(self):
-        return 'BackupFinishedEvent(object_name = ' + self.get_object_name() + ', df = ' + str(self.df) + ')'
+        return 'SFRecordObtainedEvent(backup_started_datetime = ' + self.backup_started_datetime  + ')'
+
+    def __str__(self):
+        return json.dumps({
+            'backup_started_datetime': self.backup_started_datetime,
+            'event_name': self.get_event_name()
+        })
+
+
+@dataclass
+class SFBackupFinishedEvent(IEvent):
+    record_names: []
+    backup_finished_datetime: str
+
+    def __repr__(self):
+        return 'SFRecordObtainedEvent(' \
+               'backup_finished_datetime = ' + self.backup_finished_datetime + \
+               ', record_names = ' + str(self.record_names) + \
+               ')'
 
     def __str__(self):
         return json.dumps({
             'event_name': self.get_event_name(),
-            'object_name': self.get_object_name(),
-            'dataframe_dict': self.df
+            'backup_finished_datetime': self.backup_finished_datetime,
+            'record_names': self.record_names
         })
 
 
-class SalesforceBackup(ICommandHandler):
-    backup_finished: str = 'BackupFinished'
+@dataclass
+class SFRecordObtainedEvent(IEvent):
+    object_name: str
+    object_data: dict
+    number_of_records: int
 
+    def __repr__(self):
+        return 'SFRecordObtainedEvent(object_name = ' + self.object_name + ', object_data = ' + str(self.object_data) + ')'
+
+    def __str__(self):
+        return json.dumps({
+            'event_name': self.get_event_name(),
+            'object_name': self.object_name,
+            'object_data': self.object_data,
+            'number_of_records': self.number_of_records
+        })
+
+
+class ProblemObtainingObjectRecords(RuntimeError):
+    def __init__(self, message, object_name: str):
+        self.message = "%s - Problem obtaining records (Original message: %s)" % (object_name, message)
+        self.object_name = object_name
+
+    def get_object_name(self) -> str:
+        return self.object_name
+
+
+class ISFObjectRecordProvider:
+    def provide_for(self, object_name: str) -> pd.DataFrame:
+        raise NotImplementedError
+
+
+class SFObjectRecordsLoggerProvider(ISFObjectRecordProvider, LoggerMixin):
     def __init__(
-            self, client_factory: ISalesforceFactory, notifier: EventNotifier, logger: logging.Logger
+            self,
+            inner_provider: ISFObjectRecordProvider,
     ):
-        self.client_factory = client_factory
-        self.notifier = notifier
+        self.inner_provider = inner_provider
+
+    def provide_for(self, object_name: str) -> pd.DataFrame:
+        df = pd.DataFrame()
+        try:
+            self.logger.debug("%s%s%s - Attempting to query now." % (ColorOutput.BOLD, object_name, ColorOutput.END))
+            df = self.inner_provider.provide_for(object_name)
+        except ProblemObtainingObjectRecords as e:
+            self.logger.debug(e.message)
+            raise e
+        return df
+
+
+class SFObjectRecordRetriesProvider(ISFObjectRecordProvider):
+    def __init__(
+            self,
+            inner_provider: ISFObjectRecordProvider,
+            number_of_retries:int,
+            logger: logging.Logger
+    ):
+        self.inner_provider = inner_provider
+        self.number_of_retries = number_of_retries
         self.logger = logger
 
+    def provide_for(self, object_name: str) -> pd.DataFrame:
+        count = 1
+        df = pd.DataFrame()
+        while count < self.number_of_retries + 1:
+            try:
+                df = self.inner_provider.provide_for(object_name)
+                break
+            except ProblemObtainingObjectRecords as e:
+                count = count + 1
+                if count == self.number_of_retries + 1:
+                    raise e
+                continue
+        return df
+
+
+class SFObjectRecordsProvider(ISFObjectRecordProvider):
+    def __init__(self, client: Salesforce):
+        self.client = client
+
+    def provide_for(self, object_name: str) -> pd.DataFrame:
+        try:
+            sf_object = self.client.__getattr__(object_name)
+            field_names = [field['name'] for field in sf_object.describe()['fields']]
+            results = self.client.query_all( "SELECT " + ", ".join(field_names) + " FROM " + object_name )
+            df = pd.DataFrame(results['records'])
+            df.drop(columns=['attributes'], inplace=True, errors='ignore')
+            return df
+        except (SalesforceMalformedRequest, ConnectionError) as e:
+            raise ProblemObtainingObjectRecords(e.message, object_name)
+
+
+class SFObjectRecordsProviderChain(ISFObjectRecordProvider):
+    def __init__(self, providers: [ISFObjectRecordProvider]):
+        self.providers = providers
+
+    def provide_for(self, object_name: str) -> pd.DataFrame:
+        for provider in self.providers:
+            df = provider.provide_for(object_name)
+
+        return df
+
+
+class SalesforceBackup(ICommandHandler):
+    command_name: str = 'salesforce_backup_command'
+
+    def __init__(
+            self, client: Salesforce, provider: ISFObjectRecordProvider, notifier: EventNotifier
+    ):
+        self.client = client
+        self.provider = provider
+        self.notifier = notifier
+
     def handle(self, command: SalesForceBackupCommand) -> None:
-        self.logger.info('Salesforce backup started.')
-        client = self.client_factory.create_new()
-        sf_object = self.create_new_sf_object()
-        description = client.describe()
+        command_datetime = command.init_datetime
+        self.notifier.notify_for(
+            SFBackupStartedEvent(
+                backup_started_datetime=datetime.now().isoformat(),
+                command_name=command.command_name,
+                command_datetime=command_datetime
+        ))
+        description = self.client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
-        for name in names:
+
+        for object_name in names:
             count = 1
             while count < command.number_of_retries + 1:
                 try:
-                    self.logger.debug("Attempt #%d for object %s" %(count, name))
-                    df = sf_object.get_records_for(name)
-                    self.logger.debug("Dataframe for %s" % name)
-                    self.logger.debug(df.iloc[:5].to_json)
-                    self.logger.debug("Attempt Successful. Rows obtained: %d" % len(df))
-                    count = command.number_of_retries
-                    event = BackupFinishedEvent(df.to_dict(), name)
-                    event.event_datetime = command.get_datetime()
-                    self.notifier.notify_for(event)
-                except SalesforceMalformedRequest as e:
+                    df = self.provider.provide_for(object_name)
+                    self.notifier.notify_for(SFRecordObtainedEvent(
+                        object_name=object_name,
+                        object_data=df.to_dict(),
+                        number_of_records=len(df),
+                        command_datetime=command_datetime,
+                        command_name=command.command_name
+                    ))
+                    break
+                except ProblemObtainingObjectRecords as e:
                     count = count + 1
-                    sf_object = self.create_new_sf_object()
-                    self.logger.debug("Malformed Request: Retrying.")
+                    if count == command.number_of_retries + 1:
+                        raise e
                     continue
-                except ConnectionError as ce:
-                    count = count + 1
-                    sf_object = self.create_new_sf_object()
-                    self.logger.debug("Connection Error: Retrying.")
-                    continue
-        self.logger.info('Salesforce backup finished.')
-
-    def get_name(self) -> str:
-        return 'SalesforceBackup'
-
-    def create_new_sf_object(self) -> SalesforceObject:
-        client = self.client_factory.create_new()
-        return SalesforceObject(client)
+        self.notifier.notify_for(SFBackupFinishedEvent(
+            record_names=names,
+            backup_finished_datetime=datetime.now().isoformat(),
+            command_datetime=command_datetime,
+            command_name=command.command_name
+        ))
 
 
-class SalesforceBackupGeddes(IEventHandler):
+class SFRecordObtainedEventSaver(IEventHandler, LoggerMixin):
     def __init__(
-            self, mapper: S3FileMapper, file_path: str, logger: logging.Logger
+            self, mapper: S3FileMapper,
+            file_path: IFilePathProvider,
+            file_extension: str = '.parquet.gzip'
     ):
         self.mapper = mapper
-        self.logger = logger
+        self.file_path_provider = file_path
+        self.file_extension = file_extension
+
+    def handle(self, event: SFRecordObtainedEvent):
+        object_name = event.object_name
+        file_path = self.file_path_provider.file_path_for_event(event)
+        file_path = file_path + '/' + object_name + self.file_extension
+        df = pd.DataFrame(event.object_data)
+        self.mapper.save_as_parquet(
+            df, file_path, index=None, compression='gzip'
+        )
+        self.logger.debug(
+            "%s %s: %s %d records saved in Geddes at %s" % (
+                ColorOutput.BOLD, event.object_name, ColorOutput.END, event.number_of_records, file_path
+            )
+        )
+        self.logger.debug("Dataframe for %s" % event.object_name)
+        self.logger.debug(df.iloc[:5].to_json)
+
+
+class SFBackupFinishedEventSaver(IEventHandler, LoggerMixin):
+    def __init__(
+            self, mapper: S3FileMapper, path_provider: IFilePathProvider, file_path: str
+    ):
+        self.mapper = mapper
+        self.file_path_provider = path_provider
         self.file_path = file_path
 
-    def handle(self, event: BackupFinishedEvent):
-        object_name = event.get_object_name()
-        event_dt = datetime.strptime(event.get_event_datetime(), "%Y%m%d-%H%M%S")
-        file_path = self.file_path + '/' + \
-                    str(event_dt.year) + '/' +\
-                    str(event_dt.month) + '/' + \
-                    str(event_dt.day) + '/' + \
-                    event_dt.strftime("%Y%m%d-%H%M%S") + '/' + \
-                    object_name + '.csv'
-        df = pd.DataFrame(event.get_dict())
+    def handle(self, event: SFBackupFinishedEvent):
+        backups_df = self.mapper.read(self.file_path)
+        stored_records_path = self.file_path_provider.file_path_for_event(event)
+        backups_df.loc[len(backups_df)] = [event.get_event_name(), stored_records_path, event.record_names]
         self.mapper.save_as_csv(
-            df, file_path, index=None
+            backups_df, self.file_path, index=None
         )
         self.logger.info(
-            "%s %s: %s %d records saved in Geddes at %s" % (
-                ColorOutput.BOLD, event.get_object_name(), ColorOutput.END, len(df), file_path
+            "%sBackup Finished%s - Objects stored in Geddes: %d" % (
+                ColorOutput.BOLD, ColorOutput.END, len(event.record_names)
             )
         )
 
 
-class SalesforceBackupResultLogger(IEventHandler):
-    def __init__(self, logger: logging.Logger):
-        self.logger = logger
-
-    def handle(self, event: BackupFinishedEvent):
-        self.logger.info(
-             "%s %s %s backed up." % (ColorOutput.BOLD, event.get_object_name(), ColorOutput.END)
+class SFRecordObtainedEventLogger(IEventHandler, LoggerMixin):
+    def handle(self, event: SFRecordObtainedEvent):
+        at_datetime = datetime.fromisoformat(event.command_datetime).ctime()
+        print(event.command_datetime)
+        self.logger.debug(
+             "%s %s %s backed up at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
         )
         self.logger.debug(
-            "%s: %s." % (event.get_object_name(), event.__str__())
+            "%s: %s." % (event.object_name, event.__str__())
+        )
+
+
+class SFBackupStartedEventLogger(IEventHandler, LoggerMixin):
+    def handle(self, event: SFBackupStartedEvent):
+        started_at_datetime = datetime.fromisoformat(event.backup_started_datetime).ctime()
+        self.logger.info(
+            "%s Backup Started %s at %s" % (
+                ColorOutput.BOLD, ColorOutput.END, started_at_datetime
+            )
+        )
+
+
+class SalesforceBackupFinishedLogger(IEventHandler, LoggerMixin):
+    def handle(self, event: SFBackupFinishedEvent):
+        finished_at_datetime = datetime.fromisoformat(event.backup_finished_datetime).ctime()
+        self.logger.info(
+            "%s Backup Finished %s at %s" % (
+                ColorOutput.BOLD, ColorOutput.END, finished_at_datetime
+            )
         )
 
 
 class DefaultBackupCommandHandler:
     def create_new(
-            self, application: Application, client_factory: ISalesforceFactory, loglevel: str = 'INFO'
+            self, application: Application, client_factory: ISalesforceFactory
     ) -> ICommandHandler:
-        logger = get_app_logger('SalesforceBackups', loglevel)
-
         notifier = EventNotifier()
-        notifier.add_event_handler(SalesforceBackupGeddes(
-            create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
-            SalesforceBackupConfiguration.geddes_folder_path,
-            logger
-        ))
-        notifier.add_event_handler(SalesforceBackupResultLogger(logger))
-        return MetricsReporterDecorator(
-            InitialExecutionDecorator(
-                SalesforceBackup(client_factory, notifier, logger), logger
-            ), [TimingProfileReporter(), MemoryProfileReporter()], logger
+        notifier.add_event_handler(
+            SFRecordObtainedEvent.get_event_name(),
+            SFRecordObtainedEventSaver(
+                create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
+                FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path)
+            ))
+        notifier.add_event_handler(
+            SFRecordObtainedEvent.get_event_name(), SFRecordObtainedEventLogger()
         )
 
+        notifier.add_event_handler(
+            SFBackupStartedEvent.get_event_name(), SFBackupStartedEventLogger()
+        )
 
+        notifier.add_event_handler(
+            SFBackupFinishedEvent.get_event_name(),
+            SFBackupFinishedEventSaver(
+                create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
+                FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path),
+                SalesforceBackupConfiguration.geddes_folder_path + '/' + 'full_backups'
+            ))
+        notifier.add_event_handler(
+            SFBackupFinishedEvent.get_event_name(), SalesforceBackupFinishedLogger()
+        )
 
+        client = client_factory.create_new()
+
+        provider = SFObjectRecordsLoggerProvider(
+                SFObjectRecordsProvider(client)
+        )
+
+        return MetricsReporterDecorator(
+            InitialExecutionDecorator(
+                SalesforceBackup(
+                    client, provider, notifier
+                )
+            ), [TimingProfileReporter(), MemoryProfileReporter()]
+        )

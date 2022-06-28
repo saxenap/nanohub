@@ -124,6 +124,8 @@ sendgrid = "*"
 simple-salesforce = "*"
 nameparser="*"
 mpire="*"
+'mpire[dashboard]'="*"
+cronitor="*"
 ##########################################
 # charset detection
 chardet = "*"

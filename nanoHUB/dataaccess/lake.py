@@ -149,7 +149,7 @@ class S3FileMapper:
 
     def save_as_parquet(self, df: pd.DataFrame, full_path: str, **args):
         _buf = BytesIO()
-        df.to_parquet(_buf, *args)
+        df.to_parquet(_buf, **args)
         _buf.seek(0)
         self.client.put_object(Bucket=self.bucket, Body=_buf.getvalue(), Key=full_path)
 

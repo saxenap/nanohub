@@ -104,6 +104,11 @@ gcloud:
 ########################################################################################################################
 
 pipenv-update:
+	$(MAKE) _pipenv-update || $(MAKE) error_pipenv-update
+
+error_pipenv-update: _pipenv-update
+
+_pipenv-update:
 	pipenv install -e .
 	pipenv lock -r --dev > requirements.txt
 

@@ -4,6 +4,7 @@ import requests
 from io import StringIO
 import time
 
+
 class DB2SalesforceAPI:
 
     def __init__(self, sf_login_params):
@@ -22,15 +23,18 @@ class DB2SalesforceAPI:
         # Obtain access token
         self.obtain_token()
 
+    def get_access_token(self):
+        return self.access_token
+
+    def get_instance_url(self) -> str:
+        return self.instance_url
 
     def obtain_token(self):
-
-        # obtain access token
         response = requests.post("https://login.salesforce.com/services/oauth2/token", params=self.sf_login_params)
 
         if response.ok:
             self.access_token = response.json()['access_token']
-
+            self.instance_url = response.json()['instance_url']
             print('Obtained Salesforce access token ...... %s'%response.ok)
 
         else:

@@ -38,4 +38,3 @@ class LocalFolder(Folder):
     def delete(self):
         os.remove(self._filepath)
 
-
