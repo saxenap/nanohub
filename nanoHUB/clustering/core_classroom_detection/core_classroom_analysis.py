@@ -102,6 +102,10 @@ def prepare_data(inparams):
     with WorkerPool(n_jobs=None) as pool2:
         geo_data = pool2.map(get_geo_data_partial, toolrun_df['ip'])
 
+    # geo_data = [] #causes freeze
+    # for addy in toolrun_df['ip']:
+    #     geo_data.append(get_geo_data_partial(addy))
+
     geo_data = np.array(geo_data, dtype=np.float32)
 
     lon_lat = np.stack(geo_data)

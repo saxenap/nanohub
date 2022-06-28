@@ -60,3 +60,13 @@ into cluster_by_command, multiprocessing will be used, however most options will
 
 
 ---
+
+Things to fix:
+
+In combine_clusters.py, the multiprocessing is done with the built-in Python multiprocessing.
+It just errors for some reason when using mpire there.
+
+There is an instance of nested multiprocessing, inside core_classroom_analysis on line 102. If this is
+fixed delete daemon=False parameter from the call in cluster_by_command.
+
+Maximum cores used set to 10 right now. This is because the ssh requests cannot handle it.

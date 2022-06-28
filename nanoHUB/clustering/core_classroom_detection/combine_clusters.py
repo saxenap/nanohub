@@ -3,6 +3,7 @@ from pprint import pprint
 import pandas as pd
 import numpy as np
 import datetime
+from mpire import WorkerPool
 
 from scipy.sparse import coo_matrix
 
@@ -164,14 +165,16 @@ def intra_tool_cluster_annex(one_tool_clusters):
                 
             else:
 
-                merged_tool_clusters = merged_tool_clusters.append({ \
-                                                        'start':    row.scanned_date, \
-                                                        'end':      row.scanned_date, \
-                                                        'mean_lon': row.mean_lon, \
-                                                        'mean_lat': row.mean_lat, \
-                                                        'user_set': row.user_set, \
-                                                        'ip_set':   row.ip_set \
-                                                        }, ignore_index=True)
+                # merged_tool_clusters = merged_tool_clusters.append({ \
+                #                                         'start':    row.scanned_date, \
+                #                                         'end':      row.scanned_date, \
+                #                                         'mean_lon': row.mean_lon, \
+                #                                         'mean_lat': row.mean_lat, \
+                #                                         'user_set': row.user_set, \
+                #                                         'ip_set':   row.ip_set \
+                #                                         }, ignore_index=True)
+
+
 
                 # merged_tool_clusters = pd.concat([
                 #     merged_tool_clusters, {
@@ -186,6 +189,20 @@ def intra_tool_cluster_annex(one_tool_clusters):
                 #     join='outer',
                 #     ignore_index=True
                 # )
+
+                merged_tool_clusters = pd.concat([
+                    merged_tool_clusters, pd.DataFrame.from_records([{
+                    'start':    row.scanned_date,
+                    'end':      row.scanned_date,
+                    'mean_lon': row.mean_lon,
+                    'mean_lat': row.mean_lat,
+                    'user_set': row.user_set,
+                    'ip_set':   row.ip_set
+                    }])],
+                    axis=0,
+                    join='outer',
+                    ignore_index=True
+                )
   
     return merged_tool_clusters
     
@@ -235,8 +252,13 @@ def combine_clusters(inparams, cluster_post_sychrony):
     #
 
     grouped = group_clusters.groupby('tool')
-    with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-        intra_tool_cluster_df = pool.map(intra_tool_cluster_annex, [(name, group) for name, group in grouped])
+    # with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool1:
+    # with WorkerPool(n_jobs=None) as pool1: #for some weird reason mpire can't do this, get error
+    #"TypeError: intra_tool_cluster_annex() takes 1 positional argument but 2 were given"
+        # intra_tool_cluster_df = pool1.map(intra_tool_cluster_annex, [(name, group) for name, group in grouped])
+    intra_tool_cluster_df = []
+    for name, group in grouped:
+        intra_tool_cluster_df.append(intra_tool_cluster_annex((name, group)))
     intra_tool_cluster_df = pd.concat(intra_tool_cluster_df)
     intra_tool_cluster_df.index.name = 'tool'
     
@@ -299,27 +321,26 @@ def combine_clusters(inparams, cluster_post_sychrony):
                                                 .apply(lambda x: all_students_list.count(x)/num_total_clusters)
         
         
-        students_info_df = students_info_df.append(this_students_df, ignore_index=True)
-        # students_info_df = pd.concat([students_info_df, pd.DataFrame.from_records(this_students_df)]) #concat patch
+        # students_info_df = students_info_df.append(this_students_df, ignore_index=True)
+        students_info_df = pd.concat([students_info_df, pd.DataFrame.from_records(this_students_df)]) #concat patch
         
         # tool list
         
         this_classtool_df = pd.DataFrame(set(this_class_tool_clusters.tool), columns=['toolname'])
         this_classtool_df['class_id'] = this_class_index
         
-        classtool_info_df = classtool_info_df.append(this_classtool_df, ignore_index=True)
-        # classtool_info_df = pd.concat([classtool_info_df, pd.DataFrame.from_records(this_classtool_df)])
+        # classtool_info_df = classtool_info_df.append(this_classtool_df, ignore_index=True)
+        classtool_info_df = pd.concat([classtool_info_df, pd.DataFrame.from_records(this_classtool_df)])
         
         # class general information
         
-        class_info_df = class_info_df.append({'class_id':this_class_index, \
-                                              'start':this_class_tool_clusters.start.min(), \
-                                              'end':this_class_tool_clusters.end.max(), \
-                                              'lon':this_class_tool_clusters.mean_lon.mean(), \
-                                              'lat':this_class_tool_clusters.mean_lat.mean(), \
-                                              'ip_set':this_class_tool_clusters.ip_set.values, \
-                                              'size':len(set(all_students_list))}, ignore_index=True)
-
+        # class_info_df = class_info_df.append({'class_id':this_class_index, \
+        #                                       'start':this_class_tool_clusters.start.min(), \
+        #                                       'end':this_class_tool_clusters.end.max(), \
+        #                                       'lon':this_class_tool_clusters.mean_lon.mean(), \
+        #                                       'lat':this_class_tool_clusters.mean_lat.mean(), \
+        #                                       'ip_set':this_class_tool_clusters.ip_set.values, \
+        #                                       'size':len(set(all_students_list))}, ignore_index=True)
 
         # class_info_df = pd.concat([class_info_df,
         #                           {'class_id':this_class_index,
@@ -333,5 +354,18 @@ def combine_clusters(inparams, cluster_post_sychrony):
         #                             join='outer',
         #                             ignore_index=True
         #                           )
+
+        class_info_df = pd.concat([class_info_df,
+                                   pd.DataFrame.from_records([{'class_id': this_class_index,
+                                                               'start': this_class_tool_clusters.start.min(),
+                                                               'end': this_class_tool_clusters.end.max(),
+                                                               'lon': this_class_tool_clusters.mean_lon.mean(),
+                                                               'lat': this_class_tool_clusters.mean_lat.mean(),
+                                                               'ip_set': this_class_tool_clusters.ip_set.values,
+                                                               'size': len(set(all_students_list))}])],
+                                  axis=0,
+                                  join='outer',
+                                  ignore_index=True
+                                  )
                                                 
     return intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df

@@ -7,6 +7,7 @@ from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
 from mpire import WorkerPool
+from mpire.dashboard import start_dashboard
 # from mpire.dashboard import start_dashboard
 
 
@@ -26,7 +27,7 @@ class ExecuteAlgorithmCommand:
     scratch_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
     name_prefix: str = field(default='users_analysis')
     display_output: bool = field(default=True)
-    no_save_output: bool = field(default=True)
+    no_save_output: bool = field(default=False) #saves on default
     save_to_geddes: bool = field(default=False)
     bucket_name: str = field(default='nanohub.processed')
     object_path: str = field(init = False)
@@ -165,7 +166,7 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
     # dashboard_details = start_dashboard()
     # print(dashboard_details)
 
-    with WorkerPool(n_jobs=12, daemon=False) as pool:
+    with WorkerPool(n_jobs=10, daemon=False) as pool:
         df_list.append(pool.map(run_clustering, command_list))
 
     # for x in timelist:
