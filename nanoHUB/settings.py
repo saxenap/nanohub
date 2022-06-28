@@ -21,6 +21,7 @@ class SshTunnel(BaseSettings):
     port: str = Field(env='tunnel_ssh_port')
     remote_bind_address: str = Field(env='tunnel_remote_bind_address')
     remote_bind_port: str = Field(env='tunnel_remote_bind_port')
+    banner_timeout: int = Field(env='tunnel_banner_timeout')
 
 
 class SalesforceSettings(BaseSettings):
