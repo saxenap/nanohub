@@ -69,4 +69,6 @@ It just errors for some reason when using mpire there.
 There is an instance of nested multiprocessing, inside core_classroom_analysis on line 102. If this is
 fixed delete daemon=False parameter from the call in cluster_by_command.
 
-Maximum cores used set to 10 right now. This is because the ssh requests cannot handle it.
+Maximum cores used set to 10 right now. This is because the server cannot handle it.
+If this needs to be increased, the banner_timeout will need to be adjusted. It currently has
+been messed with in nanoHUB/dataaccess/connection.py, however I don't think it worked.

@@ -1,14 +1,15 @@
 import os
+import random
 from dataclasses import dataclass, field
 from datetime import datetime, date
 import pandas as pd
 import logging
+import time
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
 from mpire import WorkerPool
-from mpire.dashboard import start_dashboard
-# from mpire.dashboard import start_dashboard
+from mpire.dashboard import connect_to_dashboard
 
 
 @dataclass
@@ -163,8 +164,7 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
 
-    # dashboard_details = start_dashboard()
-    # print(dashboard_details)
+    # connect_to_dashboard(8082)
 
     with WorkerPool(n_jobs=10, daemon=False) as pool:
         df_list.append(pool.map(run_clustering, command_list))
