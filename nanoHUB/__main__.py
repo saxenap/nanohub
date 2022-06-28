@@ -28,10 +28,13 @@ def execute(
     """
     Execute task(s) defined in .py or .ipynb files.
     """
+    logging.config.dictConfig(logging_conf)
+    logging.getLogger().setLevel(logging.getLevelName(loglevel.upper()))
+
+    application = Application.get_instance(loglevel)
     if not file_paths:
         typer.echo("File path for file to be executed not provided.")
         raise typer.Abort()
-
     application = Application.get_instance(loglevel)
     application.execute(file_paths)
 

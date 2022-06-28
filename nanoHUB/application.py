@@ -42,7 +42,7 @@ class Application:
     default_instance: 'Application' = None
 
     @staticmethod
-    def get_instance(loglevel: str) -> 'Application':
+    def get_instance(loglevel: str = 'INFO') -> 'Application':
         loglevel = loglevel.upper()
         log().setLevel(logging.getLevelName(loglevel.upper()))
 
