@@ -6,17 +6,18 @@ NANOHUB_DIR=$(ROOT_DIR)/nanoHUB
 PIPELINE_DIR=$(NANOHUB_DIR)/pipeline
 SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
 
-CALL_MAIN=python3 $(ROOT_DIR)/nanoHUB/__main__.py
+#CALL_MAIN=python3 $(ROOT_DIR)/nanoHUB/__main__.py
+CALL_MAIN=nanohub
 EXECUTE_TASK=$(CALL_MAIN) task execute
 SALESFORCE_BACKUP=$(CALL_MAIN) backup salesforce
 
 log-level=INFO
+log-level-string="--log-level $(log-level)"
 logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t PIPELINE
 
 TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/task_citations.ipynb  \
 	$(SALESFORCE_DIR)/task_citations_map_leads.ipynb   \
-	$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \
 	$(SALESFORCE_DIR)/task_issue_url.ipynb  \
 	$(SALESFORCE_DIR)/task_organization.ipynb  \
 	$(SALESFORCE_DIR)/task_orgs_map_contacts.ipynb  \
@@ -55,4 +56,9 @@ test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
 
 salesforce-backup:
-	$(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN)
+	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) --log-level=$(log-level)
+
+import:
+	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb $(log-level-string)
+
+#$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \

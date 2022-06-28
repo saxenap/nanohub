@@ -1,9 +1,13 @@
+import logging
+
 from nanoHUB.application import Application
 import typer
 from typing import Optional
 from typing import List
-from nanoHUB.infrastructure.salesforce.backup import DefaultBackupCommandHandler, SalesForceBackupCommand
+from nanoHUB.infrastructure.salesforce.backup import DefaultBackupCommandHandler, SalesForceBackupCommand, SFBackupStartedEvent
 from nanoHUB.infrastructure.salesforce.client import SalesforceFromEnvironment
+import logging.config
+from nanoHUB.logger import logging_conf
 
 
 app = typer.Typer()
@@ -24,11 +28,13 @@ def execute(
     """
     Execute task(s) defined in .py or .ipynb files.
     """
+    logging.config.dictConfig(logging_conf)
+    logging.getLogger().setLevel(logging.getLevelName(loglevel.upper()))
 
+    application = Application.get_instance(loglevel)
     if not file_paths:
         typer.echo("File path for file to be executed not provided.")
         raise typer.Abort()
-
     application = Application.get_instance(loglevel)
     application.execute(file_paths)
 
@@ -36,8 +42,8 @@ def execute(
 @backup_app.command()
 def salesforce(
         domain: str,
-        fields: str = None,
-        retries: int = 6,
+        # retries: int,
+        fields: str = '',
         loglevel: str = typer.Option(
             "INFO",
             "--log-level",
@@ -47,16 +53,19 @@ def salesforce(
     """
     Run a Salesforce backup.
     """
+    logging.config.dictConfig(logging_conf)
+    logging.getLogger().setLevel(logging.getLevelName(loglevel.upper()))
 
     application = Application.get_instance(loglevel)
 
     handler = DefaultBackupCommandHandler().create_new(
-        application, SalesforceFromEnvironment(domain), loglevel
+        application, SalesforceFromEnvironment(domain)
     )
-    command = SalesForceBackupCommand()
-    if fields:
-        command.specific_fields = fields.split(',')
-    command.number_of_retries = retries
+    command = SalesForceBackupCommand(
+        number_of_retries=6,
+        specific_fields=fields.split(','),
+        log_level=loglevel,
+    )
     handler.handle(command)
 
 

@@ -43,21 +43,21 @@ class Application:
 
     @staticmethod
     def get_instance(loglevel: str = 'INFO') -> 'Application':
+        loglevel = loglevel.upper()
+        log().setLevel(logging.getLevelName(loglevel.upper()))
 
         if Application.default_instance is None:
             container = TasksContainer()
             container.config.from_pydantic(Settings())
             container.wire(modules=[sys.modules[__name__]])
-            loglevel = loglevel.upper()
-            level = logging.getLevelName(loglevel)
+
 
             # if loglevel == 'DEBUG':
             #     loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
             #     for logger in loggers:
             #         logger.setLevel(logging.DEBUG)
 
-            logger = log()
-            logger.setLevel(level)
+
             Application.default_instance = Application(container)
 
         return Application.default_instance

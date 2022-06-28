@@ -5,20 +5,23 @@ from memory_profiler import memory_usage
 import logging
 import json
 import time
+from datetime import datetime
+from nanoHUB.logger import LoggerMixin
 
 
 @dataclass
 class ICommand:
-    datetime: str
+    log_level: str
 
-    def __init__(self):
-        self.datetime = time.strftime("%Y%m%d-%H%M%S")
+    def __post_init__(self):
+        self.init_datetime = datetime.now().isoformat()
 
-    def get_name(self) -> str:
-        raise NotImplementedError
+    def init_datetime(self) -> str:
+        return self.init_datetime
 
-    def get_datetime(self) -> str:
-        return self.datetime
+    @property
+    def command_name(self) -> str:
+        return self.__class__.__name__
 
     def __repr__(self):
         raise NotImplementedError
@@ -28,37 +31,35 @@ class ICommand:
 
 
 class ICommandHandler:
+    handler_name: str = ''
+
     def handle(self, command: ICommand) -> None:
         raise NotImplementedError
 
-    def get_name(self) -> str:
-        raise NotImplementedError
+    def get_handler_name(self) -> str:
+        return self.handler_name
 
 
 class NullCommandHandler(ICommandHandler):
+    handler_name: str = 'Null Handler'
     def handle(self, command: ICommand) -> None:
         return
 
-    def get_name(self) -> str:
-        return 'Null Command Handler'
 
+class InitialExecutionDecorator(ICommandHandler, LoggerMixin):
+    handler_name: str = 'Initial Execution Handler'
 
-class InitialExecutionDecorator(ICommandHandler):
-    def __init__(self, inner_handler: ICommandHandler, logger: logging.Logger):
+    def __init__(self, inner_handler: ICommandHandler):
         self.inner_handler = inner_handler
-        self.logger = logger
 
     def handle(self, command: ICommand) -> None:
         self.logger.debug(
-            "%s has started." % self.inner_handler.get_name()
+            "%s has started." % self.inner_handler.get_handler_name()
         )
         self.inner_handler.handle(command)
         self.logger.debug(
             "%s has finished."
         )
-
-    def get_name(self) -> str:
-        return 'Initial Execution Handler'
 
 
 class IMetricsReporter:
@@ -79,21 +80,17 @@ class MemoryProfileReporter(IMetricsReporter):
         return {"MemoryUsed (MiB)": mem_usage}
 
 
-class MetricsReporterDecorator(ICommandHandler):
+class MetricsReporterDecorator(ICommandHandler, LoggerMixin):
     def __init__(
-        self, inner_handler: ICommandHandler, metrics_reporters: [IMetricsReporter], logger: logging.Logger
+        self, inner_handler: ICommandHandler, metrics_reporters: [IMetricsReporter]
     ):
         self.inner_handler = inner_handler
         self.metrics_reporters = metrics_reporters
-        self.logger = logger
 
     def handle(self, command: ICommand) -> None:
-        result = {'task': self.get_name(), 'metrics': {}}
+        result = {'task': self.get_handler_name(), 'metrics': {}}
 
         for reporter in self.metrics_reporters:
             result['metrics'].update(reporter.report(self.inner_handler, command))
 
         self.logger.info(json.dumps(result))
-
-    def get_name(self) -> str:
-        return self.inner_handler.get_name()
