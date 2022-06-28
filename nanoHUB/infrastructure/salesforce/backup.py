@@ -245,11 +245,14 @@ class SFRecordObtainedEventSaver(IEventHandler, LoggerMixin):
     def __init__(
             self, mapper: S3FileMapper,
             file_path: IFilePathProvider,
+            log_every_records: int,
             file_extension: str = '.parquet.gzip'
     ):
         self.mapper = mapper
         self.file_path_provider = file_path
         self.file_extension = file_extension
+        self.log_every_records = log_every_records
+        self.count = 0
 
     def handle(self, event: SFRecordObtainedEvent):
         object_name = event.object_name
@@ -259,11 +262,16 @@ class SFRecordObtainedEventSaver(IEventHandler, LoggerMixin):
         self.mapper.save_as_parquet(
             df, file_path, index=None, compression='gzip'
         )
-        self.logger.debug(
-            "%s %s: %s %d records saved in Geddes at %s" % (
-                ColorOutput.BOLD, event.object_name, ColorOutput.END, event.number_of_records, file_path
-            )
+        msg = "%s %s: %s %d records saved in Geddes at %s" % (
+            ColorOutput.BOLD, event.object_name, ColorOutput.END, event.number_of_records, file_path
         )
+        self.count = self.count + 1
+        if self.log_every_records == self.count:
+            self.logger.info(msg)
+            self.count = 0
+        else:
+            self.logger.debug(msg)
+
         self.logger.debug("Dataframe for %s" % event.object_name)
         self.logger.debug(df.iloc[:5].to_json)
 
@@ -291,15 +299,26 @@ class SFBackupFinishedEventSaver(IEventHandler, LoggerMixin):
 
 
 class SFRecordObtainedEventLogger(IEventHandler, LoggerMixin):
+    def __init__(self, log_every_events: int):
+        self.log_every_events = log_every_events
+        self.count = 0
+        self.events_to_log = []
+
     def handle(self, event: SFRecordObtainedEvent):
         at_datetime = datetime.fromisoformat(event.command_datetime).ctime()
-        print(event.command_datetime)
-        self.logger.debug(
-             "%s %s %s backed up at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
-        )
-        self.logger.debug(
-            "%s: %s." % (event.object_name, event.__str__())
-        )
+        self.count = self.count + 1
+        msg1 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
+        msg2 = "%s: %s." % (event.object_name, event.__str__())
+        msg3 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, ', '.join(self.events_to_log), ColorOutput.END, event.command_datetime)
+        if self.count == self.log_every_events:
+            self.logger.info(msg1)
+            self.logger.info(msg2)
+            self.count = 0
+            self.events_to_log = []
+        else:
+            self.logger.debug(msg1)
+            self.logger.debug(msg2)
+            self.events_to_log.append(event.object_name)
 
 
 class SFBackupStartedEventLogger(IEventHandler, LoggerMixin):
@@ -331,10 +350,11 @@ class DefaultBackupCommandHandler:
             SFRecordObtainedEvent.get_event_name(),
             SFRecordObtainedEventSaver(
                 create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
-                FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path)
+                FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path),
+                5
             ))
         notifier.add_event_handler(
-            SFRecordObtainedEvent.get_event_name(), SFRecordObtainedEventLogger()
+            SFRecordObtainedEvent.get_event_name(), SFRecordObtainedEventLogger(5)
         )
 
         notifier.add_event_handler(
