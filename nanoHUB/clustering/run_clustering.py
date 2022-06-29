@@ -4,7 +4,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, date
 import pandas as pd
 import logging
-import time
+from time import sleep
+
+import paramiko
+
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
 )
@@ -163,11 +166,20 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
-
+    request_error = False
     # connect_to_dashboard(8082)
-
-    with WorkerPool(n_jobs=10, daemon=False) as pool:
+    # while not request_error:
+    #     try:
+    with WorkerPool(n_jobs=15, daemon=False) as pool: #15
         df_list.append(pool.map(run_clustering, command_list))
+        #
+        #     request_error = False
+        #
+        # except paramiko.ssh_exception.SSHException:
+        #     x = random.randint(1, 5)
+        #     sleep(x)
+        #     request_error = True
+
 
     # for x in timelist:
     #     start, end = x
