@@ -214,7 +214,5 @@ def create_default_handler(log_level):
     )
 
 
-
 if __name__ == '__main__':
     result = TwoSemesterTimeFrameGenerator().cluster_for_all()
-    print(result)
