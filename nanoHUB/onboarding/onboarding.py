@@ -118,8 +118,9 @@ class OnboardingCommand:
     #git
 class SSH_Setup:
     def generate_for(self, email_address: str, root_folder: str):
-        cmd2 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
-        md2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
+        cmd1 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
+        cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
+        cmd3 = os.system('cat %s/.ssh/id_rsa.pub' % (root_folder))
 
 class GitUserConfiguration:
     def configure_for(self, username, fullname, email):
@@ -129,14 +130,17 @@ class GitUserConfiguration:
 
 class GitRepositoryConfiguration:
     def configure_for(self, repo_ssh_url: str, local_dir_path: str):
+        cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
+        cmd02 = os.system('ssh-add ~/.ssh/id_rsa.pub')
+        cmd03 = os.system('ssh-keyscan -t rsa gitlab.hubzero.org >> ~/.ssh/known_hosts')
         cmd1 = os.system("cd %s" % local_dir_path)
-        cmd3 = os.system("git clone git@gitlab.hubzero.org:saxenap/nanohub-analytics.git temp")
+        cmd2 = os.system("git clone git@gitlab.hubzero.org:saxenap/nanohub-analytics.git temp")
 
     #env
 class ENV_Setup:
     def configure_env(self, command: OnboardingCommand):
-        self.create_env()
-        env = open('fill in', "r") #read .env
+        self.create_env(command)
+        env = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/.env', "r") #read .env
         data = env.read()
         env.close()
 
@@ -147,12 +151,14 @@ class ENV_Setup:
                 DB_USERNAME_HERE = command.env_ssh_db_user,
                 DB_PASSWORD_HERE = command.env_ssh_db_pass)
 
-        envout = open('fill in', 'w') #write .env
+        envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/.env', 'w') #write .env
         envout.write(data)
         envout.close()
 
-    def create_env(self):
-        cmd1 = os.system("cp .env .dev.env")
+    def create_env(self, command: OnboardingCommand):
+        cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/' + ".env.dev" +
+                         " " +
+                         command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/' + ".env")
 
 #CommandMapper
 class IOnboardingCommandMapper:
@@ -211,6 +217,8 @@ class CommandValidator:
         if command.jupyter_password == "":
             self.errors.set_error_for('password', 'Jupyter password field is empty!')
 
+        return self.errors
+
     def env_validate(self, command: OnboardingCommand) -> CommandErrors:
         # env
         # career username
@@ -228,6 +236,8 @@ class CommandValidator:
         # db password
         if command.env_ssh_db_pass == "":
             self.errors.set_error_for('db password', 'Database password field is empty!')
+
+        return self.errors
 
 #Command
 class ICommand:
@@ -302,16 +312,11 @@ class EnvProcessor(ICommandProcessor):
 # class CommandQueue:
 #     def add_processor(self, ):
 
-#what is the purpose of the interfaces if we don't have any functionality in them
-#"abstraction"
-
-#is our invokers = processors or receivers = processors
-
 #Factory
 class OnboardingProcessorFactory:
     def create_new(self):
         return \
-        GitProcessor( #what/how does this return
+        GitProcessor(
             CommandValidator(CommandErrors()),
             SSH_Setup(),
             GitUserConfiguration(),
