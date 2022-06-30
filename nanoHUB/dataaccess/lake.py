@@ -10,6 +10,7 @@ import botocore.client as s3client
 from nanoHUB.pipeline.geddes.data import get_default_s3_client, read_all
 from nanoHUB.configuration import ClusteringConfiguration, DataLakeConfiguration
 import re
+from botocore.exceptions import ClientError
 
 
 @dataclass
@@ -140,6 +141,13 @@ class S3FileMapper:
                 df = pd.read_csv(BytesIO(obj['Body'].read()), **args)
 
         return df
+
+    def exists(self, file_path: str, **args) -> bool:
+        try:
+            self.client.head_object(Bucket=self.bucket, Key=file_path)
+        except ClientError as e:
+            return int(e.response['Error']['Code']) != 404
+        return True
 
     def save_as_csv(self, df: pd.DataFrame, full_path: str, **args):
         csv_buffer = StringIO()

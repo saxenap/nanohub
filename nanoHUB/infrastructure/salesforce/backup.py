@@ -307,11 +307,19 @@ class SFBackupFinishedEventSaver(IEventHandler, LoggerMixin):
         self.file_path = file_path
 
     def handle(self, event: SFBackupFinishedEvent):
+        if not self.mapper.exists(self.file_path):
+            self.mapper.save_as_csv(pd.DataFrame(),self.file_path)
+
         backups_df = self.mapper.read(self.file_path)
         stored_records_path = self.file_path_provider.file_path_for_event(event)
         backups_df.loc[len(backups_df)] = [event.get_event_name(), stored_records_path, event.record_names]
         self.mapper.save_as_csv(
             backups_df, self.file_path, index=None
+        )
+        self.logger.info(
+            "%sBackup Finished%s - Objects stored in Geddes: %d" % (
+                ColorOutput.BOLD, ColorOutput.END, len(event.record_names)
+            )
         )
         self.logger.info(
             "%sBackup Finished%s - Objects stored in Geddes: %d" % (
@@ -374,11 +382,13 @@ class DefaultBackupCommandHandler:
     def create_new(
             self, application: Application, client_factory: ISalesforceFactory
     ) -> ICommandHandler:
+        s3_client = create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw)
+
         notifier = EventNotifier()
         notifier.add_event_handler(
             SFRecordObtainedEvent.get_event_name(),
             SFRecordObtainedEventSaver(
-                create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
+                s3_client,
                 FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path),
                 5
             ))
@@ -393,9 +403,9 @@ class DefaultBackupCommandHandler:
         notifier.add_event_handler(
             SFBackupFinishedEvent.get_event_name(),
             SFBackupFinishedEventSaver(
-                create_default_s3mapper(application, SalesforceBackupConfiguration.bucket_name_raw),
+                s3_client,
                 FilePathByCommandDatetime(SalesforceBackupConfiguration.geddes_folder_path),
-                SalesforceBackupConfiguration.geddes_folder_path + '/' + 'full_backups'
+                SalesforceBackupConfiguration.full_backups_geddes_file_path
             ))
         notifier.add_event_handler(
             SFBackupFinishedEvent.get_event_name(), SalesforceBackupFinishedLogger()
