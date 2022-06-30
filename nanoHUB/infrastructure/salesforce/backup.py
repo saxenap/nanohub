@@ -214,11 +214,11 @@ class SalesforceBackup(ICommandHandler):
         ))
         description = self.client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
-
         for object_name in names:
             count = 1
             while count < command.number_of_retries + 1:
                 try:
+                    print('0 -> ' + str(count))
                     df = self.provider.provide_for(object_name)
                     self.notifier.notify_for(SFRecordObtainedEvent(
                         object_name=object_name,
@@ -227,12 +227,15 @@ class SalesforceBackup(ICommandHandler):
                         command_datetime=command_datetime,
                         command_name=command.command_name
                     ))
+                    print('1 -> ' + str(count))
                     break
                 except ProblemObtainingObjectRecords as e:
                     count = count + 1
-                    if count == command.number_of_retries + 1:
-                        raise e
-                    continue
+                    print('3 -> ' + str(count))
+                    if count < command.number_of_retries + 1:
+                        print('4 -> ' + str(count))
+                        continue
+                    raise e
         self.notifier.notify_for(SFBackupFinishedEvent(
             record_names=names,
             backup_finished_datetime=datetime.now().isoformat(),
@@ -308,16 +311,16 @@ class SFRecordObtainedEventLogger(IEventHandler, LoggerMixin):
         at_datetime = datetime.fromisoformat(event.command_datetime).ctime()
         self.count = self.count + 1
         msg1 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
-        msg2 = "%s: %s." % (event.object_name, event.__str__())
+        # msg2 = "%s: %s." % (event.object_name, event.__str__())
         msg3 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, ', '.join(self.events_to_log), ColorOutput.END, event.command_datetime)
         if self.count == self.log_every_events:
             self.logger.info(msg1)
-            self.logger.info(msg2)
+            # self.logger.debug(msg2)
             self.count = 0
             self.events_to_log = []
         else:
             self.logger.debug(msg1)
-            self.logger.debug(msg2)
+            # self.logger.debug(msg2)
             self.events_to_log.append(event.object_name)
 
 
