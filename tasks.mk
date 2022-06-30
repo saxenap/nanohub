@@ -55,16 +55,16 @@ env_vars:
 	env
 
 heartbeat:
-	/usr/bin/logger -t PIPELINE -p user.info "Heart Beat Check."
+	/usr/bin/logger -t heartbeat -p user.info "Heart Beat Check."
 
 execute:
-	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) $(logger)
+	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) log-context='pipeline_tasks'
 
 test:
-	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb log-context='test'
+	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb log-context='task_test'
 
 salesforce-backup:
-	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) $(logger)
+	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='salesforce_backup'
 	tail -f nohup.out
 
 import:
