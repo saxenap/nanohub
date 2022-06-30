@@ -239,7 +239,8 @@ class SalesforceBackup(ICommandHandler):
                     if count < command.number_of_retries + 1:
                         print('4 -> ' + str(count))
                         continue
-                    raise e
+                    # raise e
+                    break
         self.notifier.notify_for(SFBackupFinishedEvent(
             record_names=names,
             backup_finished_datetime=datetime.now().isoformat(),
