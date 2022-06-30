@@ -3,6 +3,8 @@
 env-vars=UBUNTU_VERSION=$$(cat .env | grep UBUNTU_VERSION= | cut -d '=' -f2) NB_USER=$$(whoami) NB_UID=$$(id -u) NB_GID=$$(id -g) CPUS=$$(getconf _NPROCESSORS_ONLN)
 
 log-level=INFO
+
+IMAGE_ID=`docker images -q nanohub-analytics_remote`
 ########################################################################################################################
 #These run on the host
 
@@ -112,8 +114,15 @@ _pipenv-update:
 	pipenv install -e .
 	pipenv lock -r --dev > requirements.txt
 
+########################################################################################################################
+########################################################################################################################
 
-
+geddes-image:
+	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${version}
+	docker login geddes-registry.rcac.purdue.edu
+	docker tag `docker images -q nanohub-analytics_remote:${version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}
+	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}
+#EXAMPLE -> docker tag 754acba40643 geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.4
 ########################################################################################################################
 ########################################################################################################################
 
