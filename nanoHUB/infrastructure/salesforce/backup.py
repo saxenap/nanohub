@@ -109,6 +109,19 @@ class SFRecordObtainedEvent(IEvent):
         })
 
 
+@dataclass
+class SFRecordNotObtainedEvent(IEvent):
+    object_name: str
+
+    def __repr__(self):
+        return 'SFRecordObtainedEvent(object_name = ' + self.object_name + ', object_data = ' + str(self.object_data) + ')'
+
+    def __str__(self):
+        return json.dumps({
+            'event_name': self.get_event_name(),
+            'object_name': self.object_name
+        })
+
 class ProblemObtainingObjectRecords(RuntimeError):
     def __init__(self, message, object_name: str):
         self.message = "%s - Problem obtaining records (Original message: %s)" % (object_name, message)
@@ -174,10 +187,14 @@ class SFObjectRecordsProvider(ISFObjectRecordProvider):
     def provide_for(self, object_name: str) -> pd.DataFrame:
         try:
             sf_object = self.client.__getattr__(object_name)
+            print('about to print field names')
             field_names = [field['name'] for field in sf_object.describe()['fields']]
-            results = self.client.query_all( "SELECT " + ", ".join(field_names) + " FROM " + object_name )
-            df = pd.DataFrame(results['records'])
-            df.drop(columns=['attributes'], inplace=True, errors='ignore')
+            print(field_names)
+            df = pd.DataFrame()
+            if len(field_names) > 0:
+                results = self.client.query_all( "SELECT " + ", ".join(field_names) + " FROM " + object_name )
+                df = pd.DataFrame(results['records'])
+                df.drop(columns=['attributes'], inplace=True, errors='ignore')
             return df
         except (SalesforceMalformedRequest, ConnectionError) as e:
             raise ProblemObtainingObjectRecords(e.message, object_name)
@@ -214,7 +231,6 @@ class SalesforceBackup(ICommandHandler):
         ))
         description = self.client.describe()
         names = [obj['name'] for obj in description['sobjects'] if obj['queryable']]
-
         for object_name in names:
             count = 1
             while count < command.number_of_retries + 1:
@@ -230,9 +246,15 @@ class SalesforceBackup(ICommandHandler):
                     break
                 except ProblemObtainingObjectRecords as e:
                     count = count + 1
-                    if count == command.number_of_retries + 1:
-                        raise e
-                    continue
+                    if count < command.number_of_retries + 1:
+                        continue
+                    self.notifier.notify_for(SFRecordNotObtainedEvent(
+                        object_name=object_name,
+                        command_datetime=command_datetime,
+                        command_name=command.command_name
+                    ))
+                    # raise e
+                    break
         self.notifier.notify_for(SFBackupFinishedEvent(
             record_names=names,
             backup_finished_datetime=datetime.now().isoformat(),
@@ -308,17 +330,24 @@ class SFRecordObtainedEventLogger(IEventHandler, LoggerMixin):
         at_datetime = datetime.fromisoformat(event.command_datetime).ctime()
         self.count = self.count + 1
         msg1 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
-        msg2 = "%s: %s." % (event.object_name, event.__str__())
+        # msg2 = "%s: %s." % (event.object_name, event.__str__())
         msg3 = "%s %s %s backed up at %s." % (ColorOutput.BOLD, ', '.join(self.events_to_log), ColorOutput.END, event.command_datetime)
         if self.count == self.log_every_events:
             self.logger.info(msg1)
-            self.logger.info(msg2)
+            # self.logger.debug(msg2)
             self.count = 0
             self.events_to_log = []
         else:
             self.logger.debug(msg1)
-            self.logger.debug(msg2)
+            # self.logger.debug(msg2)
             self.events_to_log.append(event.object_name)
+
+
+class SFRecordNotObtainedHandler(IEventHandler, LoggerMixin):
+    def handle(self, event: SFRecordNotObtainedEvent):
+        at_datetime = datetime.fromisoformat(event.command_datetime).ctime()
+        msg1 = "%s %s %s - Records not obtained at %s." % (ColorOutput.BOLD, event.object_name, ColorOutput.END, event.command_datetime)
+        self.logger.info(msg1)
 
 
 class SFBackupStartedEventLogger(IEventHandler, LoggerMixin):
@@ -370,6 +399,10 @@ class DefaultBackupCommandHandler:
             ))
         notifier.add_event_handler(
             SFBackupFinishedEvent.get_event_name(), SalesforceBackupFinishedLogger()
+        )
+
+        notifier.add_event_handler(
+            SFRecordNotObtainedEvent.get_event_name(), SFRecordNotObtainedHandler()
         )
 
         client = client_factory.create_new()

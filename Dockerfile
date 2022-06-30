@@ -243,6 +243,7 @@ RUN pip3 install . \
 FROM platform-image as remote-image
 USER ${NB_USER}
 RUN rm -r ${NB_USER_DIR}/nanoHUB/*
+COPY nanoHUB/onboarding/README.md ${NB_USER_DIR}/nanoHUB/README.md
 EXPOSE ${JUPYTER_PORT}
 
 
