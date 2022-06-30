@@ -174,10 +174,14 @@ class SFObjectRecordsProvider(ISFObjectRecordProvider):
     def provide_for(self, object_name: str) -> pd.DataFrame:
         try:
             sf_object = self.client.__getattr__(object_name)
+            print('about to print field names')
             field_names = [field['name'] for field in sf_object.describe()['fields']]
-            results = self.client.query_all( "SELECT " + ", ".join(field_names) + " FROM " + object_name )
-            df = pd.DataFrame(results['records'])
-            df.drop(columns=['attributes'], inplace=True, errors='ignore')
+            print(field_names)
+            df = pd.DataFrame()
+            if len(field_names) > 0:
+                results = self.client.query_all( "SELECT " + ", ".join(field_names) + " FROM " + object_name )
+                df = pd.DataFrame(results['records'])
+                df.drop(columns=['attributes'], inplace=True, errors='ignore')
             return df
         except (SalesforceMalformedRequest, ConnectionError) as e:
             raise ProblemObtainingObjectRecords(e.message, object_name)
