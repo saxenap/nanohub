@@ -38,6 +38,7 @@ time until the present since the start of nanoHUB (2006, 1, 1).
 
 **cluster_for_start_end**: This function will return a list of dataframes
 for all time in between the passed times for the passed algorithm.
+Ex: TwoSemesterTimeFrameGenerator.cluster_for_start_end('mike', '2006-01-01', '2007-01-01')
 
 create_timeframe_list: Creates a list of time periods to be made into command objects.
 Necessary for mpire.
@@ -50,6 +51,51 @@ Necessary for mpire.
 ## cluster_by_command Function
 Clusters using nested pool multiprocessing (mpire). Due to how mpire works, a list of command objects must be passed.
 Used by both cluster_for_all and cluster_for_start_end.
+Ex: 
+>commandlist = []
+> 
+>command1 = ExecuteAlgorithmCommand('mike', '2006-01-01', '2006-07-02', no_save_output=False)
+> 
+>commandlist.append(command1)
+> 
+>command2 = ExecuteAlgorithmCommand('mike', '2006-07-02', '2007-01-01', no_save_output=False)
+> 
+>commandlist.append(command2)
+> 
+>command11 = ExecuteAlgorithmCommand('mike', '2007-01-01', '2007-07-02', no_save_output=False)
+> 
+>commandlist.append(command11)
+> 
+>command21 = ExecuteAlgorithmCommand('mike', '2007-07-02', '2008-01-01', no_save_output=False)
+> 
+>commandlist.append(command21)
+> 
+>command12 = ExecuteAlgorithmCommand('mike', '2008-01-01', '2008-07-02', no_save_output=False)
+> 
+>commandlist.append(command12)
+> 
+>command22 = ExecuteAlgorithmCommand('xufeng', '2008-07-02', '2009-01-01', no_save_output=False)
+> 
+>commandlist.append(command22)
+> 
+>command13 = ExecuteAlgorithmCommand('xufeng', '2009-01-01', '2009-07-02', no_save_output=False)
+> 
+>commandlist.append(command13)
+> 
+>command23 = ExecuteAlgorithmCommand('xufeng', '2009-07-02', '2010-01-01', no_save_output=False)
+> 
+>commandlist.append(command23)
+> 
+>command14 = ExecuteAlgorithmCommand('xufeng', '2010-01-01', '2010-07-02', no_save_output=False)
+> 
+>commandlist.append(command14)
+> 
+>command24 = ExecuteAlgorithmCommand('xufeng', '2010-07-02', '2011-01-01', no_save_output=False)
+> 
+>commandlist.append(command24)
+> 
+> df = cluster_by_command(commandlist)
+*returns list of DataFrames
 
 n_jobs=None -> uses max cores
 
