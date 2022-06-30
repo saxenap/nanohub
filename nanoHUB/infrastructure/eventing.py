@@ -42,8 +42,6 @@ class EventNotifier:
 
     def notify_for(self, event: IEvent) -> None:
         event_name = event.get_event_name()
-        print(event)
-        print(event_name)
         if event_name in self.event_handlers:
             handlers = self.event_handlers[event_name]
             for handler in handlers:
