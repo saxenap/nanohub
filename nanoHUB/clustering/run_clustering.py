@@ -170,7 +170,7 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
     # connect_to_dashboard(8082)
     # while not request_error:
     #     try:
-    with WorkerPool(n_jobs=15, daemon=False) as pool: #15
+    with WorkerPool(n_jobs=10, daemon=False) as pool: #15 cores is max tested sucessfully
         df_list.append(pool.map(run_clustering, command_list))
         #
         #     request_error = False
