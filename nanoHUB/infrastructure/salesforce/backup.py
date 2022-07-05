@@ -319,11 +319,6 @@ class SFBackupFinishedEventSaver(IEventHandler, LoggerMixin):
                 ColorOutput.BOLD, ColorOutput.END, len(event.record_names)
             )
         )
-        self.logger.info(
-            "%sBackup Finished%s - Objects stored in Geddes: %d" % (
-                ColorOutput.BOLD, ColorOutput.END, len(event.record_names)
-            )
-        )
 
 
 class SFRecordObtainedEventLogger(IEventHandler, LoggerMixin):
