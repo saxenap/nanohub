@@ -160,6 +160,11 @@ class ENV_Setup:
                          " " +
                          command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env")
 
+    def export_env(self, command: OnboardingCommand):
+        cmd1 = os.system('set -o allexport')
+        cmd2 = os.system('. ' + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env")
+        cmd3 = os.system('set +o allexport')
+
 #CommandMapper
 class IOnboardingCommandMapper:
     def create_new(self) -> OnboardingCommand:
