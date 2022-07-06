@@ -18,7 +18,7 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: git-pull pipeline-down pipeline-up
+pipeline: clean git-pull pipeline-down pipeline-up setup-cron-jobs
 	tail -f nohup.out
 
 remote: git-pull remote-down remote-up
@@ -65,8 +65,8 @@ show-cron_tasks:
 	tail -f cron_tasks
 
 setup-cron-jobs:
-	crontab ~/cron_pipeline_tasks
-	cat ~/cron_pipeline_tasks
+	crontab ~/pipeline_cron_tasks
+	crontab -l
 
 exec-dev:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
@@ -117,7 +117,7 @@ _pipenv-update:
 ########################################################################################################################
 ########################################################################################################################
 
-geddes-image: remote
+geddes-image:
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${version}
 	docker login geddes-registry.rcac.purdue.edu
 	docker tag `docker images -q nanohub-analytics_remote:${version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}

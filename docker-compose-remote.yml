@@ -1,7 +1,7 @@
 version: '3.4'
 services:
-  zach:
-    container_name: zach
+  remote:
+#    container_name: zach
     build:
       context: .
       dockerfile: Dockerfile
