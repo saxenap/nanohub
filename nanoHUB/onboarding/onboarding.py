@@ -154,6 +154,7 @@ class ENV_Setup:
         envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', 'w') #write .env
         envout.write(data)
         envout.close()
+        self.export_env(command)
 
     def create_env(self, command: OnboardingCommand):
         cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env.dev" +
