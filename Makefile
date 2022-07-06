@@ -27,7 +27,7 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: nohup git-pull pipeline-down pipeline-up setup-cron-jobs
+pipeline: nohup clean git-pull pipeline-down pipeline-up setup-cron-jobs
 	tail -f $(nohup_path)
 
 remote: git-pull remote-down remote-up
