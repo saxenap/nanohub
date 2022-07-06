@@ -5,8 +5,17 @@ env-vars=UBUNTU_VERSION=$$(cat .env | grep UBUNTU_VERSION= | cut -d '=' -f2) NB_
 log-level=INFO
 
 IMAGE_ID=`docker images -q nanohub-analytics_remote`
+
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir_name := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+root_path := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+cwd  := $(shell pwd)
+
+nohup_path=$(root_path)/.output/nohup.out
 ########################################################################################################################
 #These run on the host
+nohup:
+	touch $(nohup_path)
 
 setup:
 	cp nanoHUB/.env.dev nanoHUB/.env
@@ -18,8 +27,8 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: git-pull pipeline-down pipeline-up
-	tail -f nohup.out
+pipeline: nohup git-pull pipeline-down pipeline-up
+	tail -f $(nohup_path)
 
 remote: git-pull remote-down remote-up
 
@@ -51,8 +60,8 @@ cartopy-up:
 pipeline-down:
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml down
 
-pipeline-up:
-	$(env-vars) nohup docker-compose -f docker-compose-pipeline.yml up --build </dev/null >nohup.out 2>&1 &
+pipeline-up: nohup
+	$(env-vars) nohup docker-compose -f docker-compose-pipeline.yml up --build </dev/null >$(nohup_path) 2>&1 &
 
 
 ########################################################################################################################
