@@ -27,7 +27,7 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: nohup git-pull pipeline-down pipeline-up
+pipeline: nohup git-pull pipeline-down pipeline-up setup-cron-jobs
 	tail -f $(nohup_path)
 
 remote: git-pull remote-down remote-up
@@ -74,8 +74,8 @@ show-cron_tasks:
 	tail -f cron_tasks
 
 setup-cron-jobs:
-	crontab ~/cron_pipeline_tasks
-	cat ~/cron_pipeline_tasks
+	crontab $(root_path)/cron_pipeline_tasks
+	crontab -l
 
 exec-dev:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
@@ -97,6 +97,12 @@ run_command:
 
 run-clustering:
 	docker exec `docker ps -q --filter name=nanohub_dev` make -C -j$(getconf _NPROCESSORS_ONLN) nanoHUB/clustering
+
+manual-salesforce-backup:
+	docker exec `docker ps -q --filter name=nanohub_pipeline` \
+		make -f tasks.mk pipeline-salesforce-backup DOMAIN=$(DOMAIN) log-context='manual_salesforce_backup' \
+			</dev/null >$(nohup_path) 2>&1 &
+	tail -f $(nohup_path)
 ########################################################################################################################
 # Others
 
