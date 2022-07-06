@@ -117,7 +117,7 @@ _pipenv-update:
 ########################################################################################################################
 ########################################################################################################################
 
-geddes-image:
+geddes-image: remote
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${version}
 	docker login geddes-registry.rcac.purdue.edu
 	docker tag `docker images -q nanohub-analytics_remote:${version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}

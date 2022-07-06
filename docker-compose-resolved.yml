@@ -1,0 +1,58 @@
+services:
+  remote:
+    build:
+      args:
+        APP_DIR_NAME: nanoHUB
+        BUILD_WITH_JUPYTER: '1'
+        COMPOSER_SIGNATURE: 55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae
+        CPUS: ''
+        HOME_DIR_NAME: home
+        JUPYTER_DISPLAY_IP_ADDRESS: 127.0.0.1
+        JUPYTER_IP_ADDRESS: '*'
+        JUPYTER_PASSWORD: nanoHUB
+        JUPYTER_PORT: '80'
+        JUPYTER_TOKEN: ''
+        LANG: en_US.UTF-8
+        LC_ALL: en_US.UTF-8
+        LOCALE: en_US.UTF-8
+        NB_GID: ''
+        NB_UID: ''
+        NB_USER: ''
+        ORIGIN_IP_ADDRESS: '*'
+        PHP_VERSION: '7.4'
+        UBUNTU_VERSION: '20.04'
+      context: /Users/saxenap/Documents/Dev/nanoHUB/nanoHUB-analytics
+      dockerfile: Dockerfile
+      labels:
+        com.nanoHUB.description: Development and Exploration service
+      target: remote-image
+    command:
+    - jupyter
+    - lab
+    environment:
+      jupyter_logging_file_backup_count: '3'
+      jupyter_logging_file_dir: .log
+      jupyter_logging_file_level: INFO
+      jupyter_logging_file_max_bytes: '100'
+      jupyter_logging_file_msg_format: '[{%(filename)s:%(lineno)d} %(levelname)s -
+        %(message)s'
+      jupyter_logging_file_name: info.log
+      jupyter_logging_stdout_level: ERROR
+      jupyter_logging_stdout_msg_format: '[{%(filename)s:%(lineno)d} %(levelname)s
+        - %(message)s'
+      pipeline_logging_stdout_level: INFO
+      pipeline_logging_stdout_msg_format: '[{%(filename)s:%(lineno)d} %(levelname)s
+        - %(message)s'
+      pipeline_logging_syslog_level: INFO
+      pipeline_logging_syslog_msg_format: '[{%(filename)s:%(lineno)d} %(levelname)s
+        - %(message)s'
+    labels:
+      kompose.service.group: zach
+      kompose.volume.size: 100Gi
+      kompose.volume.type: persistentVolumeClaim
+    ports:
+    - published: 80
+      target: 80
+    restart: always
+version: '3.4'
+
