@@ -167,10 +167,10 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
     cores = 1
-    if os.cpu_count() > 10:
+    if int(os.cpu_count() * .8) > 10:
         cores = 10
     else:
-        cores = os.cpu_count()
+        cores = int(os.cpu_count() * .8)
 
     # while not request_error:
     #     try:
