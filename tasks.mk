@@ -64,8 +64,11 @@ test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb log-context='task_test'
 
 salesforce-backup:
-	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='salesforce_backup'
+	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='manual_salesforce_backup'
 	tail -f nohup.out
+
+pipeline-salesforce-backup:
+	$(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='salesforce_backup'
 
 import:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb log-context='data_imports'
