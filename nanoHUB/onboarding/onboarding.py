@@ -140,9 +140,10 @@ class GitRepositoryConfiguration:
 class ENV_Setup:
     def configure_env(self, command: OnboardingCommand):
         self.create_env(command)
-        env = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/.env', "r") #read .env
+        env = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', "r") #read .env
         data = env.read()
         env.close()
+        self.export_env(command)
 
         #if error: requires modified .dev.env file, with {} around the keys in the below call
 
@@ -151,14 +152,20 @@ class ENV_Setup:
                 DB_USERNAME_HERE = command.env_ssh_db_user,
                 DB_PASSWORD_HERE = command.env_ssh_db_pass)
 
-        envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/.env', 'w') #write .env
+        envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', 'w') #write .env
         envout.write(data)
         envout.close()
 
     def create_env(self, command: OnboardingCommand):
-        cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/' + ".env.dev" +
+        cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env.dev" +
                          " " +
-                         command.local_dir_path + '/' + command.dir_name_for_repository + '/nanoHUB/' + ".env")
+                         command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env")
+
+    def export_env(self, command: OnboardingCommand):
+        cmd1 = os.system('set -o allexport')
+        cmd2 = os.system('. ' + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env")
+        cmd3 = os.system('set +o allexport')
+
 
 #CommandMapper
 class IOnboardingCommandMapper:

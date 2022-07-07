@@ -1,12 +1,8 @@
 import os
-import random
 from dataclasses import dataclass, field
 from datetime import datetime, date
 import pandas as pd
 import logging
-from time import sleep
-
-import paramiko
 
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
@@ -166,43 +162,13 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
-<<<<<<< HEAD
-    cores = 1
-    if int(os.cpu_count() * .8) > 10:
-        cores = 10
-    else:
-        cores = int(os.cpu_count() * .8)
+    cores = int(os.cpu_count() * .7)
 
-    # while not request_error:
-    #     try:
-<<<<<<< HEAD
-    with WorkerPool(n_jobs=cores, daemon=False, use_dill=True) as pool: #15 cores is max tested sucessfully
-=======
-    with WorkerPool(n_jobs=15, daemon=False) as pool: #15
->>>>>>> parent of 0b82997 (patch for clustering cores)
-=======
-    request_error = False
-    # connect_to_dashboard(8082)
-    # while not request_error:
-    #     try:
-    with WorkerPool(n_jobs=10, daemon=False) as pool: #15 cores is max tested sucessfully
->>>>>>> parent of cba7e6a (multiprocessing for clustering patch)
+    with WorkerPool(n_jobs=cores, daemon=False) as pool: #15 cores is max tested sucessfully on windows, 6 on arm64
         df_list.append(pool.map(run_clustering, command_list))
-        #
-        #     request_error = False
-        #
-        # except paramiko.ssh_exception.SSHException:
-        #     x = random.randint(1, 5)
-        #     sleep(x)
-        #     request_error = True
-
-
-    # for x in timelist:
-    #     start, end = x
-    #     df_list.append(run_clustering(ExecuteAlgorithmCommandFactory.create_new(task, start, end)))
-    #     #start/end have to be str, could change in ExecuteAlgorithmCommand setup. If changed here, would need to change in main_online_users_TS so that everything can accept datetime.date() format
 
     return df_list
+    #need to fix banner_timeout issue, happens when you run too many requests/too many cores. We are limited by requests.
 
 
 #command -> ClusteringFlags
