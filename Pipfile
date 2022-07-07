@@ -125,7 +125,6 @@ simple-salesforce = "*"
 nameparser="*"
 mpire="*"
 'mpire[dashboard]'="*"
-'mpire[dill]'="*"
 cronitor="*"
 ##########################################
 # charset detection

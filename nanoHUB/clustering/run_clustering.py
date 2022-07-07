@@ -166,6 +166,7 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
+<<<<<<< HEAD
     cores = 1
     if int(os.cpu_count() * .8) > 10:
         cores = 10
@@ -179,7 +180,21 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
 =======
     with WorkerPool(n_jobs=15, daemon=False) as pool: #15
 >>>>>>> parent of 0b82997 (patch for clustering cores)
+=======
+    request_error = False
+    # connect_to_dashboard(8082)
+    # while not request_error:
+    #     try:
+    with WorkerPool(n_jobs=10, daemon=False) as pool: #15 cores is max tested sucessfully
+>>>>>>> parent of cba7e6a (multiprocessing for clustering patch)
         df_list.append(pool.map(run_clustering, command_list))
+        #
+        #     request_error = False
+        #
+        # except paramiko.ssh_exception.SSHException:
+        #     x = random.randint(1, 5)
+        #     sleep(x)
+        #     request_error = True
 
 
     # for x in timelist:
