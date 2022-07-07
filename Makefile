@@ -18,7 +18,7 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
-pipeline: clean git-pull pipeline-down pipeline-up setup-cron-jobs
+pipeline: git-pull pipeline-down pipeline-up
 	tail -f nohup.out
 
 remote: git-pull remote-down remote-up
@@ -65,8 +65,8 @@ show-cron_tasks:
 	tail -f cron_tasks
 
 setup-cron-jobs:
-	crontab ~/pipeline_cron_tasks
-	crontab -l
+	crontab ~/cron_pipeline_tasks
+	cat ~/cron_pipeline_tasks
 
 exec-dev:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash

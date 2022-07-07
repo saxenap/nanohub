@@ -64,7 +64,7 @@ test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb log-context='task_test'
 
 salesforce-backup:
-	log-context='salesforce_backup' && nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) $(logger)
+	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='salesforce_backup'
 	tail -f nohup.out
 
 import:

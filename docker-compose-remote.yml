@@ -1,7 +1,6 @@
 version: '3.4'
 services:
   remote:
-#    container_name: zach
     build:
       context: .
       dockerfile: Dockerfile
@@ -31,11 +30,8 @@ services:
     restart: always
     ports:
       - "${JUPYTER_PORT}:${JUPYTER_PORT}"
-      - 443:443
-    stop_signal: SIGTERM
     env_file:
 #      - ./nanoHUB/.env
       - ./nanoHUB/.config
     command: [jupyter, lab]
-    volumes:
-      - /home/nanoHUB
+#    command: bash -c "tail -f /dev/stdout"

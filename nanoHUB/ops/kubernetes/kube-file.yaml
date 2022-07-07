@@ -5,10 +5,10 @@ metadata:
     deployment.kubernetes.io/revision: "6"
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
-    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:zach-test","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-zach","ingressName":"hubzero:zach-test","hostname":"zach-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:dev1232-05312022-test","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-dev1232-05312022","ingressName":"hubzero:dev1232-05312022-test","hostname":"dev1232-05312022-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
   labels:
-    io.kompose.service: zach
-  name: zach
+    io.kompose.service: dev1232-05312022
+  name: dev1232-05312022
   namespace: hubzero
 spec:
   progressDeadlineSeconds: 600
@@ -16,7 +16,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      io.kompose.service: zach
+      io.kompose.service: dev1232-05312022
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -26,11 +26,11 @@ spec:
     metadata:
       annotations:
         cattle.io/timestamp: "2022-05-31T15:16:48Z"
-#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"zach-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
+#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"dev1232-05312022-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
         kompose.cmd: kompose convert -f docker-compose-resolved.yaml
         kompose.version: 1.26.1 (a9d05d509)
       labels:
-        io.kompose.service: zach
+        io.kompose.service: dev1232-05312022
     spec:
       containers:
         - args:
@@ -97,9 +97,9 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.81
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.2
           imagePullPolicy: IfNotPresent
-          name: zach
+          name: dev1232-05312022
           ports:
             - containerPort: 80
               name: 80tcp01
@@ -110,11 +110,11 @@ spec:
           resources: {}
           securityContext:
             capabilities: {}
-          terminationMessagePath: /zach/termination-log
+          terminationMessagePath: /dev1232-05312022/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
-              name: zach-claim1
+              name: dev1232-05312022-claim1
       dnsConfig: {}
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -127,25 +127,25 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: zach-claim1
+        - name: dev1232-05312022-claim1
           persistentVolumeClaim:
-            claimName: zach-claim1
+            claimName: dev1232-05312022-claim1
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:zach"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:dev1232-05312022"]'
   labels:
     cattle.io/creator: norman
-  name: ingress-zach
+  name: ingress-dev1232-05312022
   namespace: hubzero
   ownerReferences:
     - apiVersion: v1beta1/extensions
       controller: true
       kind: Ingress
-      name: zach-nanohub
+      name: dev1232-05312022-nanohub
       uid: 55317aa4-b347-4629-9fc6-aaf37374486b
 spec:
 #  clusterIP: 10.4.250.16
@@ -156,7 +156,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_ingress-zach: "true"
+    workloadID_ingress-dev1232-05312022: "true"
   sessionAffinity: None
   type: ClusterIP
 
@@ -169,12 +169,12 @@ metadata:
     field.cattle.io/creatorId: u-nk5c5jajmc
     field.cattle.io/ipAddresses: "null"
     field.cattle.io/targetDnsRecordIds: "null"
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:zach"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:dev1232-05312022"]'
   labels:
     cattle.io/creator: norman
     workload.cattle.io/targetWorkloadIdNoop: "true"
     workload.cattle.io/workloadPortBased: "true"
-  name: zach-test
+  name: dev1232-05312022-test
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.18
@@ -182,13 +182,13 @@ spec:
 #    - 10.4.250.18
   externalTrafficPolicy: Cluster
   ports:
-    - name: zach-ports
+    - name: dev1232-05312022-ports
 #      nodePort: 30624
       port: 80
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_zach-test: "true"
+    workloadID_dev1232-05312022-test: "true"
   sessionAffinity: None
   type: NodePort
 
@@ -202,8 +202,8 @@ metadata:
   finalizers:
     - kubernetes.io/pvc-protection
   labels:
-    io.kompose.service: zach-claim1
-  name: zach-claim1
+    io.kompose.service: dev1232-05312022-claim1
+  name: dev1232-05312022-claim1
   namespace: hubzero
 spec:
   accessModes:
@@ -219,13 +219,13 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:zach","allNodes":false}]'
+#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:dev1232-05312022","allNodes":false}]'
     geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
   labels:
-    io.kompose.service: zach
-  name: zach
+    io.kompose.service: dev1232-05312022
+  name: dev1232-05312022
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.20
@@ -239,7 +239,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    io.kompose.service: zach
+    io.kompose.service: dev1232-05312022
   sessionAffinity: None
   type: LoadBalancer
 
@@ -249,22 +249,22 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-zach","ingressName":"hubzero:zach-nanohub","hostname":"zach-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-dev1232-05312022","ingressName":"hubzero:dev1232-05312022-nanohub","hostname":"dev1232-05312022-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
     field.cattle.io/creatorId: u-nk5c5jajmc
   generation: 3
   labels:
     cattle.io/creator: norman
-  name: zach-nanohub
+  name: dev1232-05312022-nanohub
   namespace: hubzero
 spec:
   rules:
-    - host: zach-nanohub.geddes.rcac.purdue.edu
+    - host: dev1232-05312022-nanohub.geddes.rcac.purdue.edu
       http:
         paths:
           - backend:
-              serviceName: ingress-zach
+              serviceName: ingress-dev1232-05312022
               servicePort: 80
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - zach-nanohub.geddes.rcac.purdue.edu
+        - dev1232-05312022-nanohub.geddes.rcac.purdue.edu
