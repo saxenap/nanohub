@@ -174,7 +174,11 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
 
     # while not request_error:
     #     try:
+<<<<<<< HEAD
     with WorkerPool(n_jobs=cores, daemon=False, use_dill=True) as pool: #15 cores is max tested sucessfully
+=======
+    with WorkerPool(n_jobs=15, daemon=False) as pool: #15
+>>>>>>> parent of 0b82997 (patch for clustering cores)
         df_list.append(pool.map(run_clustering, command_list))
 
 
