@@ -18,8 +18,13 @@ dev: git-pull dev-down dev-up
 
 cartopy: git-pull cartopy-down cartopy-up
 
+<<<<<<< HEAD
 pipeline: git-pull pipeline-down pipeline-up
 	tail -f nohup.out
+=======
+pipeline: nohup git-pull pipeline-down pipeline-up setup-cron-jobs
+	tail -f $(nohup_path)
+>>>>>>> parent of 4ef83d7 (change nohup path)
 
 remote: git-pull remote-down remote-up
 
