@@ -5,7 +5,7 @@ metadata:
     deployment.kubernetes.io/revision: "6"
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
-    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:praveen-test","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-praveen","ingressName":"hubzero:praveen-test","hostname":"praveen-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:praveen","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-praveen","ingressName":"hubzero:praveen","hostname":"praveen-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
   labels:
     io.kompose.service: praveen
   name: praveen
@@ -97,7 +97,7 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.9
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.10
           imagePullPolicy: IfNotPresent
           name: praveen
           ports:
@@ -174,7 +174,7 @@ metadata:
     cattle.io/creator: norman
     workload.cattle.io/targetWorkloadIdNoop: "true"
     workload.cattle.io/workloadPortBased: "true"
-  name: praveen-test
+  name: praveen
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.18
@@ -188,7 +188,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_praveen-test: "true"
+    workloadID_praveen: "true"
   sessionAffinity: None
   type: NodePort
 
