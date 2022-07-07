@@ -1,7 +1,0 @@
-* * * * *  docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk heartbeat log-level=DEBUG
-0 */3 * * * docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk execute log-level=INFO
-0 */12 * * *  docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk salesforce-backup DOMAIN='automated_backup' log-level=ERROR
-*/30 * * * *  docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk execute import log-level=INFO
-* * * * *  docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk test log-level=ERROR
-0 * * * *  docker exec `docker ps -q --filter name=nanohub_pipeline` make -f /home/saxenap/nanoHUB/tasks.mk test log-level=INFO
-0 8 * * *  cd /home/saxenap/nanohub && make clean && make pipeline log-level=INFO
