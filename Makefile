@@ -5,6 +5,13 @@ env-vars=UBUNTU_VERSION=$$(cat .env | grep UBUNTU_VERSION= | cut -d '=' -f2) NB_
 log-level=INFO
 
 IMAGE_ID=`docker images -q nanohub-analytics_remote`
+
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir_name := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+root_path := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+cwd  := $(shell pwd)
+
+nohup_path=$(root_path)/.output/nohup.out
 ########################################################################################################################
 #These run on the host
 
@@ -133,3 +140,6 @@ geddes-image:
 
 jupyter-config:
 	@sed -n -e '/^c./p' ~/.jupyter/jupyter_notebook_config.py
+
+nohup:
+	touch $(nohup_path)

@@ -6,20 +6,20 @@ NANOHUB_DIR=$(ROOT_DIR)/nanoHUB
 
 PIPELINE_DIR=$(NANOHUB_DIR)/pipeline
 
-#CALL_MAIN=python3 $(ROOT_DIR)/nanoHUB/__main__.py
-CALL_MAIN=nanohub
+#NANOHUB=python3 $(ROOT_DIR)/nanoHUB/__main__.py
+NANOHUB=nanohub
 
-EXECUTE_TASK=$(CALL_MAIN) task execute
-log-context='pipeline_task'
+EXECUTE_TASK=$(NANOHUB) task execute
 
-SALESFORCE_BACKUP=$(CALL_MAIN) backup salesforce
+SALESFORCE_BACKUP=$(NANOHUB) backup salesforce
 SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
 SF_BACKUP_DOMAIN='backups'
 DOMAIN=${SF_BACKUP_DOMAIN}
-log-context='SF_Backups'
 
-log-level=INFO
-log-level-string="--log-level $(log-level)"
+
+log-context='undefined'
+log-level='INFO'
+log-level-string=--log-level $(log-level)
 
 logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t ${log-context}
 
@@ -58,16 +58,15 @@ heartbeat:
 	/usr/bin/logger -t heartbeat -p user.info "Heart Beat Check."
 
 execute:
-	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) log-context='pipeline_tasks'
+	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) ${log-level-string}
 
 test:
-	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb log-context='task_test'
+	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
 
 salesforce-backup:
-	nohup $(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) log-context='salesforce_backup'
-	tail -f nohup.out
+	$(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) ${log-level-string}
 
 import:
-	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb log-context='data_imports'
+	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
 
 #$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \
