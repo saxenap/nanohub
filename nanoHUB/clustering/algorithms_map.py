@@ -84,6 +84,9 @@ class AlgorithmHandler(IExecuteAlgorithm):
                 "Invalid Algorithm/Task %s. A valid task must be assigned. Valid algorithms/tasks are: %s" % (command.task, self._map)
             )
 
+        if not os.path.exists(command.scratch_dir):
+            os.mkdir(command.scratch_dir)
+
         if not os.path.exists(get_scratch_dir(command)):
             logging.info('Creating new scratch directory: ' + get_scratch_dir(command))
             os.mkdir(get_scratch_dir(command))

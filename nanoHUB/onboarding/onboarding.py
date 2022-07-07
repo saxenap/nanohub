@@ -143,7 +143,6 @@ class ENV_Setup:
         env = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', "r") #read .env
         data = env.read()
         env.close()
-        self.export_env(command)
 
         #if error: requires modified .dev.env file, with {} around the keys in the below call
 
@@ -155,9 +154,10 @@ class ENV_Setup:
         envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', 'w') #write .env
         envout.write(data)
         envout.close()
+        self.export_env(command)
 
     def create_env(self, command: OnboardingCommand):
-        cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env.dev" +
+        cmd1 = os.system("cp " + command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + '.env.dev' +
                          " " +
                          command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/' + ".env")
 

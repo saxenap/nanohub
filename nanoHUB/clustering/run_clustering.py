@@ -20,11 +20,11 @@ class ExecuteAlgorithmCommand:
     class_probe_range: str = field(init=False)
 
     #data
-    geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb')) #check
+    geoip2_mmdb_filepath: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'GeoLite2-City.mmdb'))
 
     #directories
-    output_dir: str = field(default = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output')) #check
-    scratch_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))  #check
+    output_dir: str = field(default = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output'))
+    scratch_dir: str = field(default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp'))
     name_prefix: str = field(default='users_analysis')
     display_output: bool = field(default=True)
     no_save_output: bool = field(default=False) #saves on default
