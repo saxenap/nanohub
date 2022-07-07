@@ -119,10 +119,14 @@ _pipenv-update:
 ########################################################################################################################
 
 geddes-image:
+	-#make remote
+	-kubectl delete  -f nanoHUB/ops/kubernetes/build.yaml
+	sed 's/{{IMAGE_VERSION}}/${version}/g' nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/build.yaml
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${version}
 	docker login geddes-registry.rcac.purdue.edu
 	docker tag `docker images -q nanohub-analytics_remote:${version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}
 	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${version}
+	kubectl apply -f nanoHUB/ops/kubernetes/build.yaml
 #EXAMPLE -> docker tag 754acba40643 geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.4
 ########################################################################################################################
 ########################################################################################################################
