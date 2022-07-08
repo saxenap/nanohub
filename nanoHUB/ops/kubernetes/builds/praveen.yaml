@@ -97,7 +97,7 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.25
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.28
           imagePullPolicy: IfNotPresent
           name: praveen
           ports:
@@ -114,7 +114,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
-              name: praveen-claim1
+              name: praveen-claim2
       dnsConfig: {}
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -127,9 +127,9 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: praveen-claim1
+        - name: praveen-claim2
           persistentVolumeClaim:
-            claimName: praveen-claim1
+            claimName: praveen-claim2
 
 ---
 apiVersion: v1
@@ -194,16 +194,19 @@ spec:
 
 ---
 
+
+---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   annotations:
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.beta.kubernetes.io/storage-provisioner: ceph.com/cephfs
   finalizers:
     - kubernetes.io/pvc-protection
   labels:
-    io.kompose.service: praveen-claim1
-  name: praveen-claim1
+    io.kompose.service: praveen-claim2
+  name: praveen-claim2
   namespace: hubzero
 spec:
   accessModes:
@@ -211,10 +214,11 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  storageClassName: longhorn
+  storageClassName: cephfs
   volumeMode: Filesystem
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
