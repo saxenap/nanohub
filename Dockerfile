@@ -274,6 +274,11 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+RUN rm -rf ${APP_DIR}/db-reports/*
+RUN rm -rf ${APP_DIR}/individual/*
+RUN rm -rf ${APP_DIR}/ops/*
+RUN rm -rf ${APP_DIR}/raindrop/*
+RUN rm -rf ${APP_DIR}/rfm/*
 WORKDIR ${APP_DIR}
 COPY tasks.mk .
 RUN rm -rf /var/lib/apt/lists/*
