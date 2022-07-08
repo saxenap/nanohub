@@ -5,6 +5,7 @@ from ipywidgets import *
 from dataclasses import dataclass
 import json
 
+
 #widget functionality for ipynb input
 @dataclass
 class InputWidgetValueMap:
@@ -14,10 +15,12 @@ class InputWidgetValueMap:
     password: str
     passwordv: str
 
+
 @dataclass
 class SSHParams:
     email: str
     key: str
+
 
 def _input(placeholder: str, description: str, is_disabled: bool = False):
     inwid = widgets.Text(
@@ -64,8 +67,10 @@ def _password_reenter():
 def _newline():
     display(HTML("</Br>"))
 
+
 class UserInputError(RuntimeError):
     """placeholdertext"""
+
 
 class Setup:
 
@@ -75,6 +80,7 @@ class Setup:
 
     def create_form(self):
         self.inputs = self.form.execute()  # sets the passwords again after form is completed
+
 
 class FormSetup:
     def execute(self):
@@ -122,7 +128,11 @@ class SSH_Setup:
         cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
         cmd3 = os.system('cat %s/.ssh/id_rsa.pub' % (root_folder))
         sshkey = os.popen('cat %s/.ssh/id_rsa.pub' % (root_folder)).read()
+        cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
+        cmd02 = os.system('ssh-add ~/.ssh/id_rsa.pub')
+        cmd03 = os.system('ssh-keyscan -t rsa gitlab.hubzero.org >> ~/.ssh/known_hosts')
         return sshkey
+
 
 class GitUserConfiguration:
     def configure_for(self, username, fullname, email):
@@ -130,13 +140,12 @@ class GitUserConfiguration:
         cmd2_2 = os.system("git config --global user.email '%s'" % email)
         cmd2_2 = os.system("git config --global credential.username '%s'" % username)
 
+
 class GitRepositoryConfiguration:
     def configure_for(self, repo_ssh_url: str, local_dir_path: str):
-        cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
-        cmd02 = os.system('ssh-add ~/.ssh/id_rsa.pub')
-        cmd03 = os.system('ssh-keyscan -t rsa gitlab.hubzero.org >> ~/.ssh/known_hosts')
         cmd1 = os.system("cd %s" % local_dir_path)
         cmd2 = os.system("git clone git@gitlab.hubzero.org:saxenap/nanohub-analytics.git temp")
+
 
     #env
 class ENV_Setup:
@@ -204,6 +213,7 @@ class CommandErrors:
     def has_errors(self) -> bool:
         return bool(self.errors_by_key)
 
+
 class CommandValidator:
     def __init__(self, errors: CommandErrors):
         self.errors = errors
@@ -248,19 +258,23 @@ class CommandValidator:
 
         return self.errors
 
+
 #Command
 class ICommand:
     def __str__(self) -> str:
         raise NotImplementedError
+
 
 class EnvSetupCommand(ICommand):
     # def __init__(self, ):
     def __str__(self) -> str:
         return str(OnboardingCommand)
 
+
 class GitSetupCommand(ICommand):
     def __str__(self) -> str:
         return str(OnboardingCommand)
+
 
 #Processor
 class ICommandProcessor:
@@ -270,18 +284,17 @@ class ICommandProcessor:
     def can_handle(self, command: ICommand) -> bool:
         raise NotImplementedError
 
+
 class GitProcessor(ICommandProcessor): #OnboardingProcessor
     def __init__(
             self,
             validator: CommandValidator,
             ssh: SSH_Setup,
-            git_user: GitUserConfiguration,
-            git_repo: GitRepositoryConfiguration,
+            git_user: GitUserConfiguration
     ):
         self.validator = validator
         self.ssh = ssh
         self.git_user = git_user
-        self.git_repo = git_repo
 
     def process(self, command: OnboardingCommand) -> str:
         errors = self.validator.git_validate(command)
@@ -296,11 +309,22 @@ class GitProcessor(ICommandProcessor): #OnboardingProcessor
         sshkey = self.ssh.generate_for(command.git_email, command.local_dir_path)
         return sshkey
 
-    def process_git_repo(self, command: OnboardingCommand):
+
+class GitRepositoryProcessor(ICommandProcessor): #OnboardingProcessor
+    def __init__(
+            self,
+            validator: CommandValidator,
+            git_repo: GitRepositoryConfiguration
+    ):
+        self.validator = validator
+        self.git_repo = git_repo
+
+    def process(self, command: OnboardingCommand):
         self.git_repo.configure_for(
             command.repo_ssh_url,
             command.local_dir_path + '/' + command.dir_name_for_repository
         )
+
 
 class EnvProcessor(ICommandProcessor):
     def __init__(
@@ -323,16 +347,22 @@ class EnvProcessor(ICommandProcessor):
 #     def add_processor(self, ):
 
 #Factory
-class OnboardingProcessorFactory:
-    def create_new(self):
-        return \
-        GitProcessor(
-            CommandValidator(CommandErrors()),
-            SSH_Setup(),
-            GitUserConfiguration(),
-            GitRepositoryConfiguration(),
-        ), \
-        EnvProcessor(
-            CommandValidator(CommandErrors()),
-            ENV_Setup()
+class DefaultProcessorFactory:
+    def create_new_for_env_credentials(self):
+        return EnvProcessor(
+                CommandValidator(CommandErrors()),
+                ENV_Setup()
+            )
+
+    def create_new_for_git_credentials(self):
+        return GitProcessor(
+                CommandValidator(CommandErrors()),
+                SSH_Setup(),
+                GitUserConfiguration()
+            )
+
+    def create_new_for_git_repository(self):
+        return GitRepositoryProcessor(
+                    CommandValidator(CommandErrors()),
+                    GitRepositoryConfiguration()
         )

@@ -8,7 +8,7 @@ from nanoHUB.infrastructure.salesforce.backup import DefaultBackupCommandHandler
 from nanoHUB.infrastructure.salesforce.client import SalesforceFromEnvironment
 import logging.config
 from nanoHUB.logger import logging_conf
-from nanoHUB.onboarding.onboarding import OnboardingCommand, OnboardingProcessorFactory
+from nanoHUB.onboarding.onboarding import OnboardingCommand, DefaultProcessorFactory
 
 app = typer.Typer()
 task_app = typer.Typer(help="Manage Tasks.")
@@ -96,10 +96,18 @@ def user(
         env_ssh_db_pass= database_password
     )
 
-    processors = OnboardingProcessorFactory().create_new()
-    for processor in processors:
-        print(vars(processor))
-        # processor.process(command)
+    factory = DefaultProcessorFactory()
+    env_processor = factory.create_new_for_env_credentials()
+    env_processor.process(command)
+
+    git_processor = factory.create_new_for_git_credentials()
+    ssh_key = git_processor.process(command)
+
+    print(ssh_key)
+    input("Press any key to continue...")
+
+    git_repo_processor = factory.create_new_for_git_repository()
+    git_repo_processor.process(command)
 
 
 if __name__ == '__main__':
