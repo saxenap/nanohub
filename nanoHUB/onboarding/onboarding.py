@@ -117,10 +117,12 @@ class OnboardingCommand:
 
     #git
 class SSH_Setup:
-    def generate_for(self, email_address: str, root_folder: str):
+    def generate_for(self, email_address: str, root_folder: str) -> str:
         cmd1 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
         cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
         cmd3 = os.system('cat %s/.ssh/id_rsa.pub' % (root_folder))
+        sshkey = os.popen('cat %s/.ssh/id_rsa.pub' % (root_folder)).read()
+        return sshkey
 
 class GitUserConfiguration:
     def configure_for(self, username, fullname, email):
@@ -281,7 +283,7 @@ class GitProcessor(ICommandProcessor): #OnboardingProcessor
         self.git_user = git_user
         self.git_repo = git_repo
 
-    def process(self, command: OnboardingCommand) -> None:
+    def process(self, command: OnboardingCommand) -> str:
         errors = self.validator.git_validate(command)
         if errors.has_errors():
             raise UserInputError(json.dumps(errors.get_errors()))
@@ -291,7 +293,8 @@ class GitProcessor(ICommandProcessor): #OnboardingProcessor
             command.git_fullname,
             command.git_email
         )
-        self.ssh.generate_for(command.git_email, command.local_dir_path)
+        sshkey = self.ssh.generate_for(command.git_email, command.local_dir_path)
+        return sshkey
 
     def process_git_repo(self, command: OnboardingCommand):
         self.git_repo.configure_for(
