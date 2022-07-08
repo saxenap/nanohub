@@ -84,7 +84,6 @@ def user(
     """
     Onboard a user.
     """
-
     command = OnboardingCommand(
         git_fullname= gitlab_fullname,
         git_email= gitlab_email,
@@ -97,8 +96,6 @@ def user(
     )
 
     factory = DefaultProcessorFactory()
-    env_processor = factory.create_new_for_env_credentials()
-    env_processor.process(command)
 
     git_processor = factory.create_new_for_git_credentials()
     ssh_key = git_processor.process(command)
@@ -108,6 +105,9 @@ def user(
 
     git_repo_processor = factory.create_new_for_git_repository()
     git_repo_processor.process(command)
+
+    env_processor = factory.create_new_for_env_credentials()
+    env_processor.process(command)
 
 
 if __name__ == '__main__':
