@@ -240,8 +240,10 @@ USER root
 RUN pip3 install . \
     && chown -R --from=root ${NB_USER} ${APP_DIR}
 
+
 FROM platform-image as remote-image
 USER root
+RUN cat nanoHUB/.env.dev >> /etc/environment
 USER ${NB_USER}
 RUN rm -r ${NB_USER_DIR}/nanoHUB/*
 COPY nanoHUB/onboarding/README.md ${NB_USER_DIR}/nanoHUB/README.md

@@ -8,13 +8,15 @@ from nanoHUB.infrastructure.salesforce.backup import DefaultBackupCommandHandler
 from nanoHUB.infrastructure.salesforce.client import SalesforceFromEnvironment
 import logging.config
 from nanoHUB.logger import logging_conf
-
+from nanoHUB.onboarding.onboarding import OnboardingCommand, OnboardingProcessorFactory
 
 app = typer.Typer()
 task_app = typer.Typer(help="Manage Tasks.")
 app.add_typer(task_app, name="task")
 backup_app = typer.Typer(help="Run Salesforce Backups.")
 app.add_typer(backup_app, name="backup")
+onboard_app = typer.Typer(help="Onboarding for Data Work.")
+app.add_typer(onboard_app, name="onboard")
 
 @task_app.command()
 def execute(
@@ -67,6 +69,37 @@ def salesforce(
         log_level=loglevel,
     )
     handler.handle(command)
+
+
+@onboard_app.command()
+def user(
+        purdue_career_username: str = typer.Argument(default='', help="This is your Purdue career account username."),
+        purdue_career_password: str = typer.Argument(default='', help="This is your Purdue career account password."),
+        database_username: str = typer.Argument(default='', help="This is the database username given to you to access the nanoHUB database. This username is typically suffixed by _ro"),
+        database_password: str = typer.Argument(default='', help="This is the database password given to you to access the nanoHUB database. This password is typically found in the .my.cnf file in your root directory on the server."),
+        gitlab_email: str = typer.Argument(default='', help="This is the email address you'd like to use for GitLab. Typically, this email address is your Purdue email."),
+        gitlab_username: str = typer.Argument(default='', help="This is the username you'd like to use for GitLab"),
+        gitlab_fullname: str = typer.Argument(default='', help="This is your full name. Eg. Casey Willinamo.")
+):
+    """
+    Onboard a user.
+    """
+
+    command = OnboardingCommand(
+        git_fullname= gitlab_fullname,
+        git_email= gitlab_email,
+        git_username= gitlab_username,
+        jupyter_password= 'nanoHUB',
+        env_career_user= purdue_career_username,
+        env_career_password= purdue_career_password,
+        env_ssh_db_user= database_username,
+        env_ssh_db_pass= database_password
+    )
+
+    processors = OnboardingProcessorFactory().create_new()
+    for processor in processors:
+        print(vars(processor))
+        # processor.process(command)
 
 
 if __name__ == '__main__':
