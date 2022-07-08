@@ -26,7 +26,9 @@ dev: git-pull dev-down dev-up
 cartopy: git-pull cartopy-down cartopy-up
 
 
-pipeline: nohup git-pull pipeline-down pipeline-up setup-cron-jobs
+pipeline: git-pull pipeline-down pipeline-up
+
+pipeline-nohup: nohup pipeline setup-cron-jobs
 	tail -f $(nohup_path)
 
 remote: git-pull remote-down remote-up
@@ -60,7 +62,7 @@ pipeline-down:
 	$(env-vars) docker-compose -f docker-compose-pipeline.yml down
 
 pipeline-up:
-	$(env-vars) nohup docker-compose -f docker-compose-pipeline.yml up --build </dev/null >nohup.out 2>&1 &
+	$(env-vars) docker-compose -f docker-compose-pipeline.yml up --build
 
 
 ########################################################################################################################
@@ -132,7 +134,7 @@ delete-deployment:
 replicas=4
 revision_history=4
 storage=100Gi
-geddes-image: delete-deployment
+geddes-dev: delete-deployment
 	-#make remote
 	sed ' \
 		s/{{IMAGE_VERSION}}/${image_version}/g ; \
@@ -149,6 +151,25 @@ geddes-image: delete-deployment
 	kubectl apply -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
+	git push origin production
+
+
+geddes-%:
+	sed ' \
+		s/{{IMAGE_VERSION}}/$@-${image_version}/g ; \
+		s/{{DEPLOYMENT_NAME}}/$@/g ; \
+		s/{{REPLICAS}}/${replicas}/g ; \
+		s/{{REVISION_HISTORY}}/${revision_history}/g ; \
+		s/{{STORAGE}}/${storage}/g ; \
+		' \
+		nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/$@.yaml
+	docker commit `docker ps -q --filter name=nanohub-analytics_pipeline` nanohub-analytics_pipeline:$@-${image_version}
+	docker login geddes-registry.rcac.purdue.edu
+	docker tag `docker images -q nanohub-analytics_pipeline:$@-${image_version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$@-${image_version}
+	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$@-${image_version}
+	kubectl apply -f nanoHUB/ops/kubernetes/builds/$@.yaml
+	git add nanoHUB/ops/kubernetes/builds/$@.yaml
+	git commit -m "kubernetes deployment build for $@"
 	git push origin production
 #EXAMPLE -> docker tag 754acba40643 geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.4
 ########################################################################################################################
