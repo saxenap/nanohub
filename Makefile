@@ -75,7 +75,7 @@ show-cron_tasks:
 	tail -f cron_tasks
 
 setup-cron-jobs:
-	crontab ~/cron_pipeline_tasks
+	crontab $(root_path)/cron_pipeline_tasks
 	crontab -l
 
 exec-dev:
