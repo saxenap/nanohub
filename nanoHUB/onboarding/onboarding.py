@@ -336,7 +336,3 @@ class OnboardingProcessorFactory:
             CommandValidator(CommandErrors()),
             ENV_Setup()
         )
-
-# def read_public_ssh_key(root_folder_path: str) -> str:
-#     with open('%s/.ssh/id_rsa.pub' % root_folder_path, 'r') as file:
-#         return file.read().strip()
