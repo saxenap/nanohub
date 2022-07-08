@@ -162,7 +162,11 @@ class TwoSemesterTimeFrameGenerator(IGenerateTimeFrames):
 
 def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.DataFrame)]:
     df_list = []
-    cores = int(os.cpu_count() * .7)
+    cores = 1
+    if int(os.cpu_count() * .7) < 5:
+        cores = int(os.cpu_count() * .7)
+    else:
+        cores = 5
 
     with WorkerPool(n_jobs=cores, daemon=False) as pool: #15 cores is max tested sucessfully on windows, 6 on arm64
         df_list.append(pool.map(run_clustering, command_list))
