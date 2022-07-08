@@ -97,7 +97,7 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.36
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.39
           imagePullPolicy: IfNotPresent
           name: praveen
           ports:
@@ -197,8 +197,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
   labels:
     io.kompose.service: praveen-claim2
+    app.kubernetes.io/component: primary
+    app.kubernetes.io/instance: db2-copy
+    app.kubernetes.io/name: mariadb
   name: praveen-claim2
   namespace: hubzero
 spec:
