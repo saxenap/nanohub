@@ -114,7 +114,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
-              name: {{DEPLOYMENT_NAME}}-claim1
+              name: {{DEPLOYMENT_NAME}}-claim2
       dnsConfig: {}
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -127,9 +127,9 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: {{DEPLOYMENT_NAME}}-claim1
+        - name: {{DEPLOYMENT_NAME}}-claim2
           persistentVolumeClaim:
-            claimName: {{DEPLOYMENT_NAME}}-claim1
+            claimName: {{DEPLOYMENT_NAME}}-claim2
 
 ---
 apiVersion: v1
@@ -198,23 +198,22 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   annotations:
-    volume.beta.kubernetes.io/storage-provisioner: ceph.com/cephfs
-  finalizers:
-    - kubernetes.io/pvc-protection
+    volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
   labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}-claim1
-  name: {{DEPLOYMENT_NAME}}-claim1
+    io.kompose.service: {{DEPLOYMENT_NAME}}-claim2
+  name: {{DEPLOYMENT_NAME}}-claim2
   namespace: hubzero
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: {{STORAGE}}
-  storageClassName: cephfs
+  storageClassName: rook-ceph-block
   volumeMode: Filesystem
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:

@@ -217,7 +217,6 @@ ENV JUPYTER_PASSWORD=${JUPYTER_PASSWORD}
 #RUN PASSWORD=$(python3 -c 'from notebook.auth import passwd; print(passwd(passphrase="${JUPYTER_PASSWORD}", algorithm="sha1"))') \
 #    && sed -i -e "/c.NotebookApp.password/ a  c.NotebookApp.password = u'${PASSWORD}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 #RUN #sed -i -e "/c.NotebookApp.password/ a  from notebook.auth import passwd\nimport os\nc.NotebookApp.password = passwd(passphrase=os.getenv('JUPYTER_PASSWORD', algorithm='sha1'))" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
-#RUN #sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = ${JUPYTER_PASSWORD}" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 #RUN #sed -i -e "/allow_password_change/ a c.NotebookApp.allow_password_change = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
@@ -226,8 +225,10 @@ RUN sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" 
 RUN sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.FileContentsManager.allow_hidden/ a c.FileContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
-RUN sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_y \
+    origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN echo '{ "@jupyterlab/notebook-extension:tracker": { "recordTiming": true } }' >> ${VIRTUAL_ENV}/share/jupyter/lab/settings/overrides.json
 COPY --from=php-image --chown=${NB_UID}:${NB_GID} ${NB_USER_DIR}/jupyter-php-installer.phar ${NB_USER_DIR}/jupyter-php-installer.phar
