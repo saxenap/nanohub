@@ -131,45 +131,44 @@ delete-deployment:
 	-kubectl delete  -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 
 
-replicas=4
-revision_history=4
+replicas=1
+revision_history=1
 storage=100Gi
 geddes-dev: delete-deployment
 	-#make remote
-	sed ' \
-		s/{{IMAGE_VERSION}}/${image_version}/g ; \
-		s/{{DEPLOYMENT_NAME}}/${deployment_name}/g ; \
-		s/{{REPLICAS}}/${replicas}/g ; \
-		s/{{REVISION_HISTORY}}/${revision_history}/g ; \
-		s/{{STORAGE}}/${storage}/g ; \
-		' \
-		nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${image_version}
 	docker login geddes-registry.rcac.purdue.edu
 	docker tag `docker images -q nanohub-analytics_remote:${image_version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${image_version}
 	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${image_version}
+	sed ' \
+    		s/{{IMAGE_VERSION}}/${image_version}/g ; \
+    		s/{{DEPLOYMENT_NAME}}/${deployment_name}/g ; \
+    		s/{{REPLICAS}}/${replicas}/g ; \
+    		s/{{REVISION_HISTORY}}/${revision_history}/g ; \
+    		s/{{STORAGE}}/${storage}/g ; \
+    	' \
+    	nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	kubectl apply -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
 	git push origin production
 
-
 geddes-%:
 	sed ' \
-		s/{{IMAGE_VERSION}}/$@-${image_version}/g ; \
-		s/{{DEPLOYMENT_NAME}}/$@/g ; \
+		s/{{IMAGE_VERSION}}/$*-${image_version}/g ; \
+		s/{{DEPLOYMENT_NAME}}/$*/g ; \
 		s/{{REPLICAS}}/${replicas}/g ; \
 		s/{{REVISION_HISTORY}}/${revision_history}/g ; \
 		s/{{STORAGE}}/${storage}/g ; \
 		' \
-		nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/$@.yaml
-	docker commit `docker ps -q --filter name=nanohub-analytics_pipeline` nanohub-analytics_pipeline:$@-${image_version}
+		nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/$*.yaml
+	docker commit `docker ps -q --filter name=nanohub-analytics_$*` nanohub-analytics_pipeline:$*-${image_version}
 	docker login geddes-registry.rcac.purdue.edu
-	docker tag `docker images -q nanohub-analytics_pipeline:$@-${image_version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$@-${image_version}
-	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$@-${image_version}
-	kubectl apply -f nanoHUB/ops/kubernetes/builds/$@.yaml
-	git add nanoHUB/ops/kubernetes/builds/$@.yaml
-	git commit -m "kubernetes deployment build for $@"
+	docker tag `docker images -q nanohub-analytics_remote:$*-${image_version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$*-${image_version}
+	docker push geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:$*-${image_version}
+	kubectl apply -f nanoHUB/ops/kubernetes/builds/$*.yaml
+	git add nanoHUB/ops/kubernetes/builds/$*.yaml
+	git commit -m "kubernetes deployment build for $*"
 	git push origin production
 #EXAMPLE -> docker tag 754acba40643 geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.4
 ########################################################################################################################

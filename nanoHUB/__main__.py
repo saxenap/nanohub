@@ -73,26 +73,26 @@ def salesforce(
 
 @onboard_app.command()
 def user(
-        purdue_career_username: str = typer.Argument(default='', help="This is your Purdue career account username."),
-        purdue_career_password: str = typer.Argument(default='', help="This is your Purdue career account password."),
-        database_username: str = typer.Argument(default='', help="This is the database username given to you to access the nanoHUB database. This username is typically suffixed by _ro"),
-        database_password: str = typer.Argument(default='', help="This is the database password given to you to access the nanoHUB database. This password is typically found in the .my.cnf file in your root directory on the server."),
-        gitlab_email: str = typer.Argument(default='', help="This is the email address you'd like to use for GitLab. Typically, this email address is your Purdue email."),
-        gitlab_username: str = typer.Argument(default='', help="This is the username you'd like to use for GitLab"),
-        gitlab_fullname: str = typer.Argument(default='', help="This is your full name. Eg. Casey Willinamo.")
+        purdue_career_username: str = '',
+        purdue_career_password: str = '',
+        database_username: str = '',
+        database_password: str = '',
+        gitlab_email: str = '',
+        gitlab_username: str = '',
+        gitlab_fullname: str = ''
 ):
     """
     Onboard a user.
     """
     command = OnboardingCommand(
-        git_fullname= gitlab_fullname,
-        git_email= gitlab_email,
-        git_username= gitlab_username,
-        jupyter_password= 'nanoHUB',
-        env_career_user= purdue_career_username,
-        env_career_password= purdue_career_password,
-        env_ssh_db_user= database_username,
-        env_ssh_db_pass= database_password
+        git_fullname=gitlab_fullname,
+        git_email=gitlab_email,
+        git_username=gitlab_username,
+        jupyter_password='nanoHUB',
+        env_career_user=purdue_career_username,
+        env_career_password=purdue_career_password,
+        env_ssh_db_user=database_username,
+        env_ssh_db_pass=database_password
     )
 
     factory = DefaultProcessorFactory()
@@ -100,7 +100,7 @@ def user(
     git_processor = factory.create_new_for_git_credentials()
     ssh_key = git_processor.process(command)
 
-    print(ssh_key)
+    # print(ssh_key)
     input("Press any key to continue...")
 
     git_repo_processor = factory.create_new_for_git_repository()

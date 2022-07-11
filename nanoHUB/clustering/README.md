@@ -5,7 +5,14 @@
 ## Xufeng algortihm is in core_classroom_detection
 
 ---
+
+IMPORTANT NOTE!!!
+TO USE MULTIPROCESSING, YOU MUST INCREASE YOUR RESOURCES (CPU/MEMORY) IN DOCKER
+
+
 # run_clustering.py usage:
+
+
 
 This file is for running clustering for a specific time, all time,
 or with a variety of options.
