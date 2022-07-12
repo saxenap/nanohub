@@ -121,7 +121,6 @@ class OnboardingCommand:
     local_dir_path: str = '/home/saxenap'
     dir_name_for_repository: str = 'nanoHUB'
 
-
 #Setup Actions
 
     #git
