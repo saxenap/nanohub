@@ -114,6 +114,9 @@ class OnboardingCommand:
     env_career_password: str
     env_ssh_db_user: str
     env_ssh_db_pass: str
+    geddes_user: str
+    geddes_secret_key: str
+    geddes_access_key: str
     repo_ssh_url: str = 'git@gitlab.hubzero.org:saxenap/nanohub-analytics.git'
     local_dir_path: str = '/home/saxenap'
     dir_name_for_repository: str = 'nanoHUB'
@@ -160,7 +163,10 @@ class ENV_Setup:
         data = data.format(CAREER_ACCOUNT_USERNAME_HERE = command.env_career_user,
                 CAREER_ACCOUNT_PASSWORD_HERE = command.env_career_password,
                 DB_USERNAME_HERE = command.env_ssh_db_user,
-                DB_PASSWORD_HERE = command.env_ssh_db_pass)
+                DB_PASSWORD_HERE = command.env_ssh_db_pass,
+                GEDDES_USERNAME_HERE = command.geddes_user,
+                GEDDES_SECRET_KEY_HERE = command.geddes_secret_key,
+                GEDDES_ACCESS_KEY_HERE = command.geddes_access_key)
 
         envout = open(command.local_dir_path + '/' + command.dir_name_for_repository + '/temp/nanoHUB/.env', 'w') #write .env
         envout.write(data)
