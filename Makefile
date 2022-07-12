@@ -131,8 +131,8 @@ delete-deployment:
 	-kubectl delete  -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 
 
-replicas=5
-revision_history=3
+replicas=1
+revision_history=1
 storage=100Gi
 geddes-dev: delete-deployment
 	-#make remote
@@ -152,7 +152,6 @@ geddes-dev: delete-deployment
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
 	git push origin production
-
 
 geddes-%:
 	sed ' \

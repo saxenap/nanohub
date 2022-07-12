@@ -5,10 +5,10 @@ metadata:
     deployment.kubernetes.io/revision: "6"
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
-    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:praveen","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-praveen","ingressName":"hubzero:praveen","hostname":"praveen-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:zach5","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-zach5","ingressName":"hubzero:zach5","hostname":"zach5-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
   labels:
-    io.kompose.service: praveen
-  name: praveen
+    io.kompose.service: zach5
+  name: zach5
   namespace: hubzero
 spec:
   progressDeadlineSeconds: 600
@@ -16,7 +16,7 @@ spec:
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      io.kompose.service: praveen
+      io.kompose.service: zach5
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -26,11 +26,11 @@ spec:
     metadata:
       annotations:
         cattle.io/timestamp: "2022-05-31T15:16:48Z"
-#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"praveen-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
+#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"zach5-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
         kompose.cmd: kompose convert -f docker-compose-resolved.yaml
         kompose.version: 1.26.1 (a9d05d509)
       labels:
-        io.kompose.service: praveen
+        io.kompose.service: zach5
     spec:
       containers:
         - args:
@@ -99,7 +99,7 @@ spec:
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
           image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.61
           imagePullPolicy: IfNotPresent
-          name: praveen
+          name: zach5
           ports:
             - containerPort: 80
               name: 80tcp01
@@ -110,11 +110,11 @@ spec:
           resources: {}
           securityContext:
             capabilities: {}
-          terminationMessagePath: /praveen/termination-log
+          terminationMessagePath: /zach5/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
-              name: praveen-claim2
+              name: zach5-claim2
       dnsConfig: {}
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -127,25 +127,25 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: praveen-claim2
+        - name: zach5-claim2
           persistentVolumeClaim:
-            claimName: praveen-claim2
+            claimName: zach5-claim2
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:praveen"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:zach5"]'
   labels:
     cattle.io/creator: norman
-  name: ingress-praveen
+  name: ingress-zach5
   namespace: hubzero
   ownerReferences:
     - apiVersion: v1beta1/extensions
       controller: true
       kind: Ingress
-      name: praveen-nanohub
+      name: zach5-nanohub
       uid: 55317aa4-b347-4629-9fc6-aaf37374486b
 spec:
 #  clusterIP: 10.4.250.16
@@ -156,7 +156,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_ingress-praveen: "true"
+    workloadID_ingress-zach5: "true"
   sessionAffinity: None
   type: ClusterIP
 
@@ -169,12 +169,12 @@ metadata:
     field.cattle.io/creatorId: u-nk5c5jajmc
     field.cattle.io/ipAddresses: "null"
     field.cattle.io/targetDnsRecordIds: "null"
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:praveen"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:zach5"]'
   labels:
     cattle.io/creator: norman
     workload.cattle.io/targetWorkloadIdNoop: "true"
     workload.cattle.io/workloadPortBased: "true"
-  name: praveen
+  name: zach5
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.18
@@ -182,13 +182,13 @@ spec:
 #    - 10.4.250.18
   externalTrafficPolicy: Cluster
   ports:
-    - name: praveen-ports
+    - name: zach5-ports
 #      nodePort: 30624
       port: 80
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_praveen: "true"
+    workloadID_zach5: "true"
   sessionAffinity: None
   type: NodePort
 
@@ -200,8 +200,8 @@ metadata:
   annotations:
     volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
   labels:
-    io.kompose.service: praveen-claim2
-  name: praveen-claim2
+    io.kompose.service: zach5-claim2
+  name: zach5-claim2
   namespace: hubzero
 spec:
   accessModes:
@@ -218,13 +218,13 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:praveen","allNodes":false}]'
+#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:zach5","allNodes":false}]'
     geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
   labels:
-    io.kompose.service: praveen
-  name: praveen
+    io.kompose.service: zach5
+  name: zach5
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.20
@@ -238,7 +238,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    io.kompose.service: praveen
+    io.kompose.service: zach5
   sessionAffinity: None
   type: LoadBalancer
 
@@ -248,22 +248,22 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-praveen","ingressName":"hubzero:praveen-nanohub","hostname":"praveen-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-zach5","ingressName":"hubzero:zach5-nanohub","hostname":"zach5-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
     field.cattle.io/creatorId: u-nk5c5jajmc
   generation: 3
   labels:
     cattle.io/creator: norman
-  name: praveen-nanohub
+  name: zach5-nanohub
   namespace: hubzero
 spec:
   rules:
-    - host: praveen-nanohub.geddes.rcac.purdue.edu
+    - host: zach5-nanohub.geddes.rcac.purdue.edu
       http:
         paths:
           - backend:
-              serviceName: ingress-praveen
+              serviceName: ingress-zach5
               servicePort: 80
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - praveen-nanohub.geddes.rcac.purdue.edu
+        - zach5-nanohub.geddes.rcac.purdue.edu

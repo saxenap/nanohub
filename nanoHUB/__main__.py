@@ -73,29 +73,27 @@ def salesforce(
 
 @onboard_app.command()
 def user(
-        purdue_career_username: str,
-        purdue_career_password: str,
-        database_username: str,
-        database_password: str,
-        gitlab_email: str,
-        gitlab_username: str,
-        gitlab_fullname: str
+        purdue_career_username: str = '',
+        purdue_career_password: str = '',
+        database_username: str = '',
+        database_password: str = '',
+        gitlab_email: str = '',
+        gitlab_username: str = '',
+        gitlab_fullname: str = ''
 ):
     """
     Onboard a user.
     """
     command = OnboardingCommand(
-        git_fullname = gitlab_fullname,
-        git_email = gitlab_email,
-        git_username = gitlab_username,
-        jupyter_password = 'nanoHUB',
-        env_career_user = purdue_career_username,
-        env_career_password = purdue_career_password,
-        env_ssh_db_user = database_username,
-        env_ssh_db_pass = database_password
+        git_fullname=gitlab_fullname,
+        git_email=gitlab_email,
+        git_username=gitlab_username,
+        jupyter_password='nanoHUB',
+        env_career_user=purdue_career_username,
+        env_career_password=purdue_career_password,
+        env_ssh_db_user=database_username,
+        env_ssh_db_pass=database_password
     )
-    print(vars(command))
-    exit(0)
 
     factory = DefaultProcessorFactory()
 
