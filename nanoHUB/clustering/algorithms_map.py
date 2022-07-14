@@ -146,6 +146,8 @@ class LocalDriveSaver(IExecuteAlgorithm):
             self.logger.info("Skipping saving output locally.")
         else:
             path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + command.class_probe_range[1]
+            if not os.path.exists(path):
+                os.makedirs(path)
             self.logger.info("Saving output locally at %s" % path)
 
             for key in df_dict:
