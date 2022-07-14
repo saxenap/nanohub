@@ -145,7 +145,7 @@ class LocalDriveSaver(IExecuteAlgorithm):
         if command.no_save_output == True:
             self.logger.info("Skipping saving output locally.")
         else:
-            path = command.output_dir + '/' + command.task + '_' + command.class_probe_range[0] + '_' + command.class_probe_range[1] + '_' + '.csv'
+            path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + command.class_probe_range[1] + '_' + '.csv'
             self.logger.info("Saving output locally at %s" % path)
             df.to_csv(path)
 
