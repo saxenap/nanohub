@@ -66,10 +66,3 @@ cluster_class_info = cluster_class_info.drop(columns='ip_set')
 cluster_class_info.to_sql('cluster_class_info', con=wang159_myrmekes_db, if_exists='append', chunksize=20000)
 cluster_classtool_info.to_sql('cluster_classtool_info', con=wang159_myrmekes_db, if_exists='append', chunksize=20000)
 cluster_students_info.to_sql('cluster_students_info',con=wang159_myrmekes_db,if_exists='append',chunksize=20000)
-
-
-
-
-
-
-

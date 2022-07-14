@@ -1,37 +1,25 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "6"
-    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
-    kompose.version: 1.26.1 (a9d05d509)
-    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:{{DEPLOYMENT_NAME}}","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-{{DEPLOYMENT_NAME}}","ingressName":"hubzero:{{DEPLOYMENT_NAME}}","hostname":"{{DEPLOYMENT_NAME}}-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
   labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}
-  name: {{DEPLOYMENT_NAME}}
-  namespace: hubzero
+    io.kompose.service: praveen
+  name: praveen
 spec:
-  progressDeadlineSeconds: 600
-  replicas: {{REPLICAS}}
-  revisionHistoryLimit: {{REVISION_HISTORY}}
+  replicas: 1
+  serviceName: praveen
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
-      io.kompose.service: {{DEPLOYMENT_NAME}}
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 0
-    type: RollingUpdate
+      io.kompose.service: praveen
   template:
     metadata:
-      annotations:
-        cattle.io/timestamp: "2022-05-31T15:16:48Z"
-#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"{{DEPLOYMENT_NAME}}-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
-        kompose.cmd: kompose convert -f docker-compose-resolved.yaml
-        kompose.version: 1.26.1 (a9d05d509)
       labels:
-        io.kompose.service: {{DEPLOYMENT_NAME}}
+        run: praveen
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - args:
             - jupyter
@@ -97,9 +85,9 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:{{IMAGE_VERSION}}
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.44
           imagePullPolicy: IfNotPresent
-          name: {{DEPLOYMENT_NAME}}
+          name: praveen
           ports:
             - containerPort: 80
               name: 80tcp01
@@ -107,15 +95,15 @@ spec:
             - containerPort: 443
               name: 443tcp01
               protocol: TCP
-          resources: {}
+          resources: { }
           securityContext:
-            capabilities: {}
-          terminationMessagePath: /{{DEPLOYMENT_NAME}}/termination-log
+            capabilities: { }
+          terminationMessagePath: /praveen/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
-              name: {{DEPLOYMENT_NAME}}-claim2
-      dnsConfig: {}
+              name: praveen-claim2
+      dnsConfig: { }
       dnsPolicy: ClusterFirst
       imagePullSecrets:
         - name: praveen-robot
@@ -124,29 +112,41 @@ spec:
         - name: praveen-xa
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
+      securityContext: { }
       volumes:
-        - name: {{DEPLOYMENT_NAME}}-claim2
+        - name: praveen-claim2
           persistentVolumeClaim:
-            claimName: {{DEPLOYMENT_NAME}}-claim2
-
+            claimName: praveen-claim2
+  volumeClaimTemplates:
+    - metadata:
+        name: praveen-claim2
+        labels:
+          app.kubernetes.io/component: primary
+          app.kubernetes.io/instance: praveen
+          app.kubernetes.io/name: praveen-volume
+      apiVersion: v1
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: rook-ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 100Gi
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:{{DEPLOYMENT_NAME}}"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:praveen"]'
   labels:
     cattle.io/creator: norman
-  name: ingress-{{DEPLOYMENT_NAME}}
+  name: ingress-praveen
   namespace: hubzero
   ownerReferences:
     - apiVersion: v1beta1/extensions
       controller: true
       kind: Ingress
-      name: {{DEPLOYMENT_NAME}}-nanohub
+      name: praveen-nanohub
       uid: 55317aa4-b347-4629-9fc6-aaf37374486b
 spec:
 #  clusterIP: 10.4.250.16
@@ -157,7 +157,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_ingress-{{DEPLOYMENT_NAME}}: "true"
+    workloadID_ingress-praveen: "true"
   sessionAffinity: None
   type: ClusterIP
 
@@ -170,12 +170,12 @@ metadata:
     field.cattle.io/creatorId: u-nk5c5jajmc
     field.cattle.io/ipAddresses: "null"
     field.cattle.io/targetDnsRecordIds: "null"
-    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:{{DEPLOYMENT_NAME}}"]'
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:praveen"]'
   labels:
     cattle.io/creator: norman
     workload.cattle.io/targetWorkloadIdNoop: "true"
     workload.cattle.io/workloadPortBased: "true"
-  name: {{DEPLOYMENT_NAME}}
+  name: praveen
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.18
@@ -183,35 +183,15 @@ spec:
 #    - 10.4.250.18
   externalTrafficPolicy: Cluster
   ports:
-    - name: {{DEPLOYMENT_NAME}}-ports
+    - name: praveen-ports
 #      nodePort: 30624
       port: 80
       protocol: TCP
       targetPort: 80
   selector:
-    workloadID_{{DEPLOYMENT_NAME}}: "true"
+    workloadID_praveen: "true"
   sessionAffinity: None
   type: NodePort
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
-  labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}-claim2
-  name: {{DEPLOYMENT_NAME}}-claim2
-  namespace: hubzero
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{STORAGE}}
-  storageClassName: rook-ceph-block
-  volumeMode: Filesystem
 
 ---
 
@@ -219,13 +199,13 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:{{DEPLOYMENT_NAME}}","allNodes":false}]'
+#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:praveen","allNodes":false}]'
     geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
     kompose.cmd: kompose convert -f docker-compose-resolved.yaml
     kompose.version: 1.26.1 (a9d05d509)
   labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}
-  name: {{DEPLOYMENT_NAME}}
+    io.kompose.service: praveen
+  name: praveen
   namespace: hubzero
 spec:
 #  clusterIP: 10.4.250.20
@@ -239,7 +219,7 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    io.kompose.service: {{DEPLOYMENT_NAME}}
+    io.kompose.service: praveen
   sessionAffinity: None
   type: LoadBalancer
 
@@ -249,22 +229,22 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-{{DEPLOYMENT_NAME}}","ingressName":"hubzero:{{DEPLOYMENT_NAME}}-nanohub","hostname":"{{DEPLOYMENT_NAME}}-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-praveen","ingressName":"hubzero:praveen-nanohub","hostname":"praveen-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
     field.cattle.io/creatorId: u-nk5c5jajmc
   generation: 3
   labels:
     cattle.io/creator: norman
-  name: {{DEPLOYMENT_NAME}}-nanohub
+  name: praveen-nanohub
   namespace: hubzero
 spec:
   rules:
-    - host: {{DEPLOYMENT_NAME}}-nanohub.geddes.rcac.purdue.edu
+    - host: praveen-nanohub.geddes.rcac.purdue.edu
       http:
         paths:
           - backend:
-              serviceName: ingress-{{DEPLOYMENT_NAME}}
+              serviceName: ingress-praveen
               servicePort: 80
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - {{DEPLOYMENT_NAME}}-nanohub.geddes.rcac.purdue.edu
+        - praveen-nanohub.geddes.rcac.purdue.edu

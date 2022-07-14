@@ -1,37 +1,25 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "6"
-    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
-    kompose.version: 1.26.1 (a9d05d509)
-    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:{{DEPLOYMENT_NAME}}","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-{{DEPLOYMENT_NAME}}","ingressName":"hubzero:{{DEPLOYMENT_NAME}}","hostname":"{{DEPLOYMENT_NAME}}-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
   labels:
     io.kompose.service: {{DEPLOYMENT_NAME}}
   name: {{DEPLOYMENT_NAME}}
-  namespace: hubzero
 spec:
-  progressDeadlineSeconds: 600
-  replicas: {{REPLICAS}}
-  revisionHistoryLimit: {{REVISION_HISTORY}}
+  replicas: 1
+  serviceName: {{DEPLOYMENT_NAME}}
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       io.kompose.service: {{DEPLOYMENT_NAME}}
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 0
-    type: RollingUpdate
   template:
     metadata:
-      annotations:
-        cattle.io/timestamp: "2022-05-31T15:16:48Z"
-#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"{{DEPLOYMENT_NAME}}-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
-        kompose.cmd: kompose convert -f docker-compose-resolved.yaml
-        kompose.version: 1.26.1 (a9d05d509)
       labels:
-        io.kompose.service: {{DEPLOYMENT_NAME}}
+        run: {{DEPLOYMENT_NAME}}
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - args:
             - jupyter
@@ -107,15 +95,15 @@ spec:
             - containerPort: 443
               name: 443tcp01
               protocol: TCP
-          resources: {}
+          resources: { }
           securityContext:
-            capabilities: {}
+            capabilities: { }
           terminationMessagePath: /{{DEPLOYMENT_NAME}}/termination-log
           terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /home/nanoHUB
               name: {{DEPLOYMENT_NAME}}-claim2
-      dnsConfig: {}
+      dnsConfig: { }
       dnsPolicy: ClusterFirst
       imagePullSecrets:
         - name: praveen-robot
@@ -124,15 +112,27 @@ spec:
         - name: praveen-xa
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
+      securityContext: { }
       volumes:
         - name: {{DEPLOYMENT_NAME}}-claim2
           persistentVolumeClaim:
             claimName: {{DEPLOYMENT_NAME}}-claim2
-
+  volumeClaimTemplates:
+    - metadata:
+        name: {{DEPLOYMENT_NAME}}-claim2
+        labels:
+          app.kubernetes.io/component: primary
+          app.kubernetes.io/instance: {{DEPLOYMENT_NAME}}
+          app.kubernetes.io/name: {{DEPLOYMENT_NAME}}-volume
+      apiVersion: v1
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: rook-ceph-block
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: {{STORAGE}}
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -192,26 +192,6 @@ spec:
     workloadID_{{DEPLOYMENT_NAME}}: "true"
   sessionAffinity: None
   type: NodePort
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  annotations:
-    volume.beta.kubernetes.io/storage-provisioner: rook-ceph.rbd.csi.ceph.com
-  labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}-claim2
-  name: {{DEPLOYMENT_NAME}}-claim2
-  namespace: hubzero
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{STORAGE}}
-  storageClassName: rook-ceph-block
-  volumeMode: Filesystem
 
 ---
 

@@ -132,7 +132,6 @@ spec:
             claimName: {{DEPLOYMENT_NAME}}-claim2
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
