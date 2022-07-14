@@ -538,6 +538,11 @@ def core_classroom_analysis(inparams):
     class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
     classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
 
+    clusters_df_obj = {"intra_tool_cluster_df": intra_tool_cluster_df,
+                       "classtool_info_df": classtool_info_df,
+                       "class_info_df": class_info_df,
+                       "students_info_df": students_info_df}
+
     logging.info("Finished cluster analysis for %s" % (inparams.class_probe_range))
 
-    return intra_tool_cluster_df
+    return clusters_df_obj

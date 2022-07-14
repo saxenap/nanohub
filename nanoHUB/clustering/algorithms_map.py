@@ -125,11 +125,11 @@ class GeddesSaver(IExecuteAlgorithm):
         else:
             self.logger.info("Skipping saving output in Geddes ...")
 
-        df = self.handler.handle(command)
+        df_dict = self.handler.handle(command)
         if command.save_to_geddes == True:
             command.object_path = 'clusters/' + command.task + '/by_semester'
-            save_clusters_to_geddes(df, command)
-        return df
+            save_clusters_to_geddes(df_dict, command)
+        return df_dict
 
 
 class LocalDriveSaver(IExecuteAlgorithm):
@@ -138,18 +138,22 @@ class LocalDriveSaver(IExecuteAlgorithm):
         self.logger = logger
 
     def handle(self, command) -> pd.DataFrame:
-        df = self.handler.handle(command)
+        df_dict = self.handler.handle(command)
         if not os.path.exists(command.output_dir):
             os.mkdir(command.output_dir)
 
         if command.no_save_output == True:
             self.logger.info("Skipping saving output locally.")
         else:
-            path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + command.class_probe_range[1] + '_' + '.csv'
+            path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + command.class_probe_range[1]
             self.logger.info("Saving output locally at %s" % path)
-            df.to_csv(path)
 
-        return df
+            for key in df_dict:
+                path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + \
+                       command.class_probe_range[1] + '/' + key + '.csv'
+                df_dict[key].to_csv(path)
+
+        return df_dict
 
 
 class DatabaseSaver(IExecuteAlgorithm):
@@ -158,8 +162,8 @@ class DatabaseSaver(IExecuteAlgorithm):
         self.logger = logger
 
     def handle(self, command) -> pd.DataFrame:
-        df = self.handler.handle(command)
-        return df
+        df_dict = self.handler.handle(command)
+        return df_dict
 
 
 class DisplayDf(IExecuteAlgorithm):
@@ -168,10 +172,10 @@ class DisplayDf(IExecuteAlgorithm):
         self.logger = logger
 
     def handle(self, command) -> pd.DataFrame:
-        df = self.handler.handle(command)
+        df_dict = self.handler.handle(command)
         if command.display_output:
-            print(df)
-        return df
+            print(df_dict)
+        return df_dict
 
 
 class DataframeLogger(IExecuteAlgorithm):
@@ -180,6 +184,6 @@ class DataframeLogger(IExecuteAlgorithm):
         self.logger = logger
 
     def handle(self, command) -> pd.DataFrame:
-        df = self.handler.handle(command)
-        self.logger.debug(df)
-        return df
+        df_dict = self.handler.handle(command)
+        self.logger.debug(df_dict)
+        return df_dict
