@@ -191,7 +191,24 @@ def core_cost_cluster_analysis(inparams):
 
     logging.info("Finished cluster analysis for %s" % inparams.class_probe_range)
 
-    return final_clusters_df
+    if final_clusters_df:
+        clusters_df_obj = {"intra_tool_cluster_df": final_clusters_df,
+                           "classtool_info_df": pd.DataFrame,
+                           "class_info_df": pd.DataFrame,
+                           "students_info_df": pd.DataFrame}
+
+        return clusters_df_obj
+
+    # else:
+    #     clusters_df_obj = {"intra_tool_cluster_df": intra_tool_cluster_df,
+    #                        "classtool_info_df": classtool_info_df,
+    #                        "class_info_df": class_info_df,
+    #                        "students_info_df": students_info_df}
+    #
+    #     return clusters_df_obj
+
+
+
 
     # if inparams.no_save_output == False:
     #
