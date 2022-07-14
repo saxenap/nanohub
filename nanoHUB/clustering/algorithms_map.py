@@ -127,7 +127,7 @@ class GeddesSaver(IExecuteAlgorithm):
 
         df = self.handler.handle(command)
         if command.save_to_geddes == True:
-            command.object_path = 'clusters/${' + command.task + '}/by_semester'
+            command.object_path = 'clusters/' + command.task + '/by_semester'
             save_clusters_to_geddes(df, command)
         return df
 
@@ -169,7 +169,8 @@ class DisplayDf(IExecuteAlgorithm):
 
     def handle(self, command) -> pd.DataFrame:
         df = self.handler.handle(command)
-        print(df)
+        if command.display_output:
+            print(df)
         return df
 
 
@@ -180,5 +181,5 @@ class DataframeLogger(IExecuteAlgorithm):
 
     def handle(self, command) -> pd.DataFrame:
         df = self.handler.handle(command)
-        self.logger.info(df)
+        self.logger.debug(df)
         return df

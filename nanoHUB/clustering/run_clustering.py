@@ -178,6 +178,7 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
 #command -> ClusteringFlags
 def run_clustering(command) -> pd.DataFrame:
     handler = create_default_handler(command.log_level)
+    print(command.object_path)
     return handler.handle(command)
 
 

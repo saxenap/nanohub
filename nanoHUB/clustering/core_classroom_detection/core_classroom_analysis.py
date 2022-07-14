@@ -533,10 +533,10 @@ def core_classroom_analysis(inparams):
     # if inparams.generate_notebook_checkpoints:
     #     logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
     #
-    #     intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
-    #     students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
-    #     class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
-    #     classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
+    intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
+    students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
+    class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
+    classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
 
     logging.info("Finished cluster analysis for %s" % (inparams.class_probe_range))
 

@@ -6,22 +6,36 @@ import logging
 
 # geddes functionality
 
-def save_clusters_to_geddes(clusters_df: pd.DataFrame, flags, name: str = 'intra_tool_cluster_df'):
+def save_clusters_to_geddes(clusters_dfs: {}, flags, name: str = 'intra_tool_cluster_df'):
 
-        date_range_str = flags.class_probe_range.replace(':', '_')
+        # date_range_str = flags.class_probe_range.replace(':', '_')
+        date_range_str = '_'.join(flags.class_probe_range)
         folder_path = "%s/%s" % (flags.object_path, date_range_str)
 
         logging.debug("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
-
+        print(flags.object_path)
         s3_client = get_default_s3_client(Application.get_instance())
+
+
+
+        save_to_geddes(
+            s3_client, flags.bucket_name, clusters_dfs['intra_tool_cluster_df'], folder_path, 'intra_tool_cluster_df'
+        ) #intra_tool_cluster_df
+
+
+        save_to_geddes(
+            s3_client, flags.bucket_name,  clusters_dfs['class_info_df'], folder_path, 'class_info'
+        ) #intra_tool_cluster_df
+
 
         save_to_geddes(
             s3_client, flags.bucket_name, clusters_df, folder_path, name
-        ) #intra_tool_cluster_df
+        )
 
         # save_to_geddes(
         #     s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
         # )
+        #
         #
         # df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \
         #     .rename(columns = lambda x: '{}'.format(x+1))
@@ -57,7 +71,7 @@ def save_clusters_to_geddes(clusters_df: pd.DataFrame, flags, name: str = 'intra
         #     s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
         # )
 
-        # logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
+        logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
 
 def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str, headers:bool = True):
     _buf = StringIO()

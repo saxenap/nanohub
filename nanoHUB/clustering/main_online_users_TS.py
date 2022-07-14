@@ -1,7 +1,9 @@
 import argparse
+import logging
 import os
 import time
 from nanoHUB.clustering.run_clustering import run_clustering, ExecuteAlgorithmCommandFactory
+from nanoHUB.logger import logger as log
 
 
 def main_online_users_TS():
@@ -96,13 +98,16 @@ def main_online_users_TS():
     parser.add_argument('--log_level', help='logging level (INFO, DEBUG etc)',
                         action='store', default='INFO')
 
-
     inparams = parser.parse_args()
 
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
 
     inparams.start_date, inparams.end_date = inparams.class_probe_range.split('_')
+
+    loglevel = inparams.log_level.upper()
+    log().setLevel(logging.getLevelName(loglevel.upper()))
+
     returned_cluster_df = run_clustering(inparams)
     print(returned_cluster_df)
 
