@@ -2,7 +2,7 @@ CPUS=$(shell getconf _NPROCESSORS_ONLN)
 other_flags=
 
 log-level = INFO
-years = {2006..2021}
+#years = {2006..2021}
 FIRST_YEAR := 2008
 LAST_YEAR := 2021
 YEARS = $(shell seq ${FIRST_YEAR} ${LAST_YEAR})

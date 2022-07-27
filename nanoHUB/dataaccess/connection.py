@@ -73,6 +73,7 @@ class TunneledConnectionParams:
     ssh_password: str
     remote_bind_address: str
     remote_bind_port: int
+    banner_timeout: int
     ssh_port: int = 22
 
 
@@ -107,6 +108,7 @@ class TunneledConnectionFactory(IDbConnectionFactory):
             logger=logger
         )
         # self.logger.info("Started SSH Tunnel with %s" % self.params.ssh_host)
+        tunnel._get_transport().banner_timeout = self.params.banner_timeout
         tunnel.start()
 
         self.db_factory.set_port(tunnel.local_bind_port)

@@ -11,7 +11,7 @@ ENV APP_NAME=${APP_NAME}
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONFAULTHANDLER=1
-ARG TZ
+ARG TZ=EST
 ENV TZ=${TZ}
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ARG NB_USER
@@ -208,14 +208,24 @@ RUN jupyter labextension install jupyterlab-topbar-extension \
     && jupyter nbextension enable splitcell/splitcell
 ARG JUPYTERLAB_SETTINGS_DIR=${NB_USER_DIR}/.jupyter
 RUN jupyter notebook --generate-config
+#ARG JUPYTER_TOKEN
+#ENV JUPYTER_TOKEN=${JUPYTER_TOKEN}
+#RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = '${JUPYTER_TOKEN}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+ARG JUPYTER_PASSWORD
+ENV JUPYTER_PASSWORD=${JUPYTER_PASSWORD}
+#RUN PASSWORD=$(python3 -c 'from notebook.auth import passwd; print(passwd(passphrase="${JUPYTER_PASSWORD}", algorithm="sha1"))') \
+#    && sed -i -e "/c.NotebookApp.password/ a  c.NotebookApp.password = u'${PASSWORD}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+#RUN #sed -i -e "/c.NotebookApp.password/ a  from notebook.auth import passwd\nimport os\nc.NotebookApp.password = passwd(passphrase=os.getenv('JUPYTER_PASSWORD', algorithm='sha1'))" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.password/ a c.NotebookApp.password = u'sha1:617c4d2ee1f8:649466c78798c3c021b3c81ce7f8fbdeef7ce3da'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+#RUN #sed -i -e "/allow_password_change/ a c.NotebookApp.allow_password_change = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.custom_display_url/ a c.NotebookApp.custom_display_url = '${JUPYTER_DISPLAY_URL}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '${JUPYTER_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.disable_check_xsrf/ a c.NotebookApp.disable_check_xsrf = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.ContentsManager.allow_hidden/ a c.ContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
+RUN sed -i -e "/c.FileContentsManager.allow_hidden/ a c.FileContentsManager.allow_hidden = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.allow_remote_access/ a c.NotebookApp.allow_remote_access = True" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.NotebookApp.allow_origin/ a c.NotebookApp.allow_origin = '${ORIGIN_IP_ADDRESS}'" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
 RUN sed -i -e "/c.LabBuildApp.dev_build/ a c.LabBuildApp.dev_build = False" ${JUPYTERLAB_SETTINGS_DIR}/jupyter_notebook_config.py
@@ -226,9 +236,20 @@ COPY nanoHUB nanoHUB/
 COPY setup.py .
 COPY pyproject.toml .
 USER root
-RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+#RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
 RUN pip3 install . \
     && chown -R --from=root ${NB_USER} ${APP_DIR}
+
+
+FROM platform-image as remote-image
+USER root
+RUN cat nanoHUB/.env.dev >> /etc/environment
+USER ${NB_USER}
+RUN rm -r ${NB_USER_DIR}/nanoHUB/*
+COPY nanoHUB/onboarding/README.md ${NB_USER_DIR}/nanoHUB/README.md
+COPY nanoHUB/.env.dev ${NB_USER_DIR}/nanoHUB/.env
+VOLUME ${APP_DIR}
+EXPOSE ${JUPYTER_PORT}
 
 
 FROM platform-image as dev-image
@@ -253,6 +274,11 @@ ARG PAPERTRAIL_URL
 ENV PAPERTRAIL_URL=${PAPERTRAIL_URL}
 RUN echo "*.*       @${PAPERTRAIL_URL}" >> /etc/rsyslog.conf
 RUN cat ${APP_DIR}/nanoHUB/.env >> /etc/environment
+RUN rm -rf ${APP_DIR}/db-reports/*
+RUN rm -rf ${APP_DIR}/individual/*
+RUN rm -rf ${APP_DIR}/ops/*
+RUN rm -rf ${APP_DIR}/raindrop/*
+RUN rm -rf ${APP_DIR}/rfm/*
 WORKDIR ${APP_DIR}
 COPY tasks.mk .
 RUN rm -rf /var/lib/apt/lists/*

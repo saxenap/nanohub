@@ -3,7 +3,6 @@ import logging
 import pandas as pd
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-import datetime
 from io import BytesIO, StringIO
 import boto3
 from nanoHUB.application import Application
@@ -11,6 +10,7 @@ import botocore.client as s3client
 from nanoHUB.pipeline.geddes.data import get_default_s3_client, read_all
 from nanoHUB.configuration import ClusteringConfiguration, DataLakeConfiguration
 import re
+from botocore.exceptions import ClientError
 
 
 @dataclass
@@ -142,6 +142,13 @@ class S3FileMapper:
 
         return df
 
+    def exists(self, file_path: str, **args) -> bool:
+        try:
+            self.client.head_object(Bucket=self.bucket, Key=file_path)
+        except ClientError as e:
+            return int(e.response['Error']['Code']) != 404
+        return True
+
     def save_as_csv(self, df: pd.DataFrame, full_path: str, **args):
         csv_buffer = StringIO()
         df.to_csv(csv_buffer, **args)
@@ -150,7 +157,7 @@ class S3FileMapper:
 
     def save_as_parquet(self, df: pd.DataFrame, full_path: str, **args):
         _buf = BytesIO()
-        df.to_parquet(_buf, *args)
+        df.to_parquet(_buf, **args)
         _buf.seek(0)
         self.client.put_object(Bucket=self.bucket, Body=_buf.getvalue(), Key=full_path)
 

@@ -21,6 +21,8 @@ services:
         CPUS: "${CPUS}"
         PHP_VERSION: "${PHP_VERSION}"
         COMPOSER_SIGNATURE: "${COMPOSER_SIGNATURE}"
+        JUPYTER_PASSWORD: "${JUPYTER_PASSWORD}"
+        JUPYTER_TOKEN: "${JUPYTER_TOKEN}"
     restart: always
 #    logging:
 #      driver: syslog

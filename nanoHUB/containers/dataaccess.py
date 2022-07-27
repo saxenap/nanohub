@@ -36,7 +36,8 @@ class DatabaseContainer(containers.DeclarativeContainer):
         ssh_password = config.sshtunnel.password,
         ssh_port = config.sshtunnel.port,
         remote_bind_address = config.sshtunnel.remote_bind_address,
-        remote_bind_port = config.sshtunnel.remote_bind_port
+        remote_bind_port = config.sshtunnel.remote_bind_port,
+        banner_timeout = config.sshtunnel.banner_timeout
     )
 
     tunneled_connection_factory = providers.Factory(

@@ -1,0 +1,270 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "6"
+    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
+    kompose.version: 1.26.1 (a9d05d509)
+    field.cattle.io/publicEndpoints: '[{"protocol":"TCP","serviceName":"hubzero:yahoo-test","allNodes":true},{"protocol":"HTTPS","serviceName":"hubzero:ingress-yahoo","ingressName":"hubzero:yahoo-test","hostname":"yahoo-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+  labels:
+    io.kompose.service: yahoo
+  name: yahoo
+  namespace: hubzero
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      io.kompose.service: yahoo
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2022-05-31T15:16:48Z"
+#        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"yahoo-nodeport","hostPort":0,"kind":"NodePort","name":"80tcp01","protocol":"TCP","sourcePort":0}]]'
+        kompose.cmd: kompose convert -f docker-compose-resolved.yaml
+        kompose.version: 1.26.1 (a9d05d509)
+      labels:
+        io.kompose.service: yahoo
+    spec:
+      containers:
+        - args:
+            - jupyter
+            - lab
+          env:
+            - name: APP_DIR_NAME
+              value: nanoHUB
+            - name: APP_NAME
+              value: nanoHUB
+            - name: BUILD_WITH_JUPYTER
+              value: "1"
+            - name: CRON_LOG_FILE
+              value: 2>&1 | /usr/bin/logger -t CRON
+            - name: GDAL_VERSION
+              value: 3.4.0
+            - name: GEOS_VERSION
+              value: 3.10.1
+            - name: HOME_DIR_NAME
+              value: home
+            - name: JUPYTER_DISPLAY_IP_ADDRESS
+              value: 127.0.0.1
+            - name: JUPYTER_IP_ADDRESS
+              value: '*'
+            - name: JUPYTER_PORT
+              value: "80"
+            - name: LANG
+              value: C.UTF-8
+            - name: LC_ALL
+              value: C.UTF-8
+            - name: LOCALE
+              value: en_US.UTF-8
+            - name: ORIGIN_IP_ADDRESS
+              value: '*'
+            - name: PAPERTRAIL_URL
+              value: logs.papertrailapp.com:19303
+            - name: PHP_VERSION
+              value: "7.4"
+            - name: PROJ_VERSION
+              value: 8.1.1
+            - name: TZ
+              value: EST
+            - name: jupyter_logging_file_backup_count
+              value: "3"
+            - name: jupyter_logging_file_dir
+              value: .log
+            - name: jupyter_logging_file_level
+              value: INFO
+            - name: jupyter_logging_file_max_bytes
+              value: "100"
+            - name: jupyter_logging_file_msg_format
+              value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
+            - name: jupyter_logging_file_name
+              value: info.log
+            - name: jupyter_logging_stdout_level
+              value: ERROR
+            - name: jupyter_logging_stdout_msg_format
+              value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
+            - name: pipeline_logging_stdout_level
+              value: INFO
+            - name: pipeline_logging_stdout_msg_format
+              value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
+            - name: pipeline_logging_syslog_level
+              value: INFO
+            - name: pipeline_logging_syslog_msg_format
+              value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.9
+          imagePullPolicy: IfNotPresent
+          name: yahoo
+          ports:
+            - containerPort: 80
+              name: 80tcp01
+              protocol: TCP
+            - containerPort: 443
+              name: 443tcp01
+              protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities: {}
+          terminationMessagePath: /yahoo/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /home/nanoHUB
+              name: yahoo-claim1
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: praveen-robot
+        - name: dc-cbc55
+        - name: erik-registry
+        - name: praveen-xa
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: yahoo-claim1
+          persistentVolumeClaim:
+            claimName: yahoo-claim1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:yahoo"]'
+  labels:
+    cattle.io/creator: norman
+  name: ingress-yahoo
+  namespace: hubzero
+  ownerReferences:
+    - apiVersion: v1beta1/extensions
+      controller: true
+      kind: Ingress
+      name: yahoo-nanohub
+      uid: 55317aa4-b347-4629-9fc6-aaf37374486b
+spec:
+#  clusterIP: 10.4.250.16
+#  clusterIPs:
+#    - 10.4.250.16
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    workloadID_ingress-yahoo: "true"
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    field.cattle.io/creatorId: u-nk5c5jajmc
+    field.cattle.io/ipAddresses: "null"
+    field.cattle.io/targetDnsRecordIds: "null"
+    field.cattle.io/targetWorkloadIds: '["deployment:hubzero:yahoo"]'
+  labels:
+    cattle.io/creator: norman
+    workload.cattle.io/targetWorkloadIdNoop: "true"
+    workload.cattle.io/workloadPortBased: "true"
+  name: yahoo-test
+  namespace: hubzero
+spec:
+#  clusterIP: 10.4.250.18
+#  clusterIPs:
+#    - 10.4.250.18
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: yahoo-ports
+#      nodePort: 30624
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    workloadID_yahoo-test: "true"
+  sessionAffinity: None
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    io.kompose.service: yahoo-claim1
+  name: yahoo-claim1
+  namespace: hubzero
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:yahoo","allNodes":false}]'
+    geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
+    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
+    kompose.version: 1.26.1 (a9d05d509)
+  labels:
+    io.kompose.service: yahoo
+  name: yahoo
+  namespace: hubzero
+spec:
+#  clusterIP: 10.4.250.20
+#  clusterIPs:
+#    - 10.4.250.20
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: "80"
+#      nodePort: 32464
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    io.kompose.service: yahoo
+  sessionAffinity: None
+  type: LoadBalancer
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    field.cattle.io/publicEndpoints: '[{"port":443,"protocol":"HTTPS","serviceName":"hubzero:ingress-yahoo","ingressName":"hubzero:yahoo-nanohub","hostname":"yahoo-nanohub.geddes.rcac.purdue.edu","allNodes":false}]'
+    field.cattle.io/creatorId: u-nk5c5jajmc
+  generation: 3
+  labels:
+    cattle.io/creator: norman
+  name: yahoo-nanohub
+  namespace: hubzero
+spec:
+  rules:
+    - host: yahoo-nanohub.geddes.rcac.purdue.edu
+      http:
+        paths:
+          - backend:
+              serviceName: ingress-yahoo
+              servicePort: 80
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - yahoo-nanohub.geddes.rcac.purdue.edu

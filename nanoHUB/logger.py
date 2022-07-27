@@ -79,11 +79,26 @@ logging_conf = dict(
 )
 
 
-def logger(name: str = None):
-    if name == None :
-        logger =  logging.getLogger()
-    else:
-        logger = logging.getLogger().getChild(name)
+def logger(name: str = '', loglevel: str = 'INFO') -> logging.Logger:
+    loglevel = loglevel.upper()
+    level = logging.getLevelName(loglevel)
+
+    # if name == None :
+    #     logger =  logging.getLogger()
+    # else:
+    logger = logging.getLogger(name)
+
+    logger.setLevel(level)
 
     return logger
 
+
+def get_logger_with_level(name: str = None, loglevel: str = 'INFO') -> logging.Logger:
+    return logger(name, loglevel)
+
+
+class LoggerMixin():
+    @property
+    def logger(self):
+        component = "{}.{}".format(type(self).__module__, type(self).__name__)
+        return logging.getLogger(component)

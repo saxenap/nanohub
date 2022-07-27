@@ -122,15 +122,17 @@ def core_cost_cluster_analysis(inparams):
     (toolrun_df, toolstart_df, jos_users, jos_tool_version) = prepare_data(inparams)
 
     # Limit analysis range to within limits
-
-    if inparams.cost_probe_range == 'all':
+    print(type(inparams.class_probe_range))
+    print(inparams.class_probe_range)
+    if inparams.class_probe_range == 'all':
         # probes only the latest (today - 3 STD of Gaussian attention window function)
         data_probe_range = [toolrun_df.date.min(), toolrun_df.date.max()]
 
     else:
         # probes given time range
         # expects inparams.class_probe_range in form of, for example, '2018-1-1:2018-5-1'
-        datetime_range_list = inparams.cost_probe_range.split(':')
+        # datetime_range_list = inparams.class_probe_range.split(':')
+        datetime_range_list = inparams.class_probe_range
         data_probe_range = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in datetime_range_list]
         logging.info(data_probe_range)
 
@@ -187,36 +189,55 @@ def core_cost_cluster_analysis(inparams):
     if inparams.display_output:
         print(final_clusters_df)
 
-    if inparams.no_save_output == False:
+    logging.info("Finished cluster analysis for %s" % inparams.class_probe_range)
 
-        # create output directory if it does not exist
-        if not os.path.exists(inparams.output_dir):
-            logging.info('Creating new output directory: ' + inparams.output_dir)
-            os.mkdir(inparams.output_dir)
+    if final_clusters_df:
+        clusters_df_obj = {"intra_tool_cluster_df": final_clusters_df,
+                           "classtool_info_df": pd.DataFrame,
+                           "class_info_df": pd.DataFrame,
+                           "students_info_df": pd.DataFrame}
 
-        outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[
-            1].strftime("%Y_%m_%d") + '.csv'
-        outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
-        logging.info('Saving output files to ' + outfile_filepath)
+        return clusters_df_obj
 
-        with open(outfile_filepath, 'w') as f:
-            for this_row in final_clusters:
-                f.write(','.join([str(x) for x in this_row]) + '\n')
+    # else:
+    #     clusters_df_obj = {"intra_tool_cluster_df": intra_tool_cluster_df,
+    #                        "classtool_info_df": classtool_info_df,
+    #                        "class_info_df": class_info_df,
+    #                        "students_info_df": students_info_df}
+    #
+    #     return clusters_df_obj
 
-    if inparams.save_to_geddes == True:
-        bucket_name = inparams.bucket_name
 
-        date_range_str = inparams.cost_probe_range.replace(':', '_')
-        full_path = "%s/%s.csv" % (inparams.object_path, date_range_str)
-        logging.debug("Uploading output file to Geddes: %s/%s" % (bucket_name, full_path))
 
-        s3_client = get_default_s3_client(Application.get_instance())
 
-        _buf = StringIO()
-        final_clusters_df.to_csv(_buf, index=False)
-        _buf.seek(0)
-        s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
-
-        logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))
-
-    logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
+    # if inparams.no_save_output == False:
+    #
+    #     # create output directory if it does not exist
+    #     if not os.path.exists(inparams.output_dir):
+    #         logging.info('Creating new output directory: ' + inparams.output_dir)
+    #         os.mkdir(inparams.output_dir)
+    #
+    #     outfile_name = inparams.name_prefix + '_' + data_probe_range[0].strftime("%Y_%m_%d") + '-' + data_probe_range[
+    #         1].strftime("%Y_%m_%d") + '.csv'
+    #     outfile_filepath = os.path.join(inparams.output_dir, outfile_name)
+    #     logging.info('Saving output files to ' + outfile_filepath)
+    #
+    #     with open(outfile_filepath, 'w') as f:
+    #         for this_row in final_clusters:
+    #             f.write(','.join([str(x) for x in this_row]) + '\n')
+    #
+    # if inparams.save_to_geddes == True:
+    #     bucket_name = inparams.bucket_name
+    #
+    #     date_range_str = inparams.cost_probe_range.replace(':', '_')
+    #     full_path = "%s/%s.csv" % (inparams.object_path, date_range_str)
+    #     logging.debug("Uploading output file to Geddes: %s/%s" % (bucket_name, full_path))
+    #
+    #     s3_client = get_default_s3_client(Application.get_instance())
+    #
+        # _buf = StringIO()
+        # final_clusters_df.to_csv(_buf, index=False)
+        # _buf.seek(0)
+        # s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
+        #
+        # logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))

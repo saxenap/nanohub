@@ -3,17 +3,29 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
 ROOT_DIR=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 NANOHUB_DIR=$(ROOT_DIR)/nanoHUB
-PIPELINE_DIR=$(NANOHUB_DIR)/pipeline
-SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
 
-EXECUTE_TASK=python3 $(ROOT_DIR)/nanoHUB/__main__.py task execute
-log-level=INFO
-logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t PIPELINE
+PIPELINE_DIR=$(NANOHUB_DIR)/pipeline
+
+#NANOHUB=python3 $(ROOT_DIR)/nanoHUB/__main__.py
+NANOHUB=nanohub
+
+EXECUTE_TASK=$(NANOHUB) task execute
+
+SALESFORCE_BACKUP=$(NANOHUB) backup salesforce
+SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
+SF_BACKUP_DOMAIN='backups'
+DOMAIN=${SF_BACKUP_DOMAIN}
+
+
+log-context='undefined'
+log-level='INFO'
+log-level-string=--log-level $(log-level)
+
+logger=--log-level=$(log-level) 2>&1 | /usr/bin/logger -t ${log-context}
 
 TASKS=$(SALESFORCE_DIR)/_task_test.ipynb \
 	$(SALESFORCE_DIR)/task_citations.ipynb  \
 	$(SALESFORCE_DIR)/task_citations_map_leads.ipynb   \
-	$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \
 	$(SALESFORCE_DIR)/task_issue_url.ipynb  \
 	$(SALESFORCE_DIR)/task_organization.ipynb  \
 	$(SALESFORCE_DIR)/task_orgs_map_contacts.ipynb  \
@@ -43,12 +55,18 @@ env_vars:
 	env
 
 heartbeat:
-	/usr/bin/logger -t PIPELINE -p user.info "Heart Beat Check."
+	/usr/bin/logger -t heartbeat -p user.info "Heart Beat Check."
 
 execute:
-	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) $(logger)
+	mkdir -p .output && $(EXECUTE_TASK) $(TASKS) ${log-level-string}
 
 test:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(SALESFORCE_DIR)/_task_test.ipynb
 
+salesforce-backup:
+	$(SALESFORCE_BACKUP) DOMAIN=$(DOMAIN) ${log-level-string}
 
+import:
+	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
+
+#$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \

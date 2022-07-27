@@ -1,4 +1,5 @@
 import multiprocessing
+from mpire import WorkerPool
 from pprint import pprint
 import logging
 import pandas as pd
@@ -24,9 +25,6 @@ import pickle
 import code
 
 from functools import partial
-from io import StringIO
-from nanoHUB.pipeline.geddes.data import get_default_s3_client
-from nanoHUB.application import Application
 #
 # Load geospatial data
 #
@@ -98,8 +96,15 @@ def prepare_data(inparams):
     # or by setting some parameters constant using partial.
     # A prime example of this is the Pool object which offers a convenient means of parallelizing the execution
     # of a function across multiple input values, distributing the input data across processes (data parallelism).
-    with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-        geo_data = pool.map(get_geo_data_partial, toolrun_df['ip'])
+    # with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+    #     geo_data = pool.map(get_geo_data_partial, toolrun_df['ip'])
+
+    with WorkerPool(n_jobs=None) as pool2:
+        geo_data = pool2.map(get_geo_data_partial, toolrun_df['ip'])
+
+    # geo_data = [] #causes freeze
+    # for addy in toolrun_df['ip']:
+    #     geo_data.append(get_geo_data_partial(addy))
 
     geo_data = np.array(geo_data, dtype=np.float32)
 
@@ -408,10 +413,10 @@ def core_classroom_analysis(inparams):
     #
     # Form user tool activity blocks
     #
-    activity_tol = datetime.timedelta(days=inparams.class_activity_tol)
+    activity_tol = datetime.timedelta(days=inparams.class_activity_tol) #float()
     # ddata = dd.from_pandas(toolrun_df, npartitions=200) \
     #           .groupby('user').apply(form_activity_blocks, activity_tol = activity_tol) \
-    #           .compute(scheduler=inparams.dask_scheduler)
+    #           .compute(scheduler=inparams.daskScheduler)
 
     form_activity_blocks_partial = partial(form_activity_blocks, activity_tol)
 
@@ -472,7 +477,7 @@ def core_classroom_analysis(inparams):
     code.interact(local=locals())
     ddata = dd.from_pandas(cluster_output_candidate, npartitions=60) \
               .groupby('tool').apply(form_cluster_blocks) \
-              .compute(scheduler=inparams.dask_scheduler)
+              .compute(scheduler=inparams.daskScheduler)
     #'end', 'mean_lat', 'mean_lon', 'start', 'user_count', 'users_row_id'
     class_cluster_candidate = ddata.reset_index()
     logging.info('Class candidates formed for each user for all days')
@@ -485,14 +490,14 @@ def core_classroom_analysis(inparams):
         logging.info('Generating Jupyter Notebook checkpoint 1: Synchrony EDA')
 
         # class_cluster_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_cluster_candidate.pkl'))
-        user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))
-        detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))
-        jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))
-        toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
-        cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
-
-        with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
-            pickle.dump([inparams], f)
+        # user_activity_blocks_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_user_activity_blocks_df.pkl'))
+        # detected_clusters_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_detected_clusters_df.pkl'))
+        # jos_users.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_jos_users.pkl'))
+        # toolrun_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_toolrun_df.pkl'))
+        # cluster_output_candidate.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_output_candidate.pkl'))
+        #
+        # with open(os.path.join(inparams.scratch_dir, 'core_classroom_analysis_cp1.pkl'), 'wb') as f:
+        #     pickle.dump([inparams], f)
 
     #
     # Sychrony check for each cluster. Remove false positives and split cluster if multiple sub-clusters detected
@@ -516,7 +521,7 @@ def core_classroom_analysis(inparams):
     if inparams.generate_notebook_checkpoints:
         logging.info('Generating Jupyter Notebook checkpoint 2: Post-Synchrony EDA')
 
-        cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))
+        # cluster_post_sychrony.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_cluster_post_sychrony.pkl'))
 
     #
     # Combine clusters into super-clusters
@@ -524,77 +529,20 @@ def core_classroom_analysis(inparams):
 
     intra_tool_cluster_df, students_info_df, class_info_df, classtool_info_df = combine_clusters(inparams,
                                                                                                  cluster_post_sychrony)
+    # # NOTEBOOK CHECKPOINT
+    # if inparams.generate_notebook_checkpoints:
+    #     logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
+    #
+    intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
+    students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
+    class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
+    classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
 
-    # NOTEBOOK CHECKPOINT
-    if inparams.generate_notebook_checkpoints:
-        logging.info('Generating Jupyter Notebook checkpoint 3: Program complete')
+    clusters_df_obj = {"intra_tool_cluster_df": intra_tool_cluster_df,
+                       "classtool_info_df": classtool_info_df,
+                       "class_info_df": class_info_df,
+                       "students_info_df": students_info_df}
 
-        intra_tool_cluster_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_intra_tool_cluster_df.pkl'))
-        students_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_students_info_df.pkl'))
-        class_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_class_info_df.pkl'))
-        classtool_info_df.to_pickle(os.path.join(inparams.scratch_dir, 'cp1_classtool_info_df.pkl'))
+    logging.info("Finished cluster analysis for %s" % (inparams.class_probe_range))
 
-    if inparams.save_to_geddes == True:
-        bucket_name = inparams.bucket_name
-
-        date_range_str = inparams.cost_probe_range.replace(':', '_')
-        folder_path = "%s/%s" % (inparams.object_path, date_range_str)
-
-        logging.debug("Uploading output files to Geddes: %s/%s" % (bucket_name, folder_path))
-
-        s3_client = get_default_s3_client(Application.get_instance())
-
-        save_to_geddes(
-            s3_client, bucket_name, intra_tool_cluster_df, folder_path, 'intra_tool_cluster_df'
-        )
-
-        save_to_geddes(
-            s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
-        )
-
-        df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \
-            .rename(columns = lambda x: '{}'.format(x+1))
-
-        save_to_geddes(
-            s3_client, bucket_name, df, inparams.object_path, date_range_str, False
-        )
-        save_to_geddes(
-            s3_client, bucket_name, students_info_df, folder_path, 'students_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, class_info_df, folder_path, 'class_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, classtool_info_df, folder_path, 'classtool_info_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, cluster_post_sychrony, folder_path, 'cluster_post_sychrony'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, cluster_output_candidate, folder_path, 'cluster_output_candidate'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, toolrun_df, folder_path, 'toolrun_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, jos_users, folder_path, 'jos_users'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, detected_clusters_df, folder_path, 'detected_clusters_df'
-        )
-        save_to_geddes(
-            s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
-        )
-
-        logging.info("Uploaded output files to Geddes: %s/%s" % (bucket_name, folder_path))
-
-    logging.info("Finished cluster analysis for %s" % (inparams.cost_probe_range))
-
-def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str, headers:bool = True):
-    _buf = StringIO()
-    full_path = "%s/%s.csv" % (folder_path, name)
-    df.to_csv(_buf, index=False, header=headers)
-    _buf.seek(0)
-    s3_client.put_object(Bucket=bucket_name, Body=_buf.getvalue(), Key=full_path)
-
-    logging.info("Uploaded output file to Geddes: %s/%s" % (bucket_name, full_path))
+    return clusters_df_obj

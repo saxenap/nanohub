@@ -28,6 +28,7 @@ pytest = "6.2"
 black = "*"
 ##########################################
 sqlalchemy = "*"
+sqlalchemy-migrate = "*"
 ##########################################
 SQLAlchemy-Utils = "*"
 geoip2 = "*"
@@ -122,6 +123,9 @@ google = "*"
 sendgrid = "*"
 simple-salesforce = "*"
 nameparser="*"
+mpire="*"
+'mpire[dashboard]'="*"
+cronitor="*"
 ##########################################
 # charset detection
 chardet = "*"
