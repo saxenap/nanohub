@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, date
 import pandas as pd
 import logging
+from pathlib import Path
 
 from nanoHUB.clustering.algorithms_map import (
     DateValidator, AlgorithmsMap, AlgorithmHandler, GeddesSaver, DisplayDf, DataframeLogger, ValidationHandler, LocalDriveSaver
@@ -58,6 +59,8 @@ class ExecuteAlgorithmCommand:
 
     def __post_init__(self):
         self.class_probe_range = self.start_date + ':' + self.end_date
+        print(self.__dict__)
+        exit(0)
 
 
 class ExecuteAlgorithmCommandFactory:
@@ -178,7 +181,6 @@ def cluster_by_command(command_list: [ExecuteAlgorithmCommand]) -> [(int, pd.Dat
 #command -> ClusteringFlags
 def run_clustering(command) -> pd.DataFrame:
     handler = create_default_handler(command.log_level)
-    print(command.object_path)
     return handler.handle(command)
 
 

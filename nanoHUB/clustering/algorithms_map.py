@@ -9,6 +9,7 @@ from nanoHUB.clustering.preprocessing.gather_data import gather_data
 import os
 from datetime import datetime, date
 import logging
+from pathlib import Path
 
 
 class IValidator:
@@ -127,7 +128,8 @@ class GeddesSaver(IExecuteAlgorithm):
 
         df_dict = self.handler.handle(command)
         if command.save_to_geddes == True:
-            command.object_path = 'clusters/' + command.task + '/by_semester'
+            # if not command.object_path:
+            #     command.object_path = 'clusters/' + command.task + '/reruns/by_semester'
             save_clusters_to_geddes(df_dict, command)
         return df_dict
 
@@ -141,19 +143,18 @@ class LocalDriveSaver(IExecuteAlgorithm):
         df_dict = self.handler.handle(command)
         if not os.path.exists(command.output_dir):
             os.mkdir(command.output_dir)
+        probe_range_path = command.class_probe_range[0] + '_' + command.class_probe_range[1]
+        base_path = Path(command.output_dir)
+        path = base_path / command.task / 'reruns/by_semester' / probe_range_path
 
         if command.no_save_output == True:
             self.logger.info("Skipping saving output locally.")
         else:
-            path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + command.class_probe_range[1]
-            if not os.path.exists(path):
-                os.makedirs(path)
+            path.mkdir(parents=True, exist_ok=True)
             self.logger.info("Saving output locally at %s" % path)
-
-            for key in df_dict:
-                path = command.output_dir + '/' + command.task + '/by_semester/' + command.class_probe_range[0] + '_' + \
-                       command.class_probe_range[1] + '/' + key + '.csv'
-                df_dict[key].to_csv(path)
+            for key, df in df_dict.items():
+                file_path = path / (key + '.csv')
+                df.to_csv(file_path)
 
         return df_dict
 
