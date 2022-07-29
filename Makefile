@@ -97,8 +97,8 @@ run_command:
 	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
 
 run-clustering:
-	docker exec `docker ps -q --filter name=nanohub-analytics_dev` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=xufeng
-	docker exec `docker ps -q --filter name=nanohub-analytics_dev` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=mike
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=xufeng
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=mike
 ########################################################################################################################
 # Others
 
