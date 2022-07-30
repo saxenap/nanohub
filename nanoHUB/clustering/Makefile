@@ -6,6 +6,7 @@ task = xufeng
 bucket-name = nanohub.processed
 object-path = clusters/${task}/by_semester
 log-level = INFO
+scratch_dir=/var/tmp
 FIRST_YEAR := 2006
 LAST_YEAR := 2022
 YEARS = $(shell seq ${FIRST_YEAR} ${LAST_YEAR})
@@ -26,7 +27,9 @@ ${JOBS}: job%:
     	--bucket_name $(bucket-name) \
     	--object_path $(object-path) \
     	--log_level $(log-level) \
+    	--no_save_output \
+    	--scratch_dir $(scratch_dir) \
     	$(other_flags)
 
 
-#--cost_probe_range $* \
+#--cost_probe_range $* \s
