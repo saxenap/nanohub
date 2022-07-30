@@ -97,8 +97,8 @@ run_command:
 	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
 
 run-clustering:
-	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=xufeng no_save_output=True scratch_dir=/var/tmp
-	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=mike no_save_output=True scratch_dir=/var/tmp
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True scratch_dir=/var/tmp
+	docker exec `docker ps -q --filter name=nanohub_pipeline` make -j10 -C nanoHUB/clustering task=mike no_save_output=True scratch_dir=/var/tmp
 ########################################################################################################################
 # Others
 
