@@ -100,7 +100,7 @@ run_command:
 	docker exec `docker ps -q --filter name=$(pipeline_name)` $(command)
 
 run-clustering:
-	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True scratch_dir=/var/tmp
+	#docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True scratch_dir=/var/tmp
 	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=mike no_save_output=True scratch_dir=/var/tmp
 
 dev-clustering:
