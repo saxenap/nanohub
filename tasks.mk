@@ -16,6 +16,7 @@ SALESFORCE_DIR=$(PIPELINE_DIR)/salesforce
 SF_BACKUP_DOMAIN='backups'
 DOMAIN=${SF_BACKUP_DOMAIN}
 
+CLUSTERING_DIR=$(NANOHUB_DIR)/clustering
 
 log-context='undefined'
 log-level='INFO'
@@ -68,5 +69,8 @@ salesforce-backup:
 
 import:
 	$(MAKE) -f $(THIS_FILE) execute TASKS=$(PIPELINE_DIR)/SF_dataimports/general_imports.ipynb
+
+clustering-%:
+	cd $(CLUSTERING_DIR) && make all task=$*
 
 #$(SALESFORCE_DIR)/task_determine_contact_cluster_org.ipynb  \

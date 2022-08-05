@@ -3,6 +3,7 @@ from nanoHUB.application import Application
 from io import StringIO
 import pandas as pd
 import logging
+import time
 
 # geddes functionality
 
@@ -12,28 +13,22 @@ def save_clusters_to_geddes(clusters_dfs: {}, flags):
 
         # date_range_str = flags.class_probe_range.replace(':', '_')
         date_range_str = '_'.join(flags.class_probe_range)
-        folder_path = "%s/%s" % (flags.object_path, date_range_str)
+        folder_path = "%s/latest/%s" % (flags.object_path, date_range_str)
+        dated_folder_path = "%s/past_runs/%s/%s" % (flags.object_path, time.strftime("%Y%m%d-%H%M%S"), date_range_str)
 
-        logging.debug("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
-        print(flags.object_path)
         s3_client = get_default_s3_client(Application.get_instance())
 
-        save_to_geddes(
-            s3_client, flags.bucket_name, clusters_dfs['intra_tool_cluster_df'], folder_path, 'intra_tool_cluster_df'
-        ) #intra_tool_cluster_df
+        logging.info("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
+        logging.info("Also uploading output files to Geddes: %s/%s" % (flags.bucket_name, dated_folder_path))
+        print(flags.object_path)
 
-
-        save_to_geddes(
-            s3_client, flags.bucket_name,  clusters_dfs['class_info_df'], folder_path, 'class_info'
-        ) #intra_tool_cluster_df
-
-        save_to_geddes(
-            s3_client, flags.bucket_name, clusters_dfs['classtool_info_df'], folder_path, 'classtool_info'
-        )  # intra_tool_cluster_df
-
-        save_to_geddes(
-            s3_client, flags.bucket_name, clusters_dfs['students_info_df'], folder_path, 'students_info'
-        )  # intra_tool_cluster_df
+        for key, df in clusters_dfs.items():
+            save_to_geddes(
+                s3_client, flags.bucket_name, df, folder_path, key
+            )
+            save_to_geddes(
+                s3_client, flags.bucket_name, df, dated_folder_path, key
+            )
 
 
         # save_to_geddes(

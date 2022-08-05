@@ -12,6 +12,9 @@ root_path := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 cwd  := $(shell pwd)
 
 nohup_path=$(root_path)/.output/nohup.out
+
+dev_name=nanohub-analytics_dev
+pipeline_name=nanohub_pipeline
 ########################################################################################################################
 #These run on the host
 
@@ -79,25 +82,30 @@ setup-cron-jobs:
 	crontab -l
 
 exec-dev:
-	docker exec -it `docker ps -q --filter name=nanohub-analytics_dev` bash
+	docker exec -it `docker ps -q --filter name=$(dev_name)` bash
 
 exec-remote:
 	docker exec -it `docker ps -q --filter name=nanohub-analytics_remote` bash
 
 exec-pipeline:
-	docker exec -it `docker ps -q --filter name=nanohub_pipeline` bash
+	docker exec -it `docker ps -q --filter name=$(pipeline_name)` bash
 
 run-tasks:
-	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -f tasks.mk execute
 
 debug-tasks:
-	docker exec `docker ps -q --filter name=nanohub_pipeline` make -f tasks.mk execute log-level=DEBUG
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -f tasks.mk execute log-level=DEBUG
 
 run_command:
-	docker exec `docker ps -q --filter name=nanohub_pipeline` $(command)
+	docker exec `docker ps -q --filter name=$(pipeline_name)` $(command)
 
 run-clustering:
-	docker exec `docker ps -q --filter name=nanohub_dev` make -C -j$(getconf _NPROCESSORS_ONLN) nanoHUB/clustering
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True scratch_dir=/var/tmp
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=mike no_save_output=True scratch_dir=/var/tmp
+
+dev-clustering:
+	docker exec `docker ps -q --filter name=$(dev_name)` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=xufeng scratch_dir=/var/tmp
+	docker exec `docker ps -q --filter name=$(dev_name)` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=mike scratch_dir=/var/tmp
 ########################################################################################################################
 # Others
 
