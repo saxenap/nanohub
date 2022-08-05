@@ -11,6 +11,7 @@ from ast import literal_eval
 from dataclasses import dataclass
 from ast import literal_eval
 import logging
+import time
 
 
 class ClustersBySemester(ClustersRepository):
@@ -20,7 +21,9 @@ class ClustersBySemester(ClustersRepository):
 
     def get(self, alg_name: str, from_date: datetime, to_date: datetime, **args) -> pd.DataFrame:
         time_probe = self.date_parser.create_time_probe(from_date, to_date)
-        file_path = 'clusters/%s/by_semester/%s.csv' % (alg_name, time_probe)
+        file_path = 'clusters/latest/%s/by_semester/%s/clustering_result.csv' % (alg_name, time_probe)
+        # time.strftime("%Y-%m-%d")
+        print("Reading: %s" % file_path)
         return self.mapper.read(file_path, **args)
 
     def get_for_semester(self, alg_name: str, semester: str, year: int) -> pd.DataFrame:
@@ -37,8 +40,13 @@ class ClustersBySemester(ClustersRepository):
 
     def save(self, df: pd.DataFrame, alg_name: str, from_date: datetime, to_date: datetime, **args) -> None:
         time_probe = self.date_parser.create_time_probe(from_date, to_date)
-        file_path = 'clusters/%s/by_semester/%s.csv' % (alg_name, time_probe)
-
+        file_path = 'clusters/latest/%s/by_semester/%s/clustering_result' % (alg_name, time_probe)
+        # file_path = 'clusters/08-01-2022/xufeng/by_semester/%s.csv' % (time_probe)
+        print(df.head())
+        print(len(df))
+        print("Saving to: %s" % file_path)
+        self.mapper.save_as_csv(df, file_path, **args)
+        file_path = 'clusters/past_runs/%s/%s/by_semester/%s/clustering_result' % (time.strftime("%Y-%m-%d"), alg_name, time_probe)
         self.mapper.save_as_csv(df, file_path, **args)
 
 

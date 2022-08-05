@@ -13,30 +13,29 @@ def save_clusters_to_geddes(clusters_dfs: {}, flags):
 
         # date_range_str = flags.class_probe_range.replace(':', '_')
         date_range_str = '_'.join(flags.class_probe_range)
-        folder_path = "%s/latest/%s" % (flags.object_path, date_range_str)
-        dated_folder_path = "%s/past_runs/%s/%s" % (flags.object_path, time.strftime("%Y%m%d-%H%M%S"), date_range_str)
-
+        past_runs_folder_path = "%s/past_runs/%s/%s/by_semester/%s" % (flags.object_path, time.strftime("%Y-%m-%d"), flags.task, date_range_str)
+        latest_folder_path = "%s/latest/%s/by_semester/%s" % (flags.object_path, flags.task, date_range_str)
         s3_client = get_default_s3_client(Application.get_instance())
 
-        logging.info("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
-        logging.info("Also uploading output files to Geddes: %s/%s" % (flags.bucket_name, dated_folder_path))
+        logging.info("Uploading output files to Geddes: %s/%s" % (flags.bucket_name, past_runs_folder_path))
+        logging.info("Also uploading output files to Geddes: %s/%s" % (flags.bucket_name, latest_folder_path))
         print(flags.object_path)
-
+        print(flags.task)
         for key, df in clusters_dfs.items():
             save_to_geddes(
-                s3_client, flags.bucket_name, df, folder_path, key
+                s3_client, flags.bucket_name, df, past_runs_folder_path, key
             )
             save_to_geddes(
-                s3_client, flags.bucket_name, df, dated_folder_path, key
+                s3_client, flags.bucket_name, df, latest_folder_path, key
             )
             if key == 'intra_tool_cluster_df':
                 intra_tool_cluster_df = pd.DataFrame(df['user_set'].values.tolist()) \
                     .rename(columns = lambda x: '{}'.format(x+1))
                 save_to_geddes(
-                    s3_client, flags.bucket_name, intra_tool_cluster_df, folder_path, 'cluster_user_set', False
+                    s3_client, flags.bucket_name, intra_tool_cluster_df, past_runs_folder_path, 'clustering_result', False
                 )
                 save_to_geddes(
-                    s3_client, flags.bucket_name, intra_tool_cluster_df, dated_folder_path, 'cluster_user_set', False
+                    s3_client, flags.bucket_name, intra_tool_cluster_df, latest_folder_path, 'clustering_result', False
                 )
 
 
@@ -81,7 +80,6 @@ def save_clusters_to_geddes(clusters_dfs: {}, flags):
         #     s3_client, bucket_name, user_activity_blocks_df, folder_path, 'user_activity_blocks_df'
         # )
 
-        logging.info("Uploaded output files to Geddes: %s/%s" % (flags.bucket_name, folder_path))
 
 def save_to_geddes(s3_client, bucket_name:str, df: pd.DataFrame, folder_path:str, name: str, headers:bool = True):
     _buf = StringIO()

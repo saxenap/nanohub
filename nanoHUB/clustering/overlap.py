@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from ast import literal_eval
 
 
 def get_set_from(df: pd.DataFrame):
@@ -100,7 +101,11 @@ class MikeXufengOverlap:
 
     def save_for(self, from_date: datetime, to_date: datetime) -> None:
         df_m = self.repo.get(self.mike_name, from_date, to_date)
+        print(df_m.head(2))
+        print(len(df_m))
         df_x = self.repo.get(self.xufeng_name, from_date, to_date, header=None)
+        print(df_x.head(2))
+        print(len(df_x))
         overlap_df = get_cluster_overlap(df_m, df_x)
         self.repo.save(overlap_df, self.overlap_name, from_date, to_date, index=False)
 
