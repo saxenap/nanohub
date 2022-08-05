@@ -29,15 +29,22 @@ def save_clusters_to_geddes(clusters_dfs: {}, flags):
             save_to_geddes(
                 s3_client, flags.bucket_name, df, dated_folder_path, key
             )
+            if key == 'intra_tool_cluster_df':
+                intra_tool_cluster_df = pd.DataFrame(df['user_set'].values.tolist()) \
+                    .rename(columns = lambda x: '{}'.format(x+1))
+                save_to_geddes(
+                    s3_client, flags.bucket_name, intra_tool_cluster_df, folder_path, 'cluster_user_set', False
+                )
+                save_to_geddes(
+                    s3_client, flags.bucket_name, intra_tool_cluster_df, dated_folder_path, 'cluster_user_set', False
+                )
 
 
         # save_to_geddes(
         #     s3_client, flags.bucket_name, clusters_df, folder_path, name
         # )
 
-        # save_to_geddes(
-        #     s3_client, bucket_name, intra_tool_cluster_df['user_set'], folder_path, 'cluster_user_set', False
-        # )
+
         #
         #
         # df = pd.DataFrame(intra_tool_cluster_df['user_set'].values.tolist()) \

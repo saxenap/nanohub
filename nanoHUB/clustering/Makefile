@@ -2,7 +2,7 @@ CPUS=$(shell getconf _NPROCESSORS_ONLN)
 other_flags=
 #MAKEFLAGS += -j$(CPUS)
 
-task = xufeng
+task = mike
 bucket-name = nanohub.processed
 object-path = clusters/${task}/by_semester
 log-level = INFO
@@ -27,7 +27,7 @@ ${JOBS}: job%:
     	--bucket_name $(bucket-name) \
     	--object_path $(object-path) \
     	--log_level $(log-level) \
-    	--no_save_output \
+#    	--no_save_output \
     	--scratch_dir $(scratch_dir) \
     	$(other_flags)
 
