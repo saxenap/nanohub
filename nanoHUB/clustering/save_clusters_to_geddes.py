@@ -9,7 +9,7 @@ import time
 
 def save_clusters_to_geddes(clusters_dfs: {}, flags):
 
-        print(clusters_dfs)
+        # print(clusters_dfs)
 
         # date_range_str = flags.class_probe_range.replace(':', '_')
         date_range_str = '_'.join(flags.class_probe_range)
@@ -29,8 +29,10 @@ def save_clusters_to_geddes(clusters_dfs: {}, flags):
                 s3_client, flags.bucket_name, df, latest_folder_path, key
             )
             if key == 'intra_tool_cluster_df':
-                intra_tool_cluster_df = pd.DataFrame(df['user_set'].values.tolist()) \
-                    .rename(columns = lambda x: '{}'.format(x+1))
+                intra_tool_cluster_df = df
+                if flags.task == 'xufeng':
+                    intra_tool_cluster_df = pd.DataFrame(df['user_set'].values.tolist()) \
+                        .rename(columns = lambda x: '{}'.format(x+1))
                 save_to_geddes(
                     s3_client, flags.bucket_name, intra_tool_cluster_df, past_runs_folder_path, 'clustering_result', False
                 )
