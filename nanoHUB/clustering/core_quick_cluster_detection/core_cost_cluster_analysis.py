@@ -24,6 +24,8 @@ import code
 import time
 from nanoHUB.pipeline.geddes.data import get_default_s3_client
 from nanoHUB.application import Application
+from pathlib import Path
+import shutil
 
 
 def get_scratch_dir(inparams):
