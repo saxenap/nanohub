@@ -99,10 +99,15 @@ debug-tasks:
 run_command:
 	docker exec `docker ps -q --filter name=$(pipeline_name)` $(command)
 
-run-clustering:
-	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True
-	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=mike no_save_output=True
+run-clustering: run-clustering-mike run-clustering-xufeng
 	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -f nanoHUB/clustering/overlap.mk
+
+run-clustering-mike:
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=mike no_save_output=True
+
+run-clustering-xufeng:
+	docker exec `docker ps -q --filter name=$(pipeline_name)` make -j10 -C nanoHUB/clustering task=xufeng no_save_output=True
+
 
 dev-clustering:
 	docker exec `docker ps -q --filter name=$(dev_name)` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=xufeng scratch_dir=/tmp
