@@ -445,8 +445,8 @@ def core_classroom_analysis(inparams):
         ~user_activity_blocks_df.lat.isna() & ~user_activity_blocks_df.lon.isna()]
 
     logging.info('Tool usage activity blocks formed for each user for all days')
-    logging.info('(user_activity_blocks_df)')
-    logging.info(user_activity_blocks_df)
+    logging.debug('(user_activity_blocks_df)')
+    logging.debug(user_activity_blocks_df)
 
     # Geospatial clustering for each day, each tool
     grouped = user_activity_blocks_df.groupby('tool')
@@ -469,8 +469,8 @@ def core_classroom_analysis(inparams):
     cluster_output_candidate = cluster_output_candidate[cluster_output_candidate.user_meet_class_size_min]
 
     logging.info('Geospatially clustered candidates for classrooms on each day:')
-    logging.info('(cluster_output_candidate)')
-    logging.info(cluster_output_candidate)
+    logging.debug('(cluster_output_candidate)')
+    logging.debug(cluster_output_candidate)
 
     # Aggregate clusters in neighboring days into one
     '''

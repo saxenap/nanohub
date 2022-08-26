@@ -3,6 +3,31 @@ import datetime
 import requests
 from io import StringIO
 import time
+import json
+
+
+class SalesforceFailure(RuntimeError):
+    pass
+
+
+class AuthenticationFailure(SalesforceFailure):
+    pass
+
+
+class BulkJobCreationError(SalesforceFailure):
+    pass
+
+
+class BulkJobFailedError(SalesforceFailure):
+    pass
+
+
+class ClosingJobFailedError(SalesforceFailure):
+    pass
+
+
+class CsvUploadFailedError(SalesforceFailure):
+    pass
 
 
 class DB2SalesforceAPI:
@@ -39,7 +64,7 @@ class DB2SalesforceAPI:
 
         else:
             print('[Error] %s', response.text)
-            raise
+            raise AuthenticationFailure((response.json()))
 
     def query_data(self, query):
 
@@ -58,7 +83,7 @@ class DB2SalesforceAPI:
             # job request not successful
             print('[FAIL] Bulk job creation failed ...')
             print(response.text)
-            raise
+            raise BulkJobCreationError(response.json())
         else:
             # job request successful
             print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
@@ -90,7 +115,7 @@ class DB2SalesforceAPI:
             # job request not successful
             print('[FAIL] Bulk job failed ...')
             print(response.text)
-            raise
+            raise BulkJobFailedError(response.json())
         else:
             # job request successful
             print('[Success] Bulk job completed successfully.')
@@ -133,7 +158,7 @@ class DB2SalesforceAPI:
         if not response.ok:
             # job request not successful
             print('[FAIL] Bulk job creation failed ...')
-            raise
+            raise BulkJobCreationError(response.json())
         else:
             # job request successful
             print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
@@ -156,7 +181,7 @@ class DB2SalesforceAPI:
         if not response.ok:
             # CSV upload not successful
             print('[FAIL] CSV upload failed ...')
-            raise
+            raise CsvUploadFailedError(response.json())
         else:
             # CSV upload successful
             print('[Success] CSV upload successful. Job ID = %s'%job_id)
@@ -202,7 +227,7 @@ class DB2SalesforceAPI:
         if not response.ok:
             # job request not successful
             print('[FAIL] Bulk job creation failed ...')
-            raise
+            raise BulkJobCreationError(response.json())
         else:
             # job request successful
             print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
@@ -226,7 +251,7 @@ class DB2SalesforceAPI:
         if not response.ok:
             # CSV upload not successful
             print('[FAIL] CSV upload failed ...')
-            raise
+            raise CsvUploadFailedError(response.json())
         else:
             # CSV upload successful
             print('[Success] CSV upload successful. Job ID = %s'%job_id)
@@ -243,7 +268,7 @@ class DB2SalesforceAPI:
         if not response.ok:
             # job close not successful
             print('[FAIL] Closing job failed ...')
-            raise
+            raise ClosingJobFailedError(response.json())
         else:
             # job close successful
             print('[Success] Closing job successful. Job ID = %s'%job_id)

@@ -99,7 +99,6 @@ def main_online_users_TS():
                         action='store', default='INFO')
 
     inparams = parser.parse_args()
-
     # redefine inparams for cronjob smoothness - since we use this setting anyway
     inparams.generate_notebook_checkpoints = True  # so outputs are saved
 
