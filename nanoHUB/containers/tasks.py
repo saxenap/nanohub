@@ -33,7 +33,9 @@ class TasksContainer(containers.DeclarativeContainer):
 
     salesforce = providers.Factory(
         DB2SalesforceAPI,
-        sf_login_params=sf_login_params
+        sf_login_params=sf_login_params,
+        endpoint=config.salesforce.endpoint,
+        logger=logger()
     )
 
     googleapi = providers.Container(
