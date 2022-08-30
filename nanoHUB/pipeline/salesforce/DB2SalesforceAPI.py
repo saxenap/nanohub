@@ -30,7 +30,6 @@ class CsvUploadFailedError(SalesforceFailure):
 
 
 class DB2SalesforceAPI:
-
     def __init__(self, sf_login_params, endpoint: str, logger: logging.Logger):
         # Parameters
         self.endpoint = endpoint
