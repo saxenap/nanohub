@@ -149,7 +149,7 @@ delete-deployment:
 replicas=1
 revision_history=1
 storage=100Gi
-geddes-dev: delete-deployment
+geddes-deploy-dev: delete-deployment
 	-#make remote
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${image_version}
 	docker login geddes-registry.rcac.purdue.edu
@@ -168,7 +168,7 @@ geddes-dev: delete-deployment
 	git commit -m "kubernetes deployment build for ${deployment_name}"
 	git push origin production
 
-geddes-%:
+geddes-deploy-%:
 	sed ' \
 		s/{{IMAGE_VERSION}}/$*-${image_version}/g ; \
 		s/{{DEPLOYMENT_NAME}}/$*/g ; \
@@ -194,3 +194,7 @@ jupyter-config:
 
 nohup:
 	touch $(nohup_path)
+
+
+geddes-bucket-size-%:
+	aws s3 --profile geddes --endpoint-url https://s3.geddes.rcac.purdue.edu ls $* --recursive --human-readable --summarize
