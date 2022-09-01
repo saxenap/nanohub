@@ -82,11 +82,19 @@ def user(
         gitlab_fullname: str = '',
         geddes_user: str = '',
         geddes_access_key: str = '',
-        geddes_secret_key: str = ''
+        geddes_secret_key: str = '',
+        loglevel: str = typer.Option(
+            "INFO",
+            "--log-level",
+            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL"
+        )
 ):
     """
     Onboard a user.
     """
+    logging.config.dictConfig(logging_conf)
+    logging.getLogger().setLevel(logging.getLevelName(loglevel.upper()))
+
     command = OnboardingCommand(
         git_fullname=gitlab_fullname,
         git_email=gitlab_email,
