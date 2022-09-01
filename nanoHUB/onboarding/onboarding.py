@@ -238,8 +238,8 @@ class CommandValidator:
             self.errors.set_error_for('name', 'Username field is empty!')
 
         # jupyterpassword
-        if command.jupyter_password == "":
-            self.errors.set_error_for('password', 'Jupyter password field is empty!')
+        # if command.jupyter_password == "":
+        #     self.errors.set_error_for('password', 'Jupyter password field is empty!')
 
         return self.errors
 
