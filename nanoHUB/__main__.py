@@ -91,7 +91,7 @@ def user(
         git_fullname=gitlab_fullname,
         git_email=gitlab_email,
         git_username=gitlab_username,
-        jupyter_password='nanoHUB',
+        # jupyter_password='nanoHUB',
         env_career_user=purdue_career_username,
         env_career_password=purdue_career_password,
         env_ssh_db_user=database_username,
