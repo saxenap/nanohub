@@ -153,16 +153,18 @@ def _setup_agent():
 
 class SSH_Setup:
     def generate_for(self, email_address: str, root_folder: str) -> str:
+        pub_file_path = "%s/.ssh/id_rsa.pub" % (root_folder)
         cmd1 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
         cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
-        cmd3 = os.system('cat %s/.ssh/id_rsa.pub' % (root_folder))
-        sshkey = os.popen('cat %s/.ssh/id_rsa.pub' % (root_folder)).read()
+        cmd3 = os.system('cat %s' % (pub_file_path))
+        sshkey = os.popen('cat %s' % (pub_file_path)).read()
         # cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
         _setup_agent()
         # cmd02 = os.system('ssh-add ~/.ssh/id_rsa')
-        process = subprocess.run(['ssh-add', 'id_rsa.pub'])
+
+        process = subprocess.run(['ssh-add', pub_file_path])
         if process.returncode != 0:
-            raise Exception('failed to add the key: {}'.format('id_rsa.pub'))
+            raise Exception('failed to add the key: {}'.format(pub_file_path))
         cmd03 = os.system('ssh-keyscan -t rsa gitlab.hubzero.org >> ~/.ssh/known_hosts')
         return sshkey
 
