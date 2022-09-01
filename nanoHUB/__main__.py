@@ -79,7 +79,10 @@ def user(
         database_password: str = '',
         gitlab_email: str = '',
         gitlab_username: str = '',
-        gitlab_fullname: str = ''
+        gitlab_fullname: str = '',
+        geddes_user: str = '',
+        geddes_access_key: str = '',
+        geddes_secret_key: str = ''
 ):
     """
     Onboard a user.
@@ -92,7 +95,10 @@ def user(
         env_career_user=purdue_career_username,
         env_career_password=purdue_career_password,
         env_ssh_db_user=database_username,
-        env_ssh_db_pass=database_password
+        env_ssh_db_pass=database_password,
+        geddes_user=geddes_user,
+        geddes_access_key=geddes_access_key,
+        geddes_secret_key=geddes_secret_key
     )
 
     factory = DefaultProcessorFactory()

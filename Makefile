@@ -166,7 +166,8 @@ geddes-deploy-dev: delete-deployment
 	kubectl apply -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
-	git push origin production
+	git tag ${image_version}
+	git push origin production --tags
 
 geddes-deploy-%:
 	sed ' \
