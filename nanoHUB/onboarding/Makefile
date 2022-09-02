@@ -21,7 +21,7 @@ git-ssh-setup:
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
 	chmod 400 ~/.ssh/id_rsa.pub
-	eval $(ssh-agent -s)
+	eval `ssh-agent -s`
 	ssh-add ~/.ssh/id_rsa
 	echo "Host gitlab.com" >> ~/.ssh/config
 	echo "	PreferredAuthentications publickey" >> ~/.ssh/config
