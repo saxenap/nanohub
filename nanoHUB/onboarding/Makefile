@@ -15,9 +15,11 @@ git-credentials:
 	git config --global credential.username $(gitlab_username)
 
 git-ssh-setup:
+	-rm -rf $(root_folder)/.ssh/id*
 	yes '' | ssh-keygen -N '' -C $(gitlab_email) > /dev/null
 	cat ~/.ssh/id_rsa.pub
-	@read -p "Please copy the public key to your GitLab settings. Press any key to continue:"
+	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
+		read AGE;
 	chmod 400 ~/.ssh/id_rsa.pub
 	eval "$(ssh-agent -s)"
 	ssh-add ~/.ssh/id_rsa.pub
