@@ -157,11 +157,11 @@ class SSH_Setup:
         cmd1 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
         cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
         cmd3 = os.system('cat %s' % (pub_file_path))
+        cmd4 = os.system("chmod 400 %s" % pub_file_path)
         sshkey = os.popen('cat %s' % (pub_file_path)).read()
         # cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
         _setup_agent()
         # cmd02 = os.system('ssh-add ~/.ssh/id_rsa')
-
         process = subprocess.run(['ssh-add', pub_file_path])
         if process.returncode != 0:
             raise Exception('failed to add the key: {}'.format(pub_file_path))
