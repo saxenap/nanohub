@@ -248,6 +248,7 @@ USER ${NB_USER}
 RUN rm -r ${NB_USER_DIR}/nanoHUB/*
 COPY nanoHUB/onboarding/README.md ${NB_USER_DIR}/nanoHUB/README.md
 COPY nanoHUB/.env.dev ${NB_USER_DIR}/nanoHUB/.env
+COPY nanoHUB/onboarding/Makefile ${NB_USER_DIR}/nanoHUB/Makefile
 VOLUME ${APP_DIR}
 EXPOSE ${JUPYTER_PORT}
 
