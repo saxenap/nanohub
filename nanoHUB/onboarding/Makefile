@@ -1,6 +1,6 @@
 repository_url=git@gitlab.hubzero.org:saxenap/nanohub-analytics.git
 temp_folder_name=temp
-root_folder="~/"
+root_folder=~
 base_folder=$(root_folder)/nanohub
 env_file_path=$(base_folder)/nanoHUB/.env
 env_dev_file_path=$(base_folder)/nanoHUB/.env.dev
@@ -12,14 +12,14 @@ ssh_private_key_path=$(ssh_folder_path)/id_rsa
 all: echo-vars git-setup git-repository-setup env-file-setup
 
 echo-vars:
-	echo root_folder=$(root_folder)
-	echo base_folder=$(base_folder)
-	echo env_file_path=$(env_file_path)
-	echo env_dev_file_path=$(env_dev_file_path)
-	echo ssh_folder_path=$(ssh_folder_path)
-	echo ssh_config_file_path=$(ssh_config_file_path)
-	echo ssh_public_key_path=$(ssh_public_key_path)
-	echo ssh_private_key_path=$(ssh_private_key_path)
+	@echo root_folder=$(root_folder)
+	@echo base_folder=$(base_folder)
+	@echo env_file_path=$(env_file_path)
+	@echo env_dev_file_path=$(env_dev_file_path)
+	@echo ssh_folder_path=$(ssh_folder_path)
+	@echo ssh_config_file_path=$(ssh_config_file_path)
+	@echo ssh_public_key_path=$(ssh_public_key_path)
+	@echo ssh_private_key_path=$(ssh_private_key_path)
 
 git-setup: git-credentials git-ssh-setup
 
