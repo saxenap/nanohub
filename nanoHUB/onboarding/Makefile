@@ -1,7 +1,7 @@
 git_url = gitlab.hubzero.org
 repository_url=git@gitlab.hubzero.org:saxenap/nanohub-analytics.git
-temp_folder_name=temp
 root_folder=~
+temp_folder_path=$(root_folder)/temp
 base_folder=$(root_folder)/nanohub
 env_file_path=$(base_folder)/nanoHUB/.env
 env_dev_file_path=$(base_folder)/nanoHUB/.env.dev
@@ -92,9 +92,9 @@ git-ssh-setup:
 	ssh-keyscan ${git_url} >> $(ssh_folder_path)/known_hosts
 
 code-setup:
-	git clone $(repository_url) $(temp_folder_name)
+	git clone $(repository_url) $(temp_folder_path)
 	rm -rf *
-	cp $(temp_folder_name)/ .
+	cp $(temp_folder_path)/ .
 
 geddes-setup:
 	$(call replace_in_env_file, {GEDDES_USERNAME_HERE}, ${geddes_user})
