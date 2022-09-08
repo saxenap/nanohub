@@ -213,7 +213,7 @@ geddes-bucket-size-%:
 
 LATEST_CODE_VERSION := $(shell git describe --match "[0-9]*" --tags | cut -f 3 -d '/')
 NUMERIC_TAG = $(firstword $(subst -, ,${LATEST_CODE_VERSION}))
-COMMIT_TAG = $(or $(word 2,$(subst :, ,${LATEST_CODE_VERSION})),$(value 2))
+COMMIT_TAG = $(or $(word 2,$(subst -, ,${LATEST_CODE_VERSION})),$(value 2))
 #CODE_VERSION_BITS:=$(shell ${LATEST_CODE_VERSION}//./ )
 #LATEST_CODE_VERSION:=$(shell ${LATEST_CODE_VERSION}:-'0.0.0')
 #MAJOR_VERSION := $(word-dot,${LATEST_CODE_VERSION},1)
