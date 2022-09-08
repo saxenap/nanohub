@@ -1,3 +1,4 @@
+git_url = gitlab.hubzero.org
 repository_url=git@gitlab.hubzero.org:saxenap/nanohub-analytics.git
 temp_folder_name=temp
 root_folder=~
@@ -9,7 +10,7 @@ ssh_config_file_path=$(ssh_folder_path)/config
 ssh_public_key_path=$(ssh_folder_path)/id_rsa.pub
 ssh_private_key_path=$(ssh_folder_path)/id_rsa
 
-all: echo-vars git-setup git-repository-setup env-file-setup
+all: echo-vars git-setup git-repository-setup code-setup env-file-setup
 
 echo-vars:
 	@echo root_folder=$(root_folder)
@@ -35,13 +36,16 @@ git-ssh-setup:
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
 	exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
-	echo "Host gitlab.hubzero.org" >> $(ssh_config_file_path)
+	echo "Host ${git_url}" >> $(ssh_config_file_path)
 	echo "	User git" >> $(ssh_config_file_path)
 	echo "	PreferredAuthentications publickey" >> $(ssh_config_file_path)
 	echo "	IdentityFile ~/.ssh/id_rsa" >> $(ssh_config_file_path)
+	ssh-keyscan ${git_url} >> $(ssh_folder_path)/known_hosts
 
-git-repository-setup:
+code-setup:
 	git clone $(repository_url) $(temp_folder_name)
+	rm -rf *
+	cp $(temp_folder_name)/ .
 
 geddes-setup:
 	sed -i -e "/geddes_user/ a geddes_user='${geddes_user}'" $(env_file_path)
@@ -63,6 +67,4 @@ copy-env-file:
 env-file-setup: copy-env-file geddes-setup tunnel-setup db-setup
 	cat $(env_file_path)
 
-	#chmod 400 ~/.ssh/id_rsa.pub
-#	eval `ssh-agent -s`
-#	ssh-add ~/.ssh/id_rsa
+
