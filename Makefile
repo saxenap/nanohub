@@ -36,6 +36,8 @@ pipeline-nohup: nohup pipeline setup-cron-jobs
 
 remote: git-pull remote-down remote-up
 
+deploy: git-pull deploy-down deploy-up
+
 clean:
 	docker volume rm $$(docker volume ls -q) 2>/dev/null; true
 	docker system prune --all -f
@@ -50,10 +52,16 @@ dev-up:
 	$(env-vars) docker-compose up --build
 
 remote-down:
-	$(env-vars) docker-compose -f docker-compose-remote.yml down
+	$(env-vars) docker-compose -f docker-compose-remote.yml down remote
 
 remote-up:
-	$(env-vars) docker-compose -f docker-compose-remote.yml up --build
+	$(env-vars) docker-compose -f docker-compose-remote.yml up --build remote
+
+deploy-down:
+	$(env-vars) docker-compose -f docker-compose-remote.yml down deploy
+
+deploy-up:
+	$(env-vars) docker-compose -f docker-compose-remote.yml up --build deploy
 
 cartopy-down:
 	$(env-vars) docker-compose -f docker-compose-cartopy.yml down
@@ -150,7 +158,7 @@ replicas=1
 revision_history=1
 storage=100Gi
 geddes-deploy-dev: delete-deployment
-	-#make remote
+	make deploy
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${image_version}
 	docker login geddes-registry.rcac.purdue.edu
 	docker tag `docker images -q nanohub-analytics_remote:${image_version}` geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:${image_version}
