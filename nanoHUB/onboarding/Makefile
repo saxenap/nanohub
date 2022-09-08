@@ -10,7 +10,56 @@ ssh_config_file_path=$(ssh_folder_path)/config
 ssh_public_key_path=$(ssh_folder_path)/id_rsa.pub
 ssh_private_key_path=$(ssh_folder_path)/id_rsa
 
+gitlab_fullname = $(fullname)
+gitlab_email = $(purdue_email)
+gitlab_username = $(purdue_career_username)
+geddes_user = $(purdue_career_username)
+tunnel_ssh_username = $(purdue_career_username)
+tunnel_ssh_password = $(purdue_career_password)
+
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+
+
+
+define replace_in_file
+sed -i 's/${2}/${3}/' {1}
+endef
+
+define replace_in_env_file
+$(call replace_in_file, ${env_file_path}, ${1}, ${2})
+endef
+
+##
+## make: Setup the user with their credentials on this machine for use with nanoHUB Analytics GitLab, databases, and other infrastructure.
+##
+## Arguments:
+## 1. fullname - Don't forget to use quotes around your name (Example: fullname="data god")
+## 2. purdue_email - This is the email you used to register with gitlab.hubzero.org. Usually, is your Purdue email. (Example: purdue_email=datagod@purdue.edu)
+## 3. purdue_career_username - This is your preferred username to use with Git. Usually, this would just be your Purdue Career Account username. (Example: purdue_career_username=datagod)
+## 4. purdue_career_password (Example: purdue_career_password=*********)
+## 5. geddes_access_key (Example: geddes_access_key=*********)
+## 6. geddes_secret_key (Example: geddes_secret_key=******************)
+## 7. db_user
+## 8. db_password
+##
+##
+## During setup, the program will pause to provide you with a SSH public key. Here's what you need to do with it:
+## 1. Copy the provided public key
+## 2. Visit https://gitlab.hubzero.org/-/profile/keys
+## 3. Paste the public key into the box and give it a name such as 'geddes'
+## 4. Click on 'Add Key'
+## 5. Come back to the terminal on Jupyter and click 'Enter'
+##
+##
+## Once the program completes setup, you are ready to start using the machine.
+## Good luck, and may the data force be with you.
+##
+## ##################################################################################
+## ##################################################################################
+.DEFAULT_GOAL := all
 all: echo-vars git-setup git-repository-setup code-setup env-file-setup
+
+dev-all: echo-vars all
 
 echo-vars:
 	@echo root_folder=$(root_folder)
@@ -48,18 +97,17 @@ code-setup:
 	cp $(temp_folder_name)/ .
 
 geddes-setup:
-	sed -i -e "/geddes_user/ a geddes_user='${geddes_user}'" $(env_file_path)
-	sed -i -e "/geddes_access_key/ a geddes_access_key='${geddes_access_key}'" $(env_file_path)
-	sed -i -e "/geddes_secret_key/ a geddes_secret_key='${geddes_secret_key}'" $(env_file_path)
+	$(call replace_in_env_file, {GEDDES_USERNAME_HERE}, ${geddes_user})
+	$(call replace_in_env_file, {GEDDES_ACCESS_KEY_HERE}, ${geddes_access_key})
+	$(call replace_in_env_file, {GEDDES_SECRET_KEY_HERE}, ${geddes_secret_key})
 
 tunnel-setup:
-	sed -i -e "/tunnel_ssh_username/ a tunnel_ssh_username='${tunnel_ssh_username}'" $(env_file_path)
-	sed -i -e "/tunnel_ssh_password/ a tunnel_ssh_password='${tunnel_ssh_password}'" $(env_file_path)
+	$(call replace_in_env_file, {CAREER_ACCOUNT_USERNAME_HERE}, ${tunnel_ssh_username})
+	$(call replace_in_env_file, {CAREER_ACCOUNT_PASSWORD_HERE}, ${tunnel_ssh_password})
 
 db-setup:
-	sed -i -e "/db_user/ a db_user='${db_user}'" $(env_file_path)
-	sed -i -e "/db_password/ a db_password='${db_password}'" $(env_file_path)
-
+	$(call replace_in_env_file, {DB_USERNAME_HERE}, ${db_user})
+	$(call replace_in_env_file, {DB_PASSWORD_HERE}, ${db_password})
 
 copy-env-file:
 	cp $(env_dev_file_path) $(env_file_path)
@@ -68,3 +116,6 @@ env-file-setup: copy-env-file geddes-setup tunnel-setup db-setup
 	cat $(env_file_path)
 
 
+help : Makefile
+	@sed -n 's/^##//p' ${mkfile_path}
+	@echo "\n"
