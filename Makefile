@@ -157,7 +157,7 @@ delete-deployment:
 replicas=1
 revision_history=1
 storage=100Gi
-image_version=$(shell git describe --tags)
+image_version=$(shell git describe --match "[0-9]*" --tags)
 geddes-deploy-dev: delete-deployment
 	echo ${image_version}
 	make deploy
@@ -174,7 +174,6 @@ geddes-deploy-dev: delete-deployment
     	' \
     	nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	kubectl apply -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
-	git tag deploy-${deployment_name}-$(image_version)
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
 	git tag deploy-${deployment_name}-$(image_version)
