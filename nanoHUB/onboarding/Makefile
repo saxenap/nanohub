@@ -29,37 +29,39 @@ define replace_in_env_file
 $(call replace_in_file, ${env_file_path}, ${1}, ${2})
 endef
 
-##
-## make: Setup the user with their credentials on this machine for use with nanoHUB Analytics GitLab, databases, and other infrastructure.
-##
-## Arguments:
-## 1. fullname - Don't forget to use quotes around your name (Example: fullname="data god")
-## 2. purdue_email - This is the email you used to register with gitlab.hubzero.org. Usually, is your Purdue email. (Example: purdue_email=datagod@purdue.edu)
-## 3. purdue_career_username - This is your preferred username to use with Git. Usually, this would just be your Purdue Career Account username. (Example: purdue_career_username=datagod)
-## 4. purdue_career_password (Example: purdue_career_password=*********)
-## 5. geddes_access_key (Example: geddes_access_key=*********)
-## 6. geddes_secret_key (Example: geddes_secret_key=******************)
-## 7. db_user
-## 8. db_password
-##
-##
-## During setup, the program will pause to provide you with a SSH public key. Here's what you need to do with it:
-## 1. Copy the provided public key
-## 2. Visit https://gitlab.hubzero.org/-/profile/keys
-## 3. Paste the public key into the box and give it a name such as 'geddes'
-## 4. Click on 'Add Key'
-## 5. Come back to the terminal on Jupyter and click 'Enter'
-##
-##
-## Once the program completes setup, you are ready to start using the machine.
-## Good luck, and may the data force be with you.
-##
-## ##################################################################################
-## ##################################################################################
+##help
+##help make: Setup the user with their credentials on this machine for use with nanoHUB Analytics GitLab, databases, and other infrastructure.
+##help
+##help Arguments:
+##help 1. fullname - Don't forget to use quotes around your name (Example: fullname="data god")
+##help 2. purdue_email - This is the email you used to register with gitlab.hubzero.org. Usually, is your Purdue email. (Example: purdue_email=datagod@purdue.edu)
+##help 3. purdue_career_username - This is your preferred username to use with Git. Usually, this would just be your Purdue Career Account username. (Example: purdue_career_username=datagod)
+##help 4. purdue_career_password (Example: purdue_career_password=*********)
+##help 5. geddes_access_key (Example: geddes_access_key=*********)
+##help 6. geddes_secret_key (Example: geddes_secret_key=******************)
+##help 7. db_user
+##help 8. db_password
+##help
+##help
+##help During setup, the program will pause to provide you with a SSH public key. Here's what you need to do with it:
+##help 1. Copy the provided public key
+##help 2. Visit https://gitlab.hubzero.org/-/profile/keys
+##help 3. Paste the public key into the box and give it a name such as 'geddes'
+##help 4. Click on 'Add Key'
+##help 5. Come back to the terminal on Jupyter and click 'Enter'
+##help
+##help
+##help Once the program completes setup, you are ready to start using the machine.
+##help Good luck, and may the data force be with you.
+##help
+##help ##################################################################################
+##help d##################################################################################
 .DEFAULT_GOAL := all
-all: echo-vars git-setup git-repository-setup code-setup env-file-setup
+all: final
 
 dev-all: echo-vars all
+
+####################################################################################
 
 echo-vars:
 	@echo root_folder=$(root_folder)
@@ -71,7 +73,9 @@ echo-vars:
 	@echo ssh_public_key_path=$(ssh_public_key_path)
 	@echo ssh_private_key_path=$(ssh_private_key_path)
 
-git-setup: git-credentials git-ssh-setup
+####################################################################################
+
+git-setup: git-credentials git-ssh-setup gitlab-config
 
 git-credentials:
 	git config --global user.name $(gitlab_fullname)
@@ -85,16 +89,29 @@ git-ssh-setup:
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
 	exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
+
+gitlab-config:
 	echo "Host ${git_url}" >> $(ssh_config_file_path)
 	echo "	User git" >> $(ssh_config_file_path)
 	echo "	PreferredAuthentications publickey" >> $(ssh_config_file_path)
 	echo "	IdentityFile ~/.ssh/id_rsa" >> $(ssh_config_file_path)
-	ssh-keyscan ${git_url} >> $(ssh_folder_path)/known_hosts
+	echo "	StrictHostKeyChecking no" >> $(ssh_config_file_path)
+	echo "	UserKnownHostsFile /dev/null" >> $(ssh_config_file_path)
 
-code-setup:
+####################################################################################
+
+code-setup: git-setup
 	git clone $(repository_url) $(temp_folder_path)
 	rm -rf *
 	cp $(temp_folder_path)/ .
+
+####################################################################################
+
+env-file-setup: code-setup copy-env-file geddes-setup tunnel-setup db-setup
+	cat $(env_file_path)
+
+copy-env-file:
+	cp $(env_dev_file_path) $(env_file_path)
 
 geddes-setup:
 	$(call replace_in_env_file, {GEDDES_USERNAME_HERE}, ${geddes_user})
@@ -109,13 +126,12 @@ db-setup:
 	$(call replace_in_env_file, {DB_USERNAME_HERE}, ${db_user})
 	$(call replace_in_env_file, {DB_PASSWORD_HERE}, ${db_password})
 
-copy-env-file:
-	cp $(env_dev_file_path) $(env_file_path)
+####################################################################################
 
-env-file-setup: copy-env-file geddes-setup tunnel-setup db-setup
-	cat $(env_file_path)
+final: env-file-setup
 
+####################################################################################
 
 help : Makefile
-	@sed -n 's/^##//p' ${mkfile_path}
+	@sed -n 's/^##help//p' ${mkfile_path}
 	@echo "\n"
