@@ -97,7 +97,7 @@ spec:
               value: INFO
             - name: pipeline_logging_syslog_msg_format
               value: '[{%(filename)s:%(lineno)d} %(levelname)s - %(message)s'
-          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.105
+          image: geddes-registry.rcac.purdue.edu/nanohub/nanohub-analytics:0.94.106
           imagePullPolicy: IfNotPresent
           name: test2
           ports:
