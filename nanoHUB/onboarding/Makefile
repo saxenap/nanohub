@@ -20,11 +20,9 @@ git-ssh-setup:
 	cat ~/.ssh/id_rsa.pub
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
-	chmod 400 ~/.ssh/id_rsa.pub
-	eval `ssh-agent -s`
-	ssh-add ~/.ssh/id_rsa
+	exec ssh-agent bash -c "ssh-add /.ssh/id_rsa; exec bash"
 	echo "Host gitlab.hubzero.org" >> ~/.ssh/config
-	echo "User git" >> ~/.ssh/config
+	echo "	User git" >> ~/.ssh/config
 	echo "	PreferredAuthentications publickey" >> ~/.ssh/config
 	echo "	IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
 
@@ -50,3 +48,6 @@ copy-env-file:
 
 env-file-setup: copy-env-file geddes-setup tunnel-setup db-setup
 
+	#chmod 400 ~/.ssh/id_rsa.pub
+#	eval `ssh-agent -s`
+#	ssh-add ~/.ssh/id_rsa
