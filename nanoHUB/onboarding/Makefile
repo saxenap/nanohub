@@ -89,7 +89,9 @@ git-ssh-setup:
 	cat $(ssh_public_key_path)
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
-	exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
+	eval $(ssh-agent -s)
+	ssh-add $(ssh_private_key_path)
+	#exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
 
 gitlab-config:
 	echo "Host ${git_url}" >> $(ssh_config_file_path)
@@ -104,7 +106,7 @@ gitlab-config:
 code-setup: git-setup
 	git clone $(repository_url) $(temp_folder_path)
 	rm -rf *
-	cp $(temp_folder_path)/ .
+	cp -r $(temp_folder_path)/ .
 
 ####################################################################################
 
