@@ -23,7 +23,8 @@ git-ssh-setup:
 	chmod 400 ~/.ssh/id_rsa.pub
 	eval `ssh-agent -s`
 	ssh-add ~/.ssh/id_rsa
-	echo "Host gitlab.com" >> ~/.ssh/config
+	echo "Host gitlab.hubzero.org" >> ~/.ssh/config
+	echo "User git" >> ~/.ssh/config
 	echo "	PreferredAuthentications publickey" >> ~/.ssh/config
 	echo "	IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
 
