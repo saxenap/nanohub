@@ -157,7 +157,9 @@ delete-deployment:
 replicas=1
 revision_history=1
 storage=100Gi
+image_version=$(shell git describe --tags)
 geddes-deploy-dev: delete-deployment
+	echo ${image_version}
 	make deploy
 	docker commit `docker ps -q --filter name=nanohub-analytics_remote` nanohub-analytics_remote:${image_version}
 	docker login geddes-registry.rcac.purdue.edu
@@ -172,9 +174,10 @@ geddes-deploy-dev: delete-deployment
     	' \
     	nanoHUB/ops/kubernetes/kube-file.yaml > nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	kubectl apply -f nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
+	git tag deploy-${deployment_name}-$(image_version)
 	git add nanoHUB/ops/kubernetes/builds/${deployment_name}.yaml
 	git commit -m "kubernetes deployment build for ${deployment_name}"
-	git tag ${image_version}
+	git tag deploy-${deployment_name}-$(image_version)
 	git push origin production --tags
 
 geddes-deploy-%:
