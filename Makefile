@@ -209,3 +209,22 @@ nohup:
 
 geddes-bucket-size-%:
 	aws s3 --profile geddes --endpoint-url https://s3.geddes.rcac.purdue.edu ls $* --recursive --human-readable --summarize
+
+git-push:
+	VERSION=`git describe --abbrev=0 --tags` \
+    	&& VERSION=${VERSION:-'0.0.0'} \
+		&& MAJOR="${VERSION%%.*}"; VERSION="${VERSION#*.}" \
+		&& MINOR="${VERSION%%.*}"; VERSION="${VERSION#*.}" \
+    	&& PATCH="${VERSION%%.*}"; VERSION="${VERSION#*.}" \
+		&& PATCH=$((PATCH+1)) \
+		&& GIT_COMMIT=`git rev-parse HEAD` \
+		&& NEEDS_TAG=`git describe --contains $GIT_COMMIT` \
+		&& NEW_TAG="$MAJOR.$MINOR.$PATCH" \
+		&& echo "Updating to $NEW_TAG"
+		&& if [ -z "$NEEDS_TAG" ]; then \
+			echo "Tagged with $NEW_TAG (Ignoring fatal:cannot describe - this means commit is untagged) " \
+			git tag $NEW_TAG \
+		&& else \
+			echo "Already a tag on this commit" \
+		&& fi
+	git push origin production --tags
