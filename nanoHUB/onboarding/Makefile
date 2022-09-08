@@ -82,6 +82,7 @@ git-credentials:
 	git config --global user.email $(gitlab_email)
 	git config --global credential.username $(gitlab_username)
 
+
 git-ssh-setup:
 	-rm -rf $(ssh_folder_path)/id*
 	yes '' | ssh-keygen -N '' -C $(gitlab_email) > /dev/null
