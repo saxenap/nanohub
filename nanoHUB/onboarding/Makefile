@@ -87,7 +87,8 @@ git-ssh-setup:
 	-rm -rf $(ssh_folder_path)/id*
 	yes '' | ssh-keygen -N '' -C $(gitlab_email) > /dev/null
 	cat $(ssh_public_key_path)
-	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
+	@echo "Please copy-paste the public key to your GitLab settings. Press enter to continue:" ; \
+	@echo "Once you click enter, the system will log you into a sub-shell. Please type 'Exit' and then press Enter at that point." ; \
 		read AGE;
 	#eval $(ssh-agent -s)
 	#ssh-add $(ssh_private_key_path)
@@ -107,7 +108,7 @@ gitlab-config:
 code-setup: git-setup
 	git clone $(repository_url) $(temp_folder_path)
 	rm -rf *
-	cp -r $(temp_folder_path)/ .
+	cp -r $(temp_folder_path)/* .
 
 ####################################################################################
 
