@@ -89,9 +89,9 @@ git-ssh-setup:
 	cat $(ssh_public_key_path)
 	@echo "Please copy-paste the public key to your GitLab settings. Press any key to continue:" ; \
 		read AGE;
-	eval $(ssh-agent -s)
-	ssh-add $(ssh_private_key_path)
-	#exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
+	#eval $(ssh-agent -s)
+	#ssh-add $(ssh_private_key_path)
+	exec ssh-agent bash -c "ssh-add $(ssh_private_key_path); exec bash"
 
 gitlab-config:
 	echo "Host ${git_url}" >> $(ssh_config_file_path)
@@ -100,6 +100,7 @@ gitlab-config:
 	echo "	IdentityFile ~/.ssh/id_rsa" >> $(ssh_config_file_path)
 	echo "	StrictHostKeyChecking no" >> $(ssh_config_file_path)
 	echo "	UserKnownHostsFile /dev/null" >> $(ssh_config_file_path)
+	echo "	AddKeysToAgent yes" >> $(ssh_config_file_path)
 
 ####################################################################################
 
