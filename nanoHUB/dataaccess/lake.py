@@ -11,6 +11,9 @@ from nanoHUB.pipeline.geddes.data import get_default_s3_client, read_all
 from nanoHUB.configuration import ClusteringConfiguration, DataLakeConfiguration
 import re
 from botocore.exceptions import ClientError
+import tempfile
+from boto3.s3.transfer import TransferConfig
+
 
 
 @dataclass
@@ -148,6 +151,14 @@ class S3FileMapper:
         except ClientError as e:
             return int(e.response['Error']['Code']) != 404
         return True
+
+    def upload_file(self, df: pd.DataFrame, full_path: str, **args):
+        config = TransferConfig(multipart_threshold=1024*2, max_concurrency=10,
+                                multipart_chunksize=1024*2, use_threads=True)
+        _buf = BytesIO()
+        df.to_parquet(_buf, **args)
+        _buf.seek(0)
+        self.client.upload_fileobj(_buf, self.bucket, full_path, Config = config)
 
     def save_as_csv(self, df: pd.DataFrame, full_path: str, **args):
         csv_buffer = StringIO()
