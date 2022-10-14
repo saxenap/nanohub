@@ -19,14 +19,16 @@ def daterange(start_date: datetime, end_date: datetime):
         single_date = start_date + timedelta(n)
         yield single_date
 
-def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetime, mapper, path: str):
+def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetime, mapper, path: str, skip_existing: int):
     for from_date in daterange(start_date, end_date):
         to_date = from_date + timedelta(days=1)
         formatted_query = query.format(from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d'))
         print(formatted_query)
         full_path = path + '/' + str(from_date.year) + '/' + str(from_date.month) + '/' + str(from_date.date()) + '.parquet.gzip'
         print(full_path)
-        if not mapper.exists(full_path):
+        if skip_existing == 0:
+            if mapper.exists(full_path):
+                print("Overwriting file path %s." % full_path)
             df = pd.read_sql(formatted_query, engine)
             mapper.upload_file(df, full_path, compression='gzip')
         else:
@@ -57,6 +59,7 @@ def single_call():
     parser.add_argument('--table_name', help='Database table name', action='store')
     parser.add_argument('--column_names', help='Comma separated list of columns in the database table that you want replicated', action='store')
     parser.add_argument('--date_column', help='Name of the date column', action='store')
+    parser.add_argument('--skip_existing', help='Skip overwriting a file if it already exists.', action='store', nargs='?', type=int, const=1, default=0)
     inparams = parser.parse_args()
 
     application = Application.get_instance()
@@ -78,7 +81,8 @@ def single_call():
         datetime.fromisoformat(inparams.start_date),
         datetime.fromisoformat(inparams.end_date),
         raw_mapper,
-        inparams.object_path
+        inparams.object_path,
+        inparams.skip_existing
     )
 
         # save_to_geddes(raw_mapper, inparams.object_path, df, inparams.date_probe_range, inparams.save_as)

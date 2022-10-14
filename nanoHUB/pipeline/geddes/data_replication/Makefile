@@ -9,6 +9,7 @@ date_column=
 
 object-path=
 save_as=csv
+skip_existing=
 log-level = INFO
 FIRST_YEAR := 2000
 LAST_YEAR := 2022
@@ -45,6 +46,7 @@ ${JOBS}: job%:
     	--table_name $(table_name) \
     	--column_names $(column_names) \
     	--date_column $(date_column) \
+    	--skip_existing $(skip_existing) \
     	$(other_flags)
 
 
