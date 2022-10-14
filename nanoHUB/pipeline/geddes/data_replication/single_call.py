@@ -26,13 +26,15 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
         print(formatted_query)
         full_path = path + '/' + str(from_date.year) + '/' + str(from_date.month) + '/' + str(from_date.date()) + '.parquet.gzip'
         print(full_path)
-        if skip_existing == 0:
-            if mapper.exists(full_path):
-                print("Overwriting file path %s." % full_path)
-            df = pd.read_sql(formatted_query, engine)
-            mapper.upload_file(df, full_path, compression='gzip')
-        else:
-            print("File path %s already exists. Skipping." % full_path)
+        if mapper.exists(full_path):
+            if skip_existing == 1:
+                print("File path %s already exists. Skipping." % full_path)
+                return
+            print("Overwriting file path %s." % full_path)
+        df = pd.read_sql(formatted_query, engine)
+        mapper.upload_file(df, full_path, compression='gzip')
+
+
 
 
 # def save_to_geddes(mapper, path, df, date_range: str, file_extension:str):
