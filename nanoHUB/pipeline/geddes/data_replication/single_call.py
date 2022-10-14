@@ -19,7 +19,7 @@ def daterange(start_date: datetime, end_date: datetime):
         single_date = start_date + timedelta(n)
         yield single_date
 
-def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetime, mapper, path: str, skip_existing: int):
+def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetime, mapper, path: str, date_columns, skip_existing: int):
     for from_date in daterange(start_date, end_date):
         to_date = from_date + timedelta(days=1)
         formatted_query = query.format(from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d'))
@@ -31,7 +31,7 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
                 print("File path %s already exists. Skipping." % full_path)
                 return
             print("Overwriting file path %s." % full_path)
-        df = pd.read_sql(formatted_query, engine)
+        df = pd.read_sql(formatted_query, engine, parse_dates={'start': {'format': '%Y-%m-%d %H:%M:%S'}, 'finish': {'format': '%Y-%m-%d %H:%M:%S'}})
         mapper.upload_file(df, full_path, compression='gzip')
 
 
@@ -61,6 +61,7 @@ def single_call():
     parser.add_argument('--table_name', help='Database table name', action='store')
     parser.add_argument('--column_names', help='Comma separated list of columns in the database table that you want replicated', action='store')
     parser.add_argument('--date_column', help='Name of the date column', action='store')
+    parser.add_argument('--date_columns', help='comma separated list of all the date columns', action='store')
     parser.add_argument('--skip_existing', help='Skip overwriting a file if it already exists.', action='store', nargs='?', type=int, const=1, default=0)
     inparams = parser.parse_args()
 
@@ -84,6 +85,7 @@ def single_call():
         datetime.fromisoformat(inparams.end_date),
         raw_mapper,
         inparams.object_path,
+        inparams.date_columns.split(','),
         inparams.skip_existing
     )
 

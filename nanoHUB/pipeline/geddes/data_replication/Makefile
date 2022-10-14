@@ -6,6 +6,7 @@ database_name=
 table_name=
 column_names=
 date_column=
+date_columns=
 
 object-path=
 save_as=csv
@@ -46,6 +47,7 @@ ${JOBS}: job%:
     	--table_name $(table_name) \
     	--column_names $(column_names) \
     	--date_column $(date_column) \
+    	--date_columns $(date_columns) \
     	--skip_existing $(skip_existing) \
     	$(other_flags)
 
