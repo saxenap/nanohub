@@ -24,10 +24,14 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
         to_date = from_date + timedelta(days=1)
         formatted_query = query.format(from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d'))
         print(formatted_query)
-        df = pd.read_sql(formatted_query, engine)
         full_path = path + '/' + str(from_date.year) + '/' + str(from_date.month) + '/' + str(from_date.date()) + '.parquet.gzip'
-        mapper.upload_file(df, full_path, compression='gzip')
         print(full_path)
+        if not mapper.exists(full_path):
+            df = pd.read_sql(formatted_query, engine)
+            mapper.upload_file(df, full_path, compression='gzip')
+        else:
+            print("File path %s already exists. Skipping." % full_path)
+
 
 # def save_to_geddes(mapper, path, df, date_range: str, file_extension:str):
 #     # if file_extension == 'csv':

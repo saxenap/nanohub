@@ -14,7 +14,7 @@ FIRST_YEAR := 2000
 LAST_YEAR := 2022
 YEARS = $(shell seq ${FIRST_YEAR} ${LAST_YEAR})
 SEMS = $(foreach i,$(YEARS),$(subst year,$(i),$(join $(addsuffix _,year-01-01),year-07-01)))
-SEMS += $(foreach i,$(YEARS),$(subst year,$(i),$(join $(addsuffix _,year-07-02),year-12-31)))
+SEMS += $(foreach i,$(YEARS),$(subst year,$(i),$(join $(addsuffix _,year-07-01),year-12-31)))
 
 #MONTHS = $(foreach i,$(YEARS),$(subst year,$(i),$(join $(addsuffix _,year-01-01),year-01-31)))
 #MONTHS += $(foreach i,$(YEARS),$(subst year,$(i),$(join $(addsuffix _,year-02-01),year-02-28)))
