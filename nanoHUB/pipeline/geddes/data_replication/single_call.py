@@ -36,8 +36,9 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
         # print("%s now uploading." % full_path)
         try:
             mapper.upload_file(df, full_path, compression='gzip')
+            # print("Uploaded: %s" % (full_path))
         except ClientError as e:
-            print("%s - Error uploading: %s" % (full_path, str(e)))
+            print("Error uploading: %s (%s)" % (full_path, str(e)))
 
 
 
