@@ -33,12 +33,11 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
                 continue
             # print("Overwriting file path %s." % full_path)
         df = pd.read_sql(formatted_query, engine, parse_dates={'start': {'format': '%Y-%m-%d %H:%M:%S'}, 'finish': {'format': '%Y-%m-%d %H:%M:%S'}})
-        print("%s now uploading." % full_path)
+        # print("%s now uploading." % full_path)
         try:
             mapper.upload_file(df, full_path, compression='gzip')
         except ClientError as e:
-            print("Error uploading %s. Continuing..." % full_path)
-            print(str(e))
+            print("%s - Error uploading: %s" % (full_path, str(e)))
 
 
 
