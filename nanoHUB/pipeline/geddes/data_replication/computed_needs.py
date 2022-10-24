@@ -26,9 +26,8 @@ s3_client = get_default_s3_client(application)
 processed_mapper = S3FileMapper(s3_client, ClusteringConfiguration().bucket_name_processed)
 
 # app_dir = os.environ['APP_DIR']
-app_dir = '/Users/saxenap/Documents/Dev/nanoHUB/nanoHUB-analytics'
-datadir = app_dir + '/.cache/'
-file_path = datadir + 'registered_users.csv'
+# datadir = app_dir + '/.cache/'
+# file_path = datadir + 'registered_users.csv'
 
 sql_query = ''' 
 SELECT 
@@ -38,14 +37,14 @@ WHERE username != ''
 AND username NOT IN ('gridstat', 'hubrepo')
 '''
 
-# users_df = pd.read_sql_query(sql_query, nanohub_engine)
-# # print(users_df)
-# print(len(users_df))
-# users_df = users_df.reset_index()
-# print(len(users_df))
+users_df = pd.read_sql_query(sql_query, nanohub_engine)
+# print(users_df)
+print(len(users_df))
+users_df = users_df.reset_index()
+print(len(users_df))
 # users_df.to_csv(file_path)
 
-users_df = pd.read_csv(file_path)
+# users_df = pd.read_csv(file_path)
 
 sql_query = """
 INSERT INTO ANALYTICS_derived_data.simulations
@@ -106,4 +105,5 @@ for i in range(0, len(usernames_list), 100):
         # print(tuple(usernames))
         connection.execute(sql_query, tuple(usernames))
         print("%d users updated so far." % (i + len(usernames)))
+
 
