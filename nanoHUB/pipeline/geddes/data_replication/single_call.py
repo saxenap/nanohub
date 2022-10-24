@@ -12,6 +12,7 @@ from nanoHUB.configuration import ClusteringConfiguration
 from nanoHUB.pipeline.geddes.data import get_default_s3_client
 from nanoHUB.dataaccess.lake import S3FileMapper
 from nanoHUB.logger import logger as log
+from botocore.exceptions import ClientError
 
 
 def daterange(start_date: datetime, end_date: datetime):
@@ -23,16 +24,22 @@ def get_by_day_since(engine, query: str, start_date: datetime, end_date: datetim
     for from_date in daterange(start_date, end_date):
         to_date = from_date + timedelta(days=1)
         formatted_query = query.format(from_date.strftime('%Y-%m-%d'), to_date.strftime('%Y-%m-%d'))
-        print(formatted_query)
+        # print(formatted_query)
         full_path = path + '/' + str(from_date.year) + '/' + str(from_date.month) + '/' + str(from_date.date()) + '.parquet.gzip'
-        print(full_path)
+        # print(full_path)
         if mapper.exists(full_path):
             if skip_existing == 1:
-                print("File path %s already exists. Skipping." % full_path)
-                return
-            print("Overwriting file path %s." % full_path)
+                # print("File path %s already exists. Skipping." % full_path)
+                continue
+            # print("Overwriting file path %s." % full_path)
         df = pd.read_sql(formatted_query, engine, parse_dates={'start': {'format': '%Y-%m-%d %H:%M:%S'}, 'finish': {'format': '%Y-%m-%d %H:%M:%S'}})
-        mapper.upload_file(df, full_path, compression='gzip')
+        print("%s now uploading." % full_path)
+        try:
+            mapper.upload_file(df, full_path, compression='gzip')
+        except ClientError as e:
+            print("Error uploading %s. Continuing..." % full_path)
+            print(str(e))
+
 
 
 
