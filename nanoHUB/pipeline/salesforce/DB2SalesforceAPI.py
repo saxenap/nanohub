@@ -1,9 +1,8 @@
 import pandas as pd
-import datetime
 import requests
 from io import StringIO
 import time
-import json
+import logging
 
 
 class SalesforceFailure(RuntimeError):
@@ -31,20 +30,12 @@ class CsvUploadFailedError(SalesforceFailure):
 
 
 class DB2SalesforceAPI:
-
-    def __init__(self, sf_login_params):
+    def __init__(self, sf_login_params, endpoint: str, logger: logging.Logger):
         # Parameters
-        self.hours_range = 24 # number of days to look back
-
-        # API settings
-        self.api_url = None
-        self.external_id = None
-        self.object_id = None
-        self.bulk_job_id = None
-
-        # login details
+        self.endpoint = endpoint
         self.sf_login_params = sf_login_params
-        self.access_token = None
+        self.logger = logger
+
         # Obtain access token
         self.obtain_token()
 
@@ -55,15 +46,15 @@ class DB2SalesforceAPI:
         return self.instance_url
 
     def obtain_token(self):
-        response = requests.post("https://login.salesforce.com/services/oauth2/token", params=self.sf_login_params)
+        response = requests.post(self.endpoint, params=self.sf_login_params)
 
         if response.ok:
             self.access_token = response.json()['access_token']
             self.instance_url = response.json()['instance_url']
-            print('Obtained Salesforce access token ...... %s'%response.ok)
+            self.logger.info('Obtained Salesforce access token ...... %s'%response.ok)
 
         else:
-            print('[Error] %s', response.text)
+            self.logger.info('[Error] %s', response.text)
             raise AuthenticationFailure((response.json()))
 
     def query_data(self, query):
@@ -81,12 +72,12 @@ class DB2SalesforceAPI:
 
         if not response.ok:
             # job request not successful
-            print('[FAIL] Bulk job creation failed ...')
-            print(response.text)
+            self.logger.info('[FAIL] Bulk job creation failed ...')
+            self.logger.info(response.text)
             raise BulkJobCreationError(response.json())
         else:
             # job request successful
-            print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
+            self.logger.info('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
         
 
         job_id = response.json()['id']
@@ -97,7 +88,7 @@ class DB2SalesforceAPI:
                                 )
 
         while response.ok:
-            print(response.text)
+            self.logger.info(response.text)
 
             if response.json()['state'] == 'JobComplete':
                 # Job has completed
@@ -113,12 +104,12 @@ class DB2SalesforceAPI:
 
         if not response.ok:
             # job request not successful
-            print('[FAIL] Bulk job failed ...')
-            print(response.text)
+            self.logger.info('[FAIL] Bulk job failed ...')
+            self.logger.info(response.text)
             raise BulkJobFailedError(response.json())
         else:
             # job request successful
-            print('[Success] Bulk job completed successfully.')
+            self.logger.info('[Success] Bulk job completed successfully.')
 
         # get result
         # Issuing a job request
@@ -157,15 +148,15 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # job request not successful
-            print('[FAIL] Bulk job creation failed ...')
+            self.logger.info('[FAIL] Bulk job creation failed ...')
             raise BulkJobCreationError(response.json())
         else:
             # job request successful
-            print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
+            self.logger.info('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
         
 
         job_id = response.json()['id']
-        print('hello')
+        # self.logger.debug('hello')
         # Save dataframe into CSV. Using Salesforce Bulk 2.0 API, CSV file should not exceed 150 MB
         bulk_csv = bytes(df_sf.to_csv(index=False,line_terminator='\n'), 'utf-8').decode('utf-8','ignore').encode("utf-8")
         
@@ -180,11 +171,11 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # CSV upload not successful
-            print('[FAIL] CSV upload failed ...')
+            self.logger.info('[FAIL] CSV upload failed ...')
             raise CsvUploadFailedError(response.json())
         else:
             # CSV upload successful
-            print('[Success] CSV upload successful. Job ID = %s'%job_id)
+            self.logger.info('[Success] CSV upload successful. Job ID = %s'%job_id)
         
         # Close the job, so Salesforce can start processing data
         response = requests.patch('https://na172.salesforce.com/services/data/v47.0/jobs/ingest/%s'%job_id,
@@ -197,11 +188,11 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # job close not successful
-            print('[FAIL] Closing job failed ...')
+            self.logger.info('[FAIL] Closing job failed ...')
             raise
         else:
             # job close successful
-            print('[Success] Closing job successful. Job ID = %s'%job_id)
+            self.logger.info('[Success] Closing job successful. Job ID = %s'%job_id)
 
             # record successful bulk
             self.bulk_job_id = job_id
@@ -226,15 +217,15 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # job request not successful
-            print('[FAIL] Bulk job creation failed ...')
+            self.logger.info('[FAIL] Bulk job creation failed ...')
             raise BulkJobCreationError(response.json())
         else:
             # job request successful
-            print('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
+            self.logger.info('[Success] Bulk job creation successful. Job ID = %s'%response.json()['id'])
         
 
         job_id = response.json()['id']
-        print('hello')
+        # print('hello')
         # Save dataframe into CSV. Using Salesforce Bulk 2.0 API, CSV file should not exceed 150 MB
         
         bulk_csv = bytes(df_sf.to_csv(index=False,line_terminator='\n',header=True), 'utf-8').decode('utf-8','ignore').encode("utf-8")
@@ -250,11 +241,11 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # CSV upload not successful
-            print('[FAIL] CSV upload failed ...')
+            self.logger.info('[FAIL] CSV upload failed ...')
             raise CsvUploadFailedError(response.json())
         else:
             # CSV upload successful
-            print('[Success] CSV upload successful. Job ID = %s'%job_id)
+            self.logger.info('[Success] CSV upload successful. Job ID = %s'%job_id)
         
         # Close the job, so Salesforce can start processing data
         response = requests.patch('https://na172.salesforce.com/services/data/v47.0/jobs/ingest/%s'%job_id,
@@ -267,11 +258,11 @@ class DB2SalesforceAPI:
         
         if not response.ok:
             # job close not successful
-            print('[FAIL] Closing job failed ...')
+            self.logger.info('[FAIL] Closing job failed ...')
             raise ClosingJobFailedError(response.json())
         else:
             # job close successful
-            print('[Success] Closing job successful. Job ID = %s'%job_id)
+            self.logger.info('[Success] Closing job successful. Job ID = %s'%job_id)
 
             # record successful bulk
             self.bulk_job_id = job_id

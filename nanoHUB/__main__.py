@@ -79,20 +79,34 @@ def user(
         database_password: str = '',
         gitlab_email: str = '',
         gitlab_username: str = '',
-        gitlab_fullname: str = ''
+        gitlab_fullname: str = '',
+        geddes_user: str = '',
+        geddes_access_key: str = '',
+        geddes_secret_key: str = '',
+        loglevel: str = typer.Option(
+            "INFO",
+            "--log-level",
+            help="This option sets the logging level. eg. DEBUG, INFO, or CRITICAL"
+        )
 ):
     """
     Onboard a user.
     """
+    logging.config.dictConfig(logging_conf)
+    logging.getLogger().setLevel(logging.getLevelName(loglevel.upper()))
+
     command = OnboardingCommand(
         git_fullname=gitlab_fullname,
         git_email=gitlab_email,
         git_username=gitlab_username,
-        jupyter_password='nanoHUB',
+        # jupyter_password='nanoHUB',
         env_career_user=purdue_career_username,
         env_career_password=purdue_career_password,
         env_ssh_db_user=database_username,
-        env_ssh_db_pass=database_password
+        env_ssh_db_pass=database_password,
+        geddes_user=geddes_user,
+        geddes_access_key=geddes_access_key,
+        geddes_secret_key=geddes_secret_key
     )
 
     factory = DefaultProcessorFactory()

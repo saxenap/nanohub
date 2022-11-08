@@ -4,6 +4,8 @@ from IPython.display import display, HTML, Javascript
 from ipywidgets import *
 from dataclasses import dataclass
 import json
+import logging
+import re
 
 
 #widget functionality for ipynb input
@@ -109,7 +111,7 @@ class OnboardingCommand:
     git_fullname: str
     git_email: str
     git_username: str
-    jupyter_password: str
+    # jupyter_password: str
     env_career_user: str
     env_career_password: str
     env_ssh_db_user: str
@@ -124,14 +126,45 @@ class OnboardingCommand:
 #Setup Actions
 
     #git
+
+def _kill_agent():
+    logging.debug('killing previously started ssh-agent')
+    subprocess.run(['ssh-agent', '-k'])
+    del os.environ['SSH_AUTH_SOCK']
+    del os.environ['SSH_AGENT_PID']
+
+
+_OUTPUT_PATTERN = re.compile(r'SSH_AUTH_SOCK=(?P<SSH_AUTH_SOCK>[^;]+).*SSH_AGENT_PID=(?P<SSH_AGENT_PID>\d+)', re.MULTILINE | re.DOTALL)
+def parse_ssh_agent(output):
+    match = _OUTPUT_PATTERN.search(output)
+    if match is None:
+        raise Exception(f'Could not parse ssh-agent output. It was: {output}')
+    return match.groupdict()
+
+
+def _setup_agent():
+    process = subprocess.run(['ssh-agent', '-s'], stdout=subprocess.PIPE, text=True)
+    agent_data = parse_ssh_agent(process.stdout)
+    logging.debug('ssh agent data: {}'.format(agent_data))
+    logging.debug('exporting ssh agent environment variables')
+    os.environ['SSH_AUTH_SOCK'] = agent_data['SSH_AUTH_SOCK']
+    os.environ['SSH_AGENT_PID'] = agent_data['SSH_AGENT_PID']
+
+
 class SSH_Setup:
     def generate_for(self, email_address: str, root_folder: str) -> str:
+        pub_file_path = "%s/.ssh/id_rsa.pub" % (root_folder)
         cmd1 = os.system("rm -rf %s/.ssh/id* %s/.ssh/.id*" % (root_folder, root_folder))
         cmd2 = os.system("yes '' | ssh-keygen -N '' -C '%s' > /dev/null" % (email_address))
-        cmd3 = os.system('cat %s/.ssh/id_rsa.pub' % (root_folder))
-        sshkey = os.popen('cat %s/.ssh/id_rsa.pub' % (root_folder)).read()
-        cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
-        cmd02 = os.system('ssh-add ~/.ssh/id_rsa.pub')
+        cmd3 = os.system('cat %s' % (pub_file_path))
+        cmd4 = os.system("chmod 400 %s" % pub_file_path)
+        sshkey = os.popen('cat %s' % (pub_file_path)).read()
+        # cmd01 = os.system('eval "$(ssh-agent -s >/dev/null)"')
+        _setup_agent()
+        # cmd02 = os.system('ssh-add ~/.ssh/id_rsa')
+        process = subprocess.run(['ssh-add', pub_file_path])
+        if process.returncode != 0:
+            raise Exception('failed to add the key: {}'.format(pub_file_path))
         cmd03 = os.system('ssh-keyscan -t rsa gitlab.hubzero.org >> ~/.ssh/known_hosts')
         return sshkey
 
@@ -238,8 +271,8 @@ class CommandValidator:
             self.errors.set_error_for('name', 'Username field is empty!')
 
         # jupyterpassword
-        if command.jupyter_password == "":
-            self.errors.set_error_for('password', 'Jupyter password field is empty!')
+        # if command.jupyter_password == "":
+        #     self.errors.set_error_for('password', 'Jupyter password field is empty!')
 
         return self.errors
 

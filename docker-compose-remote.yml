@@ -35,3 +35,7 @@ services:
       - ./nanoHUB/.config
     command: [jupyter, lab]
 #    command: bash -c "tail -f /dev/stdout"
+  deploy:
+    image: hello-world:latest
+    depends_on:
+      - remote
