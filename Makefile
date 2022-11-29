@@ -88,7 +88,8 @@ show-cron_tasks:
 setup-cron-jobs:
 	crontab $(root_path)/cron_pipeline_tasks
 	crontab -l
-
+# The following commands could be parametrized but the intention here
+# is to be explicit rather than implicit
 exec-dev:
 	docker exec -it `docker ps -q --filter name=$(dev_name)` bash
 
