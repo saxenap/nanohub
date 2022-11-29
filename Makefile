@@ -52,7 +52,7 @@ dev-up:
 	$(env-vars) docker-compose up --build
 
 remote-down:
-	$(env-vars) docker-compose -f docker-compose-remote.yml down remote
+	$(env-vars) docker-compose -f docker-compose-remote.yml down
 
 remote-up:
 	$(env-vars) docker-compose -f docker-compose-remote.yml up --build remote
@@ -122,8 +122,11 @@ dev-clustering:
 	docker exec `docker ps -q --filter name=$(dev_name)` make -j$(getconf _NPROCESSORS_ONLN) -C nanoHUB/clustering task=mike scratch_dir=/tmp
 	docker exec `docker ps -q --filter name=$(dev_name)` make -j$(getconf _NPROCESSORS_ONLN) -f nanoHUB/clustering/overlap.mk
 ########################################################################################################################
-# Others
+# END OF RELEVANT CODE (Contains Kubernetes and Google Cloud related code from this point on)
+########################################################################################################################
 
+# Others
+# Ignore
 gcloud_ip=$(shell curl -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 
 gsetup: setup
