@@ -1,3 +1,76 @@
+"""Runs clustering for users to detect the classes they are in.
+Args:
+    task (str): 'specific task' \
+    geoip2_mmdb_filepath (str): 'full file path of mmdb file from GeoIP2' \
+    output_dir (str): 'location of output directory for output files' \
+    scratch_dir (str): 'location of scratch directory for temporary files' \
+    name_prefix (str): 'prefix to all output files' \
+    display_output (str): 'should display/return/print output' \
+    no_save_output (str): 'should not save output file locally'
+    save_to_geddes (str): 'save_to_geddes' \
+    no-save_to_geddes (str): 'no_save_to_geddes' \
+    bucket_name (str): 'bucket name in Geddes' \
+    object_path (str): 'object path inside the bucket in Geddes' \
+    class_probe_range (str): 'classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1' \
+    class_activity_tol (str): 'classroom detection: minimal days apart to declare two use of same tool as separate activity blocks' \
+    class_attention_span (str): 'classroom detection: the standard deviation of gaussian shaped attention window function' \
+    class_size_min (int): 'classroom detection: minimal number of users within a cluster to declare it as a valid class' \
+    class_distance_threshold (int): 'classroom detection: maximum intra-cluster distance in km for geospatial clusters' \
+    class_merge_time_threshold (int): 'classroom detection: when merging similar clusters, maximum time range allowed for merging' \
+    class_merge_distance_threshold (int): 'classroom detection: when merging similat cluster, maximum intra-cluster distance in km for geospatial clusters' \
+    cost_size_min (int): 'classroom detection: minimal cluster size' \
+    cost_force_all_diff_lvl (str): 'classroom detection: forceAllDifferencesLevel' \
+    cost_tolerance (int): 'classroom detection: tolerance' \
+    dask_scheduler: "threads"/"processes"/"single-threaded"' \
+    CI (bool): 'start GitLab CI pipeline' \
+    CI_dir (str): 'shelve variables in order to connect with notebooks at various points'  \
+    generate_notebook_checkpoints (bool): 'shelve variables in order to connect with notebooks at various points' \
+    use_old_data (bool): 'use feature data from previous run' \
+    gather_data_only (bool): 'exit after gather data without analysing clusters' \
+    log_level (str): 'logging level (INFO, DEBUG etc)'
+
+Returns:
+    Null
+
+Usage: python main_online_users_TS.py \
+    --task 'specific task' \
+    --geoip2_mmdb_filepath 'full file path of mmdb file from GeoIP2' \
+    --output_dir 'location of output directory for output files' \
+    --scratch_dir 'location of scratch directory for temporary files' \
+    --name_prefix 'prefix to all output files' \
+    --display_output 'should display/return/print output' \
+    --no_save_output 'should not save output file locally'
+    --save_to_geddes 'save_to_geddes' \
+    --no-save_to_geddes 'no_save_to_geddes' \
+    --bucket_name 'bucket name in Geddes' \
+    --object_path 'object path inside the bucket in Geddes' \
+    --class_probe_range 'classroom detection: date range of the class to be analyzed. For example, 2018-1-1:2018-5-1' \
+    --class_activity_tol 'classroom detection: minimal days apart to declare two use of same tool as separate activity blocks' \
+    --class_attention_span 'classroom detection: the standard deviation of gaussian shaped attention window function' \
+    --class_size_min 'classroom detection: minimal number of users within a cluster to declare it as a valid class' \
+    --class_distance_threshold 'classroom detection: maximum intra-cluster distance in km for geospatial clusters' \
+    --class_merge_time_threshold 'classroom detection: when merging similar clusters, maximum time range allowed for merging' \
+    --class_merge_distance_threshold 'classroom detection: when merging similat cluster, maximum intra-cluster distance in km for geospatial clusters' \
+    --cost_size_min 'classroom detection: minimal cluster size' \
+    --cost_force_all_diff_lvl 'classroom detection: forceAllDifferencesLevel' \
+    --cost_tolerance 'classroom detection: tolerance' \
+    --dask_scheduler dask scheduler: "threads"/"processes"/"single-threaded"' \
+    --CI 'start GitLab CI pipeline' \
+    --CI_dir 'shelve variables in order to connect with notebooks at various points'  \
+    --generate_notebook_checkpoints 'shelve variables in order to connect with notebooks at various points' \
+    --use_old_data 'use feature data from previous run' \
+    --gather_data_only 'exit after gather data without analysing clusters' \
+    --log_level 'logging level (INFO, DEBUG etc)'
+
+Args:
+    See above and below
+
+Returns:
+    Null
+
+Designed for nanoHUB
+"""
+
 import argparse
 import logging
 import os
@@ -7,8 +80,9 @@ from nanoHUB.logger import logger as log
 
 
 def main_online_users_TS():
-    parser = argparse.ArgumentParser(
-        description='Online user weblog time series analysis originally designed for nanoHUB.org')
+
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # task options
     parser.add_argument('--task', help='specific task',

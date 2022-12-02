@@ -1,42 +1,82 @@
-# Created by saxenap at 10/13/22
+# Created by saxenap (author: Praveen Saxena, email: saxep01@gmail.com) at 10/13/22
 
-from datetime import datetime, timedelta, date
-import logging
-import time
+"""This script computes certain RFM numbers for every user, such as:
+1. number of tools used
+2. number of sessions started
+3. number of simulations executed/run
+4. date & time of earliest simulation run
+5. date & time of latest simulation run
+6. number of days they were active
+7. simulation lifetime
+6. number of days they ran a simulation
+
+These numbers are stored in a database table that is provided as an argument.
+
+Args:
+    chunk_size (int): The number of users to process in each loop.
+    db_name (str): Name of the database to insert the results into.
+    db_table_name (str): Name of the database table to insert the results into.
+
+
+Returns:
+    Null
+
+Usage:
+    python computed_needs.py --chunk_size n
+
+License:
+    MIT License
+
+    Copyright (c) 2022 Praveen Saxena, for nanoHUB
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+Designed for nanoHUB
+"""
+
 import argparse
-import tempfile
-import os
 
-import botocore
+
 import pandas as pd
 from nanoHUB.application import Application
-from nanoHUB.configuration import ClusteringConfiguration
 from nanoHUB.pipeline.geddes.data import get_default_s3_client
-from nanoHUB.dataaccess.lake import S3FileMapper
-from nanoHUB.logger import logger as log
-from botocore.exceptions import ClientError
-import pymysql
-from sqlalchemy import exc
 
 application = Application.get_instance()
 nanohub_engine = application.new_db_engine('nanohub')
 metrics_engine = application.new_db_engine('nanohub_metrics')
 s3_client = get_default_s3_client(application)
-# raw_mapper = S3FileMapper(s3_client, inparams.bucket_name)
 
-parser = argparse.ArgumentParser(
-    description='Designed for nanoHUB.org')
+parser = argparse.ArgumentParser(description=__doc__,
+                            formatter_class=argparse.RawDescriptionHelpFormatter)
 
-parser.add_argument('--cache_dir', help='specific task', action='store')
-parser.add_argument('--chunk_size', help='specific task', action='store', type=int)
-parser.add_argument('--refresh_cache', help='specific task', action='store_true')
-parser.add_argument('--no_refresh_cache', dest='refresh_cache', action='store_false')
-parser.set_defaults(refresh_cache=True)
+# parser.add_argument('--cache_dir', help='specific task', action='store')
+parser.add_argument('--chunk_size', help='The number of users to process in each loop.', action='store', type=int)
+parser.add_argument('--db_name', help='Name of the database to insert the results into.', action='store', type=str)
+parser.add_argument('--db_table_name', help='Name of the database table to insert the results into.', action='store', type=str)
+# parser.add_argument('--refresh_cache', help='specific task', action='store_true')
+# parser.add_argument('--no_refresh_cache', dest='refresh_cache', action='store_false')
+# parser.set_defaults(refresh_cache=True)
 
 
 inparams = parser.parse_args()
 
-file_path = inparams.cache_dir.rstrip('/') + '/registered_users.csv'
+# file_path = inparams.cache_dir.rstrip('/') + '/registered_users.csv'
 
 usernames_query_str = '''
 SELECT 
@@ -87,7 +127,7 @@ LIMIT {} OFFSET {}
 # print(len(users_df))
 
 sql_query = """
-    INSERT INTO ANALYTICS_derived_data.simulations
+    INSERT INTO {db_name}.{table_name}
     (username,
      user_id,
      tool_count,
@@ -134,6 +174,7 @@ GROUP BY rollup.user
 ;
 """
 
+
 # usernames_list = list(set(usernames_list))
 # print("Number of usernames: %d" % len(usernames_list))
 chunk_size = inparams.chunk_size
@@ -154,7 +195,7 @@ while True:
         break
 
     placeholders = ','.join(['%s'] * len(usernames))
-    sql_query = sql_query.format(users=placeholders)
+    sql_query = sql_query.format(db_name=inparams.db_name, table_name=inparams.db_table_name, users=placeholders)
     with nanohub_engine.begin() as connection:
         connection.execute(sql_query, tuple(usernames))
     all_users = all_users + len(usernames)

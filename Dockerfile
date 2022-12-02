@@ -312,7 +312,7 @@ RUN \
             sqlite3 libsqlite3-dev \
         ' \
         && set -x \
-        && cartopy_pip_deps=' \
+x        && cartopy_pip_deps=' \
             cython \
             ffmpeg-python \
             shapely \
@@ -341,7 +341,8 @@ RUN  \
         && make -j${CPUS} && sudo make install \
         && make check \
         && sudo ldconfig \
-        && cd .. && rm -rf proj-${PROJ_VERSION}
+        && cd .. && rm -rf proj-${PROJ_VERSION} \
+
 RUN  \
         wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
         && tar -xvzf gdal-${GDAL_VERSION}.tar.gz \

@@ -77,7 +77,14 @@ def new_df_for_all(query: QueryStringForAll, engine):
 
 
 def get_default_s3_client(application):
+    """Creates a new low-level service client for interacting with Geddes
 
+    Args:
+        application (nanoHUB.Application): An object of the application class
+
+    Returns
+    boto_session.client:  a low-level service client by service.
+    """
     return get_s3_client(
         'https://' + application.get_config_value('geddesapi.endpoint') + ':443',
         application.get_config_value('geddesapi.access_key'),

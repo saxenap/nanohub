@@ -1,4 +1,54 @@
-# Created by saxenap at 10/13/22
+# Created by saxenap (author: Praveen Saxena, email: saxep01@gmail.com) at 10/13/22
+
+"""This script computes certain RFM numbers for every user, such as:
+1. number of tools used
+2. number of sessions started
+3. number of simulations executed/run
+4. date & time of earliest simulation run
+5. date & time of latest simulation run
+6. number of days they were active
+7. simulation lifetime
+6. number of days they ran a simulation
+
+These numbers are stored in a database table that is provided as an argument.
+
+Args:
+    chunk_size (int): The number of users to process in each loop.
+    date_probe_range (str): Date range in isoformat. For example, 2018-01-01_2018-05-01
+    db_name (str): Name of the database to insert the results into.
+    db_table_name (str): Name of the database table to insert the results into.
+
+Returns:
+    Null
+
+Usage:
+    python computed_needs.py --chunk_size n
+
+License:
+    MIT License
+
+    Copyright (c) 2022 Praveen Saxena, for nanoHUB
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+Designed for nanoHUB
+"""
 
 from datetime import datetime, timedelta, date
 import logging
@@ -59,7 +109,7 @@ def import_users(file_path: str, use_cache: bool = False):
     return users_df
 
 
-def save_details(users_df: pd.DataFrame, engine, chunk_size: int):
+def save_details(users_df: pd.DataFrame, engine, db_name: str, db_table_name: str, chunk_size: int):
     sql_query = """
     INSERT INTO ANALYTICS_derived_data.simulations
     (username,
@@ -110,7 +160,7 @@ def save_details(users_df: pd.DataFrame, engine, chunk_size: int):
     usernames = users_df['username'].tolist()
     if len(usernames) > 0:
         placeholders = ','.join(['%s'] * len(usernames))
-        sql_query = sql_query.format(users=placeholders)
+        sql_query = sql_query.format(db_name=db_name, table_name=db_table_name, users=placeholders)
         with engine.begin() as connection:
             connection.execute(sql_query, tuple(usernames))
         print("%d users processed" % len(usernames))
@@ -125,7 +175,10 @@ def main():
                         action='store', default='latest')
     # parser.add_argument('--query_string', help='Query string', action='store')
     parser.add_argument('--chunk_size', help='Chunk size for number of users', action='store', default=100, type=int)
-    # parser.add_argument('--use_cache', help='Use cache', action='store')
+    parser.add_argument('--db_name', help='Name of the database to insert the results into.', action='store', type=str)
+    parser.add_argument('--db_table_name', help='Name of the database table to insert the results into.', action='store', type=str)
+
+# parser.add_argument('--use_cache', help='Use cache', action='store')
     # parser.add_argument('--cache_dir_path', help='Relative path of cache dir', action='store')
     inparams = parser.parse_args()
 
@@ -140,7 +193,7 @@ def main():
     inparams.start_date, inparams.end_date = inparams.date_probe_range.split('_')
 
     users_df = get_users_from_db(nanohub_engine, datetime.fromisoformat(inparams.start_date), datetime.fromisoformat(inparams.end_date))
-    save_details(users_df, nanohub_engine, inparams.chunk_size)
+    save_details(users_df, nanohub_engine, inparams.db_name, inparams.db_table_name, inparams.chunk_size)
 
 
 if __name__ == '__main__':

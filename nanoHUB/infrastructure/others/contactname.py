@@ -1,4 +1,4 @@
-# Created by saxenap at 5/25/22
+# Created by saxenap (author: Praveen Saxena, email: saxep01@gmail.com) at 5/25/22
 
 from nameparser import HumanName
 from nanoHUB.domain.contact import ContactName

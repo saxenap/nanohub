@@ -137,5 +137,6 @@ s4cmd = "*"
 awswrangler = "*"
 nanohub = {editable = true, path = "."}
 
+opencv-python = "*"
 [pipenv]
 allow_prereleases = true

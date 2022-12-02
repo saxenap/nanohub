@@ -1,4 +1,4 @@
-# Created by saxenap at 6/16/22
+# Created by saxenap (author: Praveen Saxena, email: saxep01@gmail.com) at 6/16/22
 from pprint import pprint
 from inspect import getmembers
 from types import FunctionType

@@ -210,38 +210,38 @@ spec:
   resources:
     requests:
       storage: {{STORAGE}}
-  storageClassName: rook-ceph-block
+  storageClassName: geddes-standard-singlenode
   volumeMode: Filesystem
 
 ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-#    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:{{DEPLOYMENT_NAME}}","allNodes":false}]'
-    geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
-    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
-    kompose.version: 1.26.1 (a9d05d509)
-  labels:
-    io.kompose.service: {{DEPLOYMENT_NAME}}
-  name: {{DEPLOYMENT_NAME}}
-  namespace: hubzero
-spec:
-#  clusterIP: 10.4.250.20
-#  clusterIPs:
-#    - 10.4.250.20
-  externalTrafficPolicy: Cluster
-  ports:
-    - name: "80"
-#      nodePort: 32464
-      port: 80
-      protocol: TCP
-      targetPort: 80
-  selector:
-    io.kompose.service: {{DEPLOYMENT_NAME}}
-  sessionAffinity: None
-  type: LoadBalancer
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  annotations:
+##    field.cattle.io/publicEndpoints: '[{"addresses":["172.21.160.160"],"port":80,"protocol":"TCP","serviceName":"hubzero:{{DEPLOYMENT_NAME}}","allNodes":false}]'
+#    geddes-public-poolmetallb.universe.tf/address-pool: geddes-private-pool
+#    kompose.cmd: kompose convert -f docker-compose-resolved.yaml
+#    kompose.version: 1.26.1 (a9d05d509)
+#  labels:
+#    io.kompose.service: {{DEPLOYMENT_NAME}}
+#  name: {{DEPLOYMENT_NAME}}
+#  namespace: hubzero
+#spec:
+##  clusterIP: 10.4.250.20
+##  clusterIPs:
+##    - 10.4.250.20
+#  externalTrafficPolicy: Cluster
+#  ports:
+#    - name: "80"
+##      nodePort: 32464
+#      port: 80
+#      protocol: TCP
+#      targetPort: 80
+#  selector:
+#    io.kompose.service: {{DEPLOYMENT_NAME}}
+#  sessionAffinity: None
+#  type: LoadBalancer
 
 ---
 

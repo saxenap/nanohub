@@ -147,7 +147,7 @@ metadata:
       kind: Ingress
       name: zach1-nanohub
       uid: 55317aa4-b347-4629-9fc6-aaf37374486b
-spec:
+spec:x
 #  clusterIP: 10.4.250.16
 #  clusterIPs:
 #    - 10.4.250.16

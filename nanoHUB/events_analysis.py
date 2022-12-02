@@ -1,4 +1,4 @@
-# Created by saxenap at 10/13/22
+# Created by saxenap (author: Praveen Saxena, email: saxep01@gmail.com) at 10/13/22
 
 from pathlib import Path
 from functools import reduce
