@@ -1,6 +1,6 @@
 * linguist-vendored
-*.py linguist-vendored=true
-*.ipynb linguist-vendored=false
-Makefile linguist-vendored=false
-Dockerfile linguist-vendored=false
-docker-*.yml linguist-vendored=false
+*.py linguist-detectable=true
+*.ipynb linguist-detectable=true
+Makefile linguist-detectable=true
+Dockerfile linguist-detectable=true
+docker-*.yml linguist-detectable=true
