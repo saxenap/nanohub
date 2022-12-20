@@ -1,5 +1,5 @@
 * linguist-vendored
-*.py linguist-vendored=false
+*.py linguist-vendored=true
 *.ipynb linguist-vendored=false
 Makefile linguist-vendored=false
 Dockerfile linguist-vendored=false
