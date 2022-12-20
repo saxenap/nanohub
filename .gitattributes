@@ -1,2 +1,6 @@
 * linguist-vendored
 *.py linguist-vendored=false
+*.ipynb linguist-vendored=false
+Makefile linguist-vendored=false
+Dockerfile linguist-vendored=false
+docker-*.yml linguist-vendored=false
