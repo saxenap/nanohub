@@ -1,5 +1,1 @@
-*.py linguist-detectable=true
-*.ipynb linguist-detectable=true
-Makefile linguist-detectable=true
-Dockerfile linguist-detectable=true
-docker-*.yml linguist-detectable=true
+docker-*.yml linguist-language=name
