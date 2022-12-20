@@ -1,2 +1,3 @@
+*.python linguist-detectable=true
 *.ipynb linguist-detectable=false
-docker-*.yml linguist-language=name
+docker-*.yml linguist-language=Docker
