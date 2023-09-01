@@ -5,13 +5,13 @@
 For Mac and Windows
 
 1. [Code repository for nanoHUB Analytics](https://gitlab.hubzero.org/saxenap/nanohub-analytics) on HubZero's GitLab
-   1. This access is provided by [Pascal](mailto:pmeunier@ucsd.edu). You will need to share:
+   1. This access is provided by Pascal. You will need to share:
       1. The email address you want to use for GitLab. 
       2. The ssh public key you want to use.
    2. Use this email address to [create a new account on GitLab](https://gitlab.com/users/sign_up/).
 2. Server Access
    1. These are db2, db3, db4... db(n) and compute01... compute0(n). 
-   2. Access to these is granted by [Pascal](mailto:pmeunier@ucsd.edu). You will need to share:
+   2. Access to these is granted by Pascal. You will need to share:
          1. Your Purdue career account username.
          2. The ssh public key you want to use.
    3. Configuration & Credentials to use once access granted:
@@ -22,7 +22,7 @@ For Mac and Windows
    1. db2, db3, db4... db(n)
    2. The databases run on their respective servers. 
       Example: db2 database runs on db2 server from 2 above.
-   3. Access to these is granted by [Pascal](mailto:pmeunier@ucsd.edu).
+   3. Access to these is granted by Pascal.
    
 4. Geddes<sup>3</sup>
    1. This access is provided by ITap.
@@ -35,7 +35,7 @@ For Mac and Windows
    3. Configuration & Credentials:
       1. Address: webvpn2.purdue.edu
       2. Username: Purdue Username
-      3. Password: BoilerKey
+      3. Password: ******
 
 --------
 
